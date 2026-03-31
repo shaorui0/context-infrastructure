@@ -54,6 +54,10 @@
   - **禁止轮询**：agent 运行期间不要反复调用 `background_output`，系统会自动通知
   - 判断标准：任务可拆分为 ≥2 个子任务，每个 ≥5 tool calls
   - 核心参数：并行度 ≤5，调研 overlap 30-50%，代码 overlap 0-20%
+- [Agent 故障分类学](./workflow_agent_failure_taxonomy.md) ✅ — 系统性记录、分类、命名 agent 故障模式，积累 failure taxonomy
+  - 6 大类 25 种故障模式：Context / Retrieval / Tool / Planning / Generation / System
+  - 记录存放：`contexts/agent_failure_cases/`
+  - 触发：agent 产出明显不对时，对照分类记录一条
 - [深度调研工作流](./workflow_deep_research_survey.md) ✅ — 多 Agent 并行 + 交叉验证
 - [认知画像提取工作流](./workflow_cognitive_profile_extraction.md) — 从非结构化对话数据提取可预测的认知公理
   - 适用：群聊/Slack/Discord/邮件/播客转录等任意对话数据

@@ -10,6 +10,7 @@
 - 定时任务：`periodic_jobs/`
 
 ### 知识与记录
+- Agent 故障案例：`contexts/agent_failure_cases/`
 - 通用调研报告：`contexts/survey_sessions/`
 - 思考 / 复盘 / 方法论：`contexts/thought_review/`
 - 每日日志：`contexts/daily_records/`
