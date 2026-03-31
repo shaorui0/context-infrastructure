@@ -1,0 +1,9 @@
+contexts/daily_records/
+# agent-ops audit logs (may contain sensitive cluster info — commit selectively)
+tools/agent_ops/logs/*.jsonl
+.env
+agents/
+archives/
+*.log
+tmp/
+__pycache__

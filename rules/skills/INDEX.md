@@ -45,6 +45,10 @@
 
 特定任务的完整工作流程。
 
+- [自主执行工作流](./workflow_autonomous_execution.md) ✅ — Plan agent + scope 预授权 + 持续自主执行
+  - 三阶段：Plan（派 sub-agent 规划）→ Execute（scope 内自主执行）→ Report
+  - 核心：scope declaration 持久化到 plan 文件，context 压缩后仍可恢复
+  - 配合 parallel subagents 使用，可并行步骤自动派 background agent
 - [并行 Subagent 工作流](./workflow_parallel_subagents.md) ✅ — 调用后台 agent、并行执行多个 subagent
   - **必读**：初次使用并行 subagent 前，必须先读此 skill
   - **禁止轮询**：agent 运行期间不要反复调用 `background_output`，系统会自动通知
