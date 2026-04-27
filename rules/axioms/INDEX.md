@@ -38,6 +38,10 @@
 - 「验证」「信任」「可靠性」→ V 系列, A04
 - 「优先级」「效率」「瓶颈」→ M03, X03
 - 「上下文」「记忆」「文档」→ A05, T03
+- 「易用性」「抽象层」「复杂度」「为什么简单」→ T10
+- 「职业方向」「技术押注」「hard/cheap」「前沿 vs 成熟」→ T11, A13
+- 「SRE」「SLO」「可靠性工程」「AI 系统运维」→ T12, A04, V02
+- 「盲区」「unknown unknowns」「想不到」「自信陷阱」「postmortem 文化」→ V06, M02
 
 ---
 
@@ -61,7 +65,7 @@
 
 ---
 
-## T. 技术决策 (9条)
+## T. 技术决策 (12条)
 
 | ID | 公理 | 核心含义 |
 |----|------|----------|
@@ -74,6 +78,9 @@
 | T07 | [隔离-处理-验证闭环](t07_isolation_processing_verification.md) | 收集 → 沙箱 → 验证 |
 | T08 | [第一性原理方法论设计](t08_first_principles_methodology.md) | 先质疑框架是否解决问题 |
 | T09 | [数据策略与MDP](t09_data_strategy_mdp.md) | 数据捕获本身就是第一阶段产品 |
+| T10 | [反向耦合定律](t10_inverse_coupling_law.md) | 上层越简单，底层必然越复杂 |
+| T11 | [Hard leads, Cheap lags](t11_hard_leads_cheap_lags.md) | 今天的难，是明天的 `pip install` |
+| T12 | [第一性 SRE 是 AI 系统的外壳](t12_sre_as_ai_outer_shell.md) | 传统 SRE 方法论是概率性 AI 系统最稀缺的那层外壳 |
 
 ---
 
@@ -94,7 +101,7 @@
 
 ---
 
-## V. 信任与验证 (5条)
+## V. 信任与验证 (6条)
 
 | ID | 公理 | 核心含义 |
 |----|------|----------|
@@ -103,6 +110,7 @@
 | V03 | [归因塑造感知](v03_attribution_shapes_perception.md) | 让隐形工作可见 |
 | V04 | [时间锚定防止幻觉](v04_temporal_grounding_prevents_hallucination.md) | 验证时效性信息 |
 | V05 | [信任归因双维度](v05_trust_attribution_dual_dimension.md) | 信任主体×信任域的产品设计 |
+| V06 | [工程化暴露对抗认知盲区](v06_engineered_exposure_vs_blindspots.md) | Unknown unknowns 是系统问题不是努力问题 |
 
 ---
 
@@ -124,8 +132,8 @@
 | 领域 | 数量 |
 |------|------|
 | AI/Agentic | 13 |
-| 技术决策 | 9 |
+| 技术决策 | 12 |
 | 管理/工作哲学 | 10 |
-| 信任与验证 | 5 |
+| 信任与验证 | 6 |
 | 跨域隐喻 | 6 |
-| **总计** | **43** |
+| **总计** | **47** |

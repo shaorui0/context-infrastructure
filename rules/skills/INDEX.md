@@ -68,12 +68,28 @@
 - [知识飞轮设计模式](./workflow_knowledge_flywheel.md) — 笨数据+笨方法+笨模型=精知识
 - [视频下载与语音识别工作流](./workflow_bilibili_whisper_transcription.md) — Bilibili/YouTube 视频处理
 - [延时执行技能](./delayed_execution.md) ⚙️ — 定时任务：sleep + 后台执行，或 OpenCode API 智能任务
+- [N2 日本語トレーニング](./skill_n2_japanese_training.md) ✅ — 6 模式 N2 训练：会話/文法パターン/読解/語彙/模試/素材マイニング（单题/短会话）
+- [N2 完整备考流水线 `/n2prep`](../../archives/skills/n2_exam_prep/SKILL.md) ✅ — 长周期备考编排：官方 scope → 4 并行 subagent 出卷 → 扎实度门禁(3 轮) → TTS 听力 → Python runner → 每日 30 条 Anki → 弱点台帳 + shadowing
+  - 区别于 `/n2`：n2 是单题即兴练习，n2prep 是完整模考 + 每日备考包
+  - 反偷懒设计：出卷与验卷 sub-agent 分离；门禁失败回流最多 3 轮
+  - 脚本：`doctor.sh` / `run_written.py` / `run_listening.py` / `run_shadowing.py`
+- [日语 Anki 闪卡生成](../../archives/skills/anki_japanese_flashcard/README.md) ✅ — 语料→闪卡 CSV→.apkg（含 TTS 语音）→自动导入 Anki（被 `/n2prep` Phase 6 调用）
+- [Kindle Syncer](../../archives/skills/kindle_syncer/README.md) ⚙️ — Markdown→PDF→邮件发送到 Kindle，支持 Mermaid 图表
+- [注册 Skill 到全局](./workflow_register_global_skill.md) ✅ — 将 context-infrastructure 的 skill symlink 到 ~/.claude/skills 全局可用
+- [dcluster StarRocks CN 部署与验证](./workflow_dcluster_starrocks_cn_deployment.md) ✅ — 构建→部署→E2E 验证完整流程，含 API 测试清单、Spot 冷启动等待、踩坑记录
 
 ### BestPractice（最佳实践）
 
 通用的最佳实践和经验教训。
 
 - [AI 编程核心方法论](./bestpractice_ai_programming_mindset.md) ✅ — 70%问题、成功标准、可验证性
+- [Automation Path Hygiene](./bestpractice_automation_path_hygiene.md) ✅ — 自动化脚本的 workspace root 推导 + 预检 + fail-closed
+- [Agentic Control Primitives (Spec/Loop/Hook/Fork)](./bestpractice_agentic_control_primitives.md) ✅ — 用控制原语替代角色拟物，围绕 Spec/Loop/Hook/Fork 设计可收敛、可审计的 agent workflow
+- [Agent Reliability Engineering (SRE Framing)](./bestpractice_agent_reliability_engineering.md) ✅ — 约束/可观测/收敛三支柱 + eval 作为度量系统
+- [Traditional SRE Methodology 7 层工具箱](./bestpractice_traditional_sre_methodology.md) ✅ — SLO / 过载 / 观测 / 发布 / Chaos / 事件 / 弹性模式，及映射到 AI 系统的翻译
+  - 配套 Axiom：T12（第一性 SRE 是 AI 系统的外壳）
+  - 用法：AI 系统设计时做 7 层 checklist；补 SRE 心智的参考手册
+- [Agent Harness Architecture](./bestpractice_agent_harness_architecture.md) ✅ — Policy Runtime + Stateful Workflow + Orchestrator；先做 agent-harness-lite 再扩展
 - [API Key 管理与调用](./bestpractice_api_key_management_1password_cli.md) ✅ — 使用 1Password CLI 安全管理密钥
 - [面试评估框架](./bestpractice_interview_evaluation.md) ✅ — Trait > Skill、AI 作弊识别、技术深度探测
 - [Markdown 转 HTML 最佳实践](./bestpractice_markdown_html_conversion.md) ✅

@@ -2,8 +2,37 @@ contexts/daily_records/
 # agent-ops audit logs (may contain sensitive cluster info — commit selectively)
 tools/agent_ops/logs/*.jsonl
 .env
-agents/
+# agents/ — ignore everything except the SDK project (public portfolio)
+agents/sre_oncall_triage_agent/
+agents/CLAUDE.md
+agents/excalidraw.log
+# top-level agents symlink → work-harness, never track
+/agents
 archives/
 *.log
 tmp/
 __pycache__
+
+# secrets / tokens
+github_token*
+*token*.txt
+*.pem
+*.key
+
+# scratch / transient
+TODO/
+.playwright-mcp/
+input.txt
+tmp.sh
+tmp_resume.sh
+tmp_*.sh
+
+# work / internal materials — do not publish
+work-contexts/
+fix-ingress-webhook-ca.sh
+ingress-nginx-admission.yaml
+ingress-nginx-admission.yaml.bk
+万字长文教你如何打造自己的 Harness Engineering*.pdf
+
+# personal screenshots / images at repo root
+/*.png

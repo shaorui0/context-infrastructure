@@ -9,11 +9,14 @@
 - 工具脚本（邮件、语义搜索、分享报告等）：`tools/`
 - 定时任务：`periodic_jobs/`
 
+备注：本 workspace 的 `contexts/` 与 `rules/` 在仓库根目录；`periodic_jobs/` 目前仅包含 `ai_heartbeat/`，不要把 `periodic_jobs/` 误当作独立根目录。
+
 ### 知识与记录
 - Agent 故障案例：`contexts/agent_failure_cases/`
 - 通用调研报告：`contexts/survey_sessions/`
 - 思考 / 复盘 / 方法论：`contexts/thought_review/`
 - 每日日志：`contexts/daily_records/`
+- 待消化任务 / 阅读清单 / 定期 audit：`TODO/`（详见 `TODO/README.md`）
 
 ### 系统与规则
 - 可复用技术方案 / Skill：`rules/skills/`
