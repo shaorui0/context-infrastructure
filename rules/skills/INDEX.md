@@ -90,6 +90,8 @@
   - 配套 Axiom：T12（第一性 SRE 是 AI 系统的外壳）
   - 用法：AI 系统设计时做 7 层 checklist；补 SRE 心智的参考手册
 - [Agent Harness Architecture](./bestpractice_agent_harness_architecture.md) ✅ — Policy Runtime + Stateful Workflow + Orchestrator；先做 agent-harness-lite 再扩展
+- [Agent Observability](./bestpractice_agent_observability.md) ✅ — OTel substrate reality + experimental GenAI semconv + provenance/"200-but-garbage" gaps
+- [OSS Contribution Strategy](./bestpractice_oss_contribution_strategy.md) ✅ — Middle-layer collapse framing + license/supply-chain filters + infra/standards leverage
 - [API Key 管理与调用](./bestpractice_api_key_management_1password_cli.md) ✅ — 使用 1Password CLI 安全管理密钥
 - [面试评估框架](./bestpractice_interview_evaluation.md) ✅ — Trait > Skill、AI 作弊识别、技术深度探测
 - [Markdown 转 HTML 最佳实践](./bestpractice_markdown_html_conversion.md) ✅
@@ -98,6 +100,7 @@
 - [多 Agent 并行 analysis](./bestpractice_multi_agent_analysis.md) ✅ — Topic 分割 50% 重叠、交叉验证
 - [AI 辅助调试诊断](./bestpractice_ai_debugging_diagnosis.md) ✅ — "代码改不好"的根因诊断决策树
 - [AI 产品设计原则](./bestpractice_ai_product_design.md) ✅ — 线性聊天 vs 知识工作、感知规则解耦
+- [Solid Skill Creator](./bestpractice_solid_skill_creator.md) ✅ — 工程化写 skill：失败模式优先、产物代替形容词、冗余设计、陷阱表、自检三问
 
 ---
 

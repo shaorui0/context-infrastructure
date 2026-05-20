@@ -124,6 +124,7 @@
 | X04 | [为真实用例设计](x04_design_for_actual_use_case.md) | 适配约束 > 最高规格 |
 | X05 | [精度在系统中级联](x05_precision_cascades_through_systems.md) | 小误差放大并级联传播 |
 | X06 | [抓大放小系统分析](x06_big_picture_system_analysis.md) | 先找最大决策点，意外是最佳信号 |
+| X07 | [Locality 是约束，不是 tradeoff](x07_locality_is_constraint_not_tradeoff.md) | 有限资源处理无界信息必有 locality；换架构换不掉，只换形式 |
 
 ---
 
@@ -135,5 +136,5 @@
 | 技术决策 | 12 |
 | 管理/工作哲学 | 10 |
 | 信任与验证 | 6 |
-| 跨域隐喻 | 6 |
-| **总计** | **47** |
+| 跨域隐喻 | 7 |
+| **总计** | **48** |

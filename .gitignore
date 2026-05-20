@@ -1,4 +1,8 @@
 contexts/daily_records/
+# extracted session content from cross-workspace daily job — keep tool, drop output
+periodic_jobs/cross_workspace_daily/extracted/
+# audio artifacts from anki TTS pipeline
+.anki_audio/
 # agent-ops audit logs (may contain sensitive cluster info — commit selectively)
 tools/agent_ops/logs/*.jsonl
 .env
