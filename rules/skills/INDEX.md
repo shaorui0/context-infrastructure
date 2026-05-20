@@ -45,6 +45,9 @@
 
 特定任务的完整工作流程。
 
+- [Session Context 保存](./save_session_context.md) ✅ — Session 结束前把想法/insight/决策/讨论留档到 `contexts/daily_records/`，宁原始勿提炼
+- [本地 Markdown 分析](./workflow_local_md_analysis.md) ✅ — 对一批本地 md 文件全量阅读 + 跨文件主题/洞察/时间线，>20 文件并行 sub-agent
+- [批处理 Agent 执行](./workflow_batch_agent_orchestration.md) ✅ — Orchestrator-Worker-Verifier-StateMachine，状态外置到 `queue.jsonl`/`results.jsonl`/`failures.jsonl`
 - [自主执行工作流](./workflow_autonomous_execution.md) ✅ — Plan agent + scope 预授权 + 持续自主执行
   - 三阶段：Plan（派 sub-agent 规划）→ Execute（scope 内自主执行）→ Report
   - 核心：scope declaration 持久化到 plan 文件，context 压缩后仍可恢复
@@ -83,6 +86,10 @@
 通用的最佳实践和经验教训。
 
 - [AI 编程核心方法论](./bestpractice_ai_programming_mindset.md) ✅ — 70%问题、成功标准、可验证性
+- [AI-native 知识系统 (Day-N 蒸馏优先)](./bestpractice_ai_native_knowledge_system.md) ✅ — 知识系统首要消费者是 AI；零组织捕获 + reflector 蒸馏；六维评估框架
+- [SRE 第一性原理模型](./bestpractice_sre_reliability_models.md) ✅ — Availability 概率分解 / Overload λ vs μ / Latency SLI-Histogram-Quantile-SLO 四层分离
+  - 配套 [Traditional SRE 7 层工具箱](./bestpractice_traditional_sre_methodology.md)：本 skill 是认知骨架（短），traditional 是参考手册（长）
+- [去 AI 味写作规范](./bestpractice_de_ai_writing.md) ✅ — 翻译腔/模板句/AI 套话检测规则，博客质检流程，中英双语适用
 - [Automation Path Hygiene](./bestpractice_automation_path_hygiene.md) ✅ — 自动化脚本的 workspace root 推导 + 预检 + fail-closed
 - [Agentic Control Primitives (Spec/Loop/Hook/Fork)](./bestpractice_agentic_control_primitives.md) ✅ — 用控制原语替代角色拟物，围绕 Spec/Loop/Hook/Fork 设计可收敛、可审计的 agent workflow
 - [Agent Reliability Engineering (SRE Framing)](./bestpractice_agent_reliability_engineering.md) ✅ — 约束/可观测/收敛三支柱 + eval 作为度量系统
