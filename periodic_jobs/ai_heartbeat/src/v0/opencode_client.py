@@ -94,7 +94,7 @@ class OpenCodeClient:
             time.sleep(poll_interval)
         return False
 
-    def send_message(self, session_id, message, model_id="antigravity-gemini-3-flash", provider_id=None, agent="OpenCode-Builder"):
+    def send_message(self, session_id, message, model_id="antigravity-gemini-3-flash", provider_id=None, agent="build"):
         try:
             # Auto-detect provider from model_id if not specified
             if provider_id is None:
