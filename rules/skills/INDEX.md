@@ -67,7 +67,8 @@
   - 适用：群聊/Slack/Discord/邮件/播客转录等任意对话数据
   - 流程：广泛扫描 → 深度验证 → 压力测试 → 定稿（≥3 轮动态滚动）
   - **要求 Opus 模型**：写作由 Opus 亲自完成，调研全部 delegate + 并行
-- [AI 生成 Slide Deck 工作流](./workflow_presentation_slides.md) — Gemini 渲染、Clean Ink 风格、8 进程并行、4K 放大前验证
+- [AI 生成 Slide Deck 工作流 v1](./workflow_presentation_slides.md) — Gemini 渲染、Clean Ink 风格、8 进程并行、4K 放大前验证
+- [AI 生成 Slide Deck 工作流 v2（image-free）](./workflow_presentation_slides_v2.md) — 不依赖任何 image-gen API；LLM 直写 HTML/SVG + Reveal.js + 并行 subagent 起草 + Playwright 导出 PNG。Clean Ink / 信息图风格首选
 - [语义搜索技能](./semantic_search.md) ⚙️ — 利用向量相似度检索深层背景与观点演变
 - [知识飞轮设计模式](./workflow_knowledge_flywheel.md) — 笨数据+笨方法+笨模型=精知识
 - [视频下载与语音识别工作流](./workflow_bilibili_whisper_transcription.md) — Bilibili/YouTube 视频处理
@@ -78,9 +79,25 @@
   - 反偷懒设计：出卷与验卷 sub-agent 分离；门禁失败回流最多 3 轮
   - 脚本：`doctor.sh` / `run_written.py` / `run_listening.py` / `run_shadowing.py`
 - [日语 Anki 闪卡生成](../../archives/skills/anki_japanese_flashcard/README.md) ✅ — 语料→闪卡 CSV→.apkg（含 TTS 语音）→自动导入 Anki（被 `/n2prep` Phase 6 调用）
+- [给已有 Anki Deck 批量补语音 `/anki_add_audio`](../../archives/skills/anki_add_audio_existing_deck/SKILL.md) ✅ — 已有 deck 内容齐全但没语音时，用 Anki 自带 python 直接改 live collection（不用 AnkiConnect）：侦察→edge-tts 生成→关 Anki 写回→验证。读音放认读卡正面/回忆卡背面
+- [学习对齐引擎判断层 `/anki_harness`](./anki_harness.md) ✅ — 读 engine 产出的 state.json，做质性诊断（缺口/记住没内化/领先/盲区）并写明日处方 plan.json；三模式 status/plan/replan
+  - 薄封装：实现在 `work-contexts/toy-proj/anki-learning-harness/`（engine=state.json 唯一写者，本 skill=plan.json 唯一写者）
+  - 不重算事实：mastery/latency/forecast 由 engine 算好，agent 只在事实之上做判断；确定性归 `analyst.py`，判断归 agent
+  - Headless：`claude -p "/anki_harness status"`；触发词「学习复盘」「anki harness」「今天该学啥」
 - [Kindle Syncer](../../archives/skills/kindle_syncer/README.md) ⚙️ — Markdown→PDF→邮件发送到 Kindle，支持 Mermaid 图表
 - [注册 Skill 到全局](./workflow_register_global_skill.md) ✅ — 将 context-infrastructure 的 skill symlink 到 ~/.claude/skills 全局可用
 - [dcluster StarRocks CN 部署与验证](./workflow_dcluster_starrocks_cn_deployment.md) ✅ — 构建→部署→E2E 验证完整流程，含 API 测试清单、Spot 冷启动等待、踩坑记录
+- [DV 监控导览 & Oncall 入口](./workflow_dv_monitoring_oncall.md) ✅ — 监控栈架构 + 6 大核心 dashboard + alert→playbook 路由表 + 5 步 oncall 流程；导航到 `contexts/survey_sessions/monitoring_overview_20260521/` 的详细 parts
+- [SRE Oncall Triage `/sre-oncall-triage`](../../agents/sre_oncall_triage_skill/SKILL.md) ✅ — Slack 告警 → 自主调查 → 中文注释的操作命令方案
+  - MAP 风格入口：mode select（quick/full）+ 诊断路由（alert→Layer 1 sub-skill）+ 操作路由（→`historial_operations/` 外部 runbook）
+  - **Mutation Approval Gate**：所有 `kubectl/helm/aws` mutating 命令零自动执行，必须 user approve
+  - **Subagent Isolation**：主 agent 禁止直调 raw data MCP（VM query/series, Loki query），必须派 sonnet subagent 返回 ≤500 token 摘要
+  - **Phase Lock (A/B/C)**：调查者 / 决策者 / 操作员三 phase 文件级 gate，phase=A 禁读 runbooks，phase=B 才解锁 cases，phase=C 才生成命令（见 `/sre-oncall-init` Step 2.5）
+  - **Iron Laws**：(1) 无 root_cause_hypothesis 不能发 Slack conclusion；(2) 3 个 ✗ hypothesis 强制 escalate；(3) Phase 边界（见 `/sre-oncall-acceptance-criteria`）
+  - **Quote-the-line**：每条 finding 必须有 `> evidence:` / `> file:line:` / `> historical:` / `> user-provided:` 之一，否则 confidence ≤ 3（见 `/sre-oncall-output-format` Finding Confidence Rule）
+  - 9 个嵌套子 skill：`/sre-oncall-init`, `/sre-oncall-quick-check`, `/workflow-oncall-spike`, `/sre-vm-query` …
+  - 旧 agent 形态保留在 `agents/sre_oncall_triage_agent/`（冻结，legacy subagent 仍可用）
+- [Oncall Full Triage Pipeline `/workflow_oncall_full_triage`](./workflow_oncall_full_triage.md) ✅ — 11-step idempotent re-runnable pipeline 串联 Phase Lock + Iron Laws + Subagent Isolation + Quote-the-line；session 断了读 plan.md 的 `step_N_done` 字段续跑（≈ gstack `/ship` 风格）；设计来源 [survey](../../contexts/survey_sessions/gstack_design_philosophy_survey_20260527.md)
 
 ### BestPractice（最佳实践）
 
@@ -90,6 +107,9 @@
 - [AI-native 知识系统 (Day-N 蒸馏优先)](./bestpractice_ai_native_knowledge_system.md) ✅ — 知识系统首要消费者是 AI；零组织捕获 + reflector 蒸馏；六维评估框架
 - [SRE 第一性原理模型](./bestpractice_sre_reliability_models.md) ✅ — Availability 概率分解 / Overload λ vs μ / Latency SLI-Histogram-Quantile-SLO 四层分离
   - 配套 [Traditional SRE 7 层工具箱](./bestpractice_traditional_sre_methodology.md)：本 skill 是认知骨架（短），traditional 是参考手册（长）
+- [数据系统监控归因模型](./bestpractice_data_system_monitoring.md) ✅ — OLAP/数据库监控按 oncall 提问顺序组织：契约(三组 SLI，含静默正确性故障) → 归因(需求侧 vs 供给侧判定表，依赖 audit log + SQL fingerprint) → 能力(ρ/(1-ρ) 三角 + 隔离降级) → 变更与恢复
+  - 验收判据：出事时能否 5 分钟内判定该找写 SQL 的人还是管集群的人
+  - 含实测陷阱表（资源全绿仍 1.12s、加机器对 LIMIT 点查无效、剪枝治不了列读放大）
 - [去 AI 味写作规范](./bestpractice_de_ai_writing.md) ✅ — 翻译腔/模板句/AI 套话检测规则，博客质检流程，中英双语适用
 - [Automation Path Hygiene](./bestpractice_automation_path_hygiene.md) ✅ — 自动化脚本的 workspace root 推导 + 预检 + fail-closed
 - [Agentic Control Primitives (Spec/Loop/Hook/Fork)](./bestpractice_agentic_control_primitives.md) ✅ — 用控制原语替代角色拟物，围绕 Spec/Loop/Hook/Fork 设计可收敛、可审计的 agent workflow
