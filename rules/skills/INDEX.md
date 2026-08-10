@@ -46,6 +46,7 @@
 特定任务的完整工作流程。
 
 - [Session Context 保存](./save_session_context.md) ✅ — Session 结束前把想法/insight/决策/讨论留档到 `contexts/daily_records/`，宁原始勿提炼
+- [Session Recap 断点续接](./session_recap/SKILL.md) ✅ — 停了很久的 session 回来，用 `tools/session_recap.py` 从 transcript 重建骨架（时间线/任务板/改过的文件），产出「已落地 / 停在哪 / 下一步 / 续跑指令」briefing，不用重读对话（truth 是 `rules/skills/session_recap/SKILL.md`，`~/.claude/skills/session_recap` 对该目录做真软链，不再靠 sync 脚本复制；没放 `archives/skills/` 是因为那整棵目录被 `.gitignore` 排除，会脱离版本控制）
 - [本地 Markdown 分析](./workflow_local_md_analysis.md) ✅ — 对一批本地 md 文件全量阅读 + 跨文件主题/洞察/时间线，>20 文件并行 sub-agent
 - [批处理 Agent 执行](./workflow_batch_agent_orchestration.md) ✅ — Orchestrator-Worker-Verifier-StateMachine，状态外置到 `queue.jsonl`/`results.jsonl`/`failures.jsonl`
 - [自主执行工作流](./workflow_autonomous_execution.md) ✅ — Plan agent + scope 预授权 + 持续自主执行
