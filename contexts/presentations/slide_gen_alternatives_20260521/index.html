@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Beyond Nano Banana Pro · Slide 生成方案选型</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css" id="theme">
+  <link rel="stylesheet" href="theme.css?v=2">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- ============ SLIDES 1–6 (intro + Path A) ============ -->
+
+      <section>
+        <h1>Beyond Nano Banana Pro</h1>
+        <h3 class="muted">Slide 生成方案选型 · 2026-05-21</h3>
+        <div class="split-3-2" style="margin-top: 40px;">
+          <div>
+            <p style="font-size: 24pt; line-height: 1.5;">当你没有 Gemini API key，<span class="accent-orange">Clean Ink 风格</span>的 deck 该怎么做？</p>
+            <p class="muted small" style="margin-top: 30px;">本 deck 回答这个问题：从工具链、成本、迭代速度三个角度，比较两条可行路径，并给出推荐。</p>
+          </div>
+          <div>
+            <svg viewBox="0 0 600 500" style="width: 100%; height: auto;">
+              <path d="M 120 180 Q 140 100 230 90 Q 320 85 380 140 Q 430 200 410 290 Q 380 360 290 370 Q 200 365 150 310 Q 110 260 120 180 Z" fill="none" stroke="var(--navy)" stroke-width="2"/>
+              <path d="M 230 90 Q 235 75 245 70 L 255 60" fill="none" stroke="var(--navy)" stroke-width="2"/>
+              <path d="M 170 200 Q 240 230 350 210" fill="none" stroke="var(--navy)" stroke-width="1.5" stroke-dasharray="4 4"/>
+              <line x1="80" y1="80" x2="450" y2="400" stroke="var(--orange)" stroke-width="4"/>
+              <line x1="430" y1="430" x2="500" y2="430" stroke="var(--navy)" stroke-width="2"/>
+              <polyline points="490,420 500,430 490,440" fill="none" stroke="var(--navy)" stroke-width="2"/>
+              <text x="510" y="442" font-size="40" font-family="monospace" fill="var(--teal)" font-weight="bold">&lt;/&gt;</text>
+            </svg>
+          </div>
+        </div>
+        <div class="slide-footer"><span>Intro</span><span>1/12</span></div>
+        <aside class="notes">这个 deck 来自 contexts/survey_sessions 里关于 slide 生成替代方案的调研。背景是没有 Gemini API key 之后，原来的 Nano Banana Pro 流水线整条停摆。我们用 12 张 slide 回答一个问题：Clean Ink 风格的 deck，除了图像生成 API，还有什么路？</aside>
+      </section>
+
+      <section>
+        <h2>起点：没 Gemini key</h2>
+        <div class="split">
+          <div>
+            <svg viewBox="0 0 700 500" style="width: 100%; height: auto;">
+              <rect x="20" y="200" width="140" height="90" rx="8" fill="none" stroke="var(--navy)" stroke-width="2"/>
+              <text x="90" y="240" text-anchor="middle" font-size="18" fill="var(--navy)">Prompt MD</text>
+              <text x="90" y="265" text-anchor="middle" font-size="14" fill="var(--muted)">outline</text>
+              <line x1="160" y1="245" x2="200" y2="245" stroke="var(--navy)" stroke-width="2"/>
+              <polyline points="192,240 200,245 192,250" fill="none" stroke="var(--navy)" stroke-width="2"/>
+              <rect x="200" y="200" width="140" height="90" rx="8" fill="none" stroke="var(--navy)" stroke-width="2"/>
+              <text x="270" y="240" text-anchor="middle" font-size="18" fill="var(--navy)">Gemini API</text>
+              <text x="270" y="265" text-anchor="middle" font-size="14" fill="var(--muted)">image-gen</text>
+              <line x1="200" y1="200" x2="340" y2="290" stroke="var(--orange)" stroke-width="5"/>
+              <line x1="340" y1="200" x2="200" y2="290" stroke="var(--orange)" stroke-width="5"/>
+              <line x1="340" y1="245" x2="380" y2="245" stroke="var(--navy)" stroke-width="2" stroke-dasharray="4 4"/>
+              <polyline points="372,240 380,245 372,250" fill="none" stroke="var(--navy)" stroke-width="2"/>
+              <rect x="380" y="200" width="140" height="90" rx="8" fill="none" stroke="var(--navy)" stroke-width="2" opacity="0.4"/>
+              <text x="450" y="240" text-anchor="middle" font-size="18" fill="var(--navy)" opacity="0.4">PNG 1K/4K</text>
+              <line x1="520" y1="245" x2="560" y2="245" stroke="var(--navy)" stroke-width="2" stroke-dasharray="4 4"/>
+              <polyline points="552,240 560,245 552,250" fill="none" stroke="var(--navy)" stroke-width="2"/>
+              <rect x="560" y="200" width="130" height="90" rx="8" fill="none" stroke="var(--navy)" stroke-width="2" opacity="0.4"/>
+              <text x="625" y="245" text-anchor="middle" font-size="17" fill="var(--navy)" opacity="0.4">Reveal.js</text>
+              <text x="350" y="100" text-anchor="middle" font-size="20" fill="var(--muted)">原 v1 流水线</text>
+              <line x1="100" y1="120" x2="600" y2="120" stroke="var(--grid)" stroke-width="1"/>
+              <text x="270" y="340" text-anchor="middle" font-size="16" fill="var(--orange)" font-weight="bold">断点</text>
+            </svg>
+          </div>
+          <div>
+            <div class="card warn">
+              <h3 style="margin: 0;">流水线整条停摆</h3>
+              <p style="margin: 8px 0 0;">没 API key 就走不通 v1 任何后续节点。</p>
+            </div>
+            <div class="card warn" style="margin-top: 20px;">
+              <h3 style="margin: 0;">迭代慢 + 烧钱</h3>
+              <p style="margin: 8px 0 0;">一张图 15–30s 出图，每次微调都要付费重跑。</p>
+            </div>
+            <div class="card warn" style="margin-top: 20px;">
+              <h3 style="margin: 0;">放大要再调一次</h3>
+              <p style="margin: 8px 0 0;">1K → 4K 不是免费 upscale，需要二次生成或第三方放大模型。</p>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer"><span>Problem</span><span>2/12</span></div>
+        <aside class="notes">原来的 v1 流水线是 prompt → Gemini → PNG → Reveal.js 四段式。Gemini 这一段没了之后，后面三段全部失效。除了 key 本身，更深层的问题是：图像生成 API 的迭代速度和成本天然不适合 12 张 deck 反复打磨的场景。这就是我们要换路径的起点。</aside>
+      </section>
+
+      <section>
+        <h2>两条路，优先 Path A</h2>
+        <div class="split">
+          <div class="card good">
+            <h3 style="margin: 0;">Path A — HTML/SVG + Playwright</h3>
+            <ul style="font-size: 22pt; margin-top: 16px;">
+              <li><strong>$0/张</strong> · 零 API 调用</li>
+              <li><strong>~200ms</strong> 迭代 · 改字立刻看到</li>
+              <li>文字像素级完美 · 真字体非位图</li>
+              <li>CSS 强制全局风格统一</li>
+            </ul>
+            <p class="small accent-teal" style="margin-top: 16px;">推荐路径</p>
+          </div>
+          <div class="card">
+            <h3 style="margin: 0;">Path B — fal.ai 聚合 API</h3>
+            <ul style="font-size: 22pt; margin-top: 16px;">
+              <li>$0.03–0.09/张 · 多模型 fallback</li>
+              <li>15–30s 出图 · 同步等待</li>
+              <li>分辨率受限 · 通常 ≤2K</li>
+              <li>跨 slide 风格容易漂移</li>
+            </ul>
+            <p class="small muted" style="margin-top: 16px;">备选 / 局部使用</p>
+          </div>
+        </div>
+        <div style="margin-top: 40px; text-align: center;">
+          <p class="accent-navy" style="font-size: 28pt; font-weight: 600;">Clean Ink 本质上是 line art + flat fills + sans-serif — 这正是 SVG 的母语。</p>
+        </div>
+        <div class="slide-footer"><span>Decision</span><span>3/12</span></div>
+        <aside class="notes">结论先行。两条路都能跑通，但 Path A 在你的具体场景下没有任何一个维度是输的。Path B 留作备选，比如某张 slide 真的需要摄影级插画。核心论点是最下面那句：Clean Ink 风格本身就是 SVG 原生能表达的东西，用图像生成 API 反而是用大锤砸钉子。</aside>
+      </section>
+
+      <section>
+        <h2>Clean Ink ≈ SVG 的语言</h2>
+        <div class="split-2-3">
+          <div>
+            <svg viewBox="0 0 500 500" style="width: 100%; height: auto;">
+              <defs>
+                <pattern id="grid-bp" width="25" height="25" patternUnits="userSpaceOnUse">
+                  <path d="M 25 0 L 0 0 0 25" fill="none" stroke="var(--grid)" stroke-width="0.5"/>
+                </pattern>
+              </defs>
+              <rect width="500" height="500" fill="url(#grid-bp)"/>
+              <g transform="translate(180,250)">
+                <circle r="80" fill="none" stroke="var(--navy)" stroke-width="1.5"/>
+                <circle r="55" fill="none" stroke="var(--navy)" stroke-width="1.5"/>
+                <circle r="12" fill="var(--teal)" stroke="none"/>
+                <g stroke="var(--navy)" stroke-width="1.5" fill="none">
+                  <rect x="-8" y="-95" width="16" height="20"/>
+                  <rect x="-8" y="75" width="16" height="20"/>
+                  <rect x="-95" y="-8" width="20" height="16"/>
+                  <rect x="75" y="-8" width="20" height="16"/>
+                  <rect x="-8" y="-95" width="16" height="20" transform="rotate(45)"/>
+                  <rect x="-8" y="-95" width="16" height="20" transform="rotate(-45)"/>
+                  <rect x="-8" y="-95" width="16" height="20" transform="rotate(135)"/>
+                  <rect x="-8" y="-95" width="16" height="20" transform="rotate(-135)"/>
+                </g>
+              </g>
+              <path d="M 320 380 A 100 100 0 0 1 420 280" fill="none" stroke="var(--navy)" stroke-width="1.5"/>
+              <g stroke="var(--navy)" stroke-width="1">
+                <line x1="320" y1="380" x2="316" y2="384"/>
+                <line x1="338" y1="350" x2="333" y2="347"/>
+                <line x1="370" y1="320" x2="365" y2="316"/>
+                <line x1="400" y1="298" x2="395" y2="294"/>
+                <line x1="420" y1="280" x2="424" y2="276"/>
+              </g>
+              <line x1="80" y1="430" x2="420" y2="430" stroke="var(--navy)" stroke-width="1"/>
+              <line x1="80" y1="420" x2="80" y2="440" stroke="var(--navy)" stroke-width="1.5"/>
+              <line x1="420" y1="420" x2="420" y2="440" stroke="var(--navy)" stroke-width="1.5"/>
+              <text x="250" y="425" text-anchor="middle" font-size="14" fill="var(--navy)" font-family="monospace">1.5x</text>
+              <text x="380" y="260" font-size="13" fill="var(--muted)" font-family="monospace">arc.r=100</text>
+              <line x1="378" y1="265" x2="365" y2="280" stroke="var(--muted)" stroke-width="1"/>
+            </svg>
+          </div>
+          <div>
+            <table style="font-size: 20pt; width: 100%;">
+              <thead>
+                <tr>
+                  <th style="text-align: left;">Clean Ink 特征</th>
+                  <th style="text-align: left;">SVG/CSS 原生能力</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>冷浅灰底 + 极细网格</td><td><code>linear-gradient()</code></td></tr>
+                <tr><td>海军蓝线条</td><td><code>&lt;path stroke&gt;</code> 默认</td></tr>
+                <tr><td>Flat color fills</td><td><code>fill="var(--teal)"</code></td></tr>
+                <tr><td>Sans-serif typography</td><td><code>font-family</code></td></tr>
+                <tr><td>工程图纸感</td><td>SVG 几何 + 1.5px strokes</td></tr>
+              </tbody>
+            </table>
+            <p class="small muted" style="margin-top: 20px;">左侧这张图本身就是用 SVG 画的 — 不用 Gemini，也能出工程蓝图感。</p>
+          </div>
+        </div>
+        <div class="slide-footer"><span>Path A</span><span>4/12</span></div>
+        <aside class="notes">这是说服力的核心一张。Clean Ink 风格的每一个视觉特征都能在 SVG/CSS 里找到一对一的原生表达。左边的齿轮 + 量角弧 + 标注线就是用纯 SVG 画的，没有任何位图。也就是说，用图像生成 API 来产出 Clean Ink，本质是让模型去模拟它本可以直接生成的代码。</aside>
+      </section>
+
+      <section>
+        <h2>Path A 工具链</h2>
+        <pre class="mermaid" style="font-size: 18pt;">
+flowchart LR
+  O[outline.md] --&gt; T[theme.css]
+  T --&gt; H["Claude 写 HTML/SVG"]
+  H --&gt; R[Reveal.js 演示]
+  H --&gt; P[Playwright 导出 PNG]
+        </pre>
+        <div class="split" style="margin-top: 30px;">
+          <div class="card good">
+            <h3 style="margin: 0;">你已有的</h3>
+            <ul style="font-size: 20pt; margin-top: 12px;">
+              <li>Reveal.js（演示框架）</li>
+              <li>Playwright MCP（截图/导出）</li>
+              <li>chrome-devtools MCP（调试）</li>
+              <li>Claude Code（生成 HTML/SVG）</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3 style="margin: 0;">需要新增的</h3>
+            <ul style="font-size: 20pt; margin-top: 12px;">
+              <li><code>theme.css</code>（约 10 分钟一次性写）</li>
+              <li>各 slide 的 <code>&lt;section&gt;</code>（并行 subagent）</li>
+              <li><strong class="accent-orange">0 个 API key</strong></li>
+            </ul>
+          </div>
+        </div>
+        <div class="slide-footer"><span>Path A</span><span>5/12</span></div>
+        <aside class="notes">工具链落地极轻：左边四个工具你都已经在用。右边唯一的新增成本是写一个 theme.css，大概十分钟，然后并行派 subagent 写各 slide。零 API key 是关键 — 没有外部依赖意味着这条流水线在任何机器、任何时段都能跑。</aside>
+      </section>
+
+      <section>
+        <h2>Path A vs Image-gen — 6 个维度</h2>
+        <table style="font-size: 20pt; width: 100%; margin-top: 20px;">
+          <thead>
+            <tr>
+              <th style="text-align: left;">维度</th>
+              <th style="text-align: left;">Image-gen (v1)</th>
+              <th style="text-align: left;">HTML+SVG (v2)</th>
+              <th style="text-align: left;">备注</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="good"><td>每张成本</td><td>$0.04+</td><td><strong>$0</strong></td><td>12 张 deck 省 $0.5+</td></tr>
+            <tr class="good"><td>迭代速度</td><td>15–30s</td><td><strong>~200ms</strong></td><td>改字立即生效</td></tr>
+            <tr class="good"><td>文字渲染</td><td>偶尔出错</td><td><strong>像素级完美</strong></td><td>真字体非位图</td></tr>
+            <tr class="good"><td>风格一致性</td><td>跨 slide 漂移</td><td><strong>CSS 强制</strong></td><td>全局换色一行代码</td></tr>
+            <tr class="good"><td>可编辑性</td><td>重生成整张图</td><td><strong>改一行 HTML</strong></td><td>git diff 友好</td></tr>
+            <tr><td>插图丰富度</td><td>摄影/绘画级</td><td>线条 / flat</td><td>Clean Ink 用不到前者</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top: 36px; text-align: center;">
+          <h3 class="accent-navy">在你的场景里没有任何维度是输的。</h3>
+        </div>
+        <div class="slide-footer"><span>Path A</span><span>6/12</span></div>
+        <aside class="notes">六个维度逐个对齐。前五条 Path A 全胜，包括成本、速度、字体、一致性、可编辑性。第六条是 Image-gen 的强项 — 摄影级或绘画级插图 — 但 Clean Ink 风格本身就用不到这个能力。结论：选 Path A 没有任何代价。</aside>
+      </section>
+
+      <!-- ============ SLIDES 7–12 (Path B + recommendation + meta) ============ -->
+
+      <section>
+        <h2>Path B：何时仍然需要图像生成</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin-top:32px;">
+          <div class="card">
+            <svg viewBox="0 0 80 80" width="80" height="80" aria-hidden="true">
+              <rect x="8" y="22" width="64" height="44" rx="4" class="fill-navy"/>
+              <rect x="28" y="14" width="20" height="10" rx="2" class="fill-navy"/>
+              <circle cx="40" cy="44" r="14" class="fill-bg"/>
+              <circle cx="40" cy="44" r="8" class="fill-orange"/>
+            </svg>
+            <h3 class="accent-navy">摄影感封面</h3>
+            <p>标题页 hero 图、产品 mockup 照片</p>
+          </div>
+          <div class="card">
+            <svg viewBox="0 0 80 80" width="80" height="80" aria-hidden="true">
+              <path d="M10 60 Q 30 20 50 32 T 72 18" fill="none" class="stroke-orange" stroke-width="2" stroke-linecap="round"/>
+              <path d="M50 32 Q 56 36 60 30 L 70 14 Q 64 12 60 16 Z" class="fill-navy"/>
+            </svg>
+            <h3 class="accent-navy">绘画级插图</h3>
+            <p>艺术海报、漫画式叙事 slide</p>
+          </div>
+          <div class="card">
+            <svg viewBox="0 0 80 80" width="80" height="80" aria-hidden="true">
+              <circle cx="40" cy="26" r="12" class="fill-navy"/>
+              <path d="M14 70 Q 40 44 66 70 Z" class="fill-navy"/>
+            </svg>
+            <h3 class="accent-navy">真实人物/物品</h3>
+            <p>需要拟真人像或具体商品的画面</p>
+          </div>
+        </div>
+        <p class="muted" style="margin-top:28px;">即便如此，这些通常只占整个 deck 1–2 张；主体仍走 Path A。</p>
+        <div class="slide-footer"><span>Path B</span><span>7/12</span></div>
+        <aside class="notes">这一页定位 Path B 的合理使用边界。三类场景：摄影感封面、绘画级插图、真实人物或商品。强调即使要用，也只是点缀，不是主菜。Path A 的 HTML+SVG 仍然承担 90% 以上的 slide。</aside>
+      </section>
+
+      <section>
+        <h2>一把钥匙：fal.ai</h2>
+        <p class="small muted">单一 FAL_KEY，解锁 600+ 模型，比 Replicate 便宜 30–50%</p>
+        <table style="margin-top:24px;">
+          <thead>
+            <tr><th>模型</th><th>强项</th><th>分辨率</th><th>价格/张</th></tr>
+          </thead>
+          <tbody>
+            <tr class="good">
+              <td><strong>Seedream 4.5</strong></td>
+              <td>Dense text rendering、最接近 Nano Banana Pro</td>
+              <td><strong>2048×2048</strong></td>
+              <td>$0.04</td>
+            </tr>
+            <tr>
+              <td><strong>Recraft V3</strong></td>
+              <td>长多行正文唯一可靠、品牌参考图</td>
+              <td>~1K（需放大）</td>
+              <td>$0.04 raster / $0.08 vector</td>
+            </tr>
+            <tr>
+              <td><strong>Ideogram 3.0</strong></td>
+              <td>Multi-line typography 鼻祖</td>
+              <td>≤1536px</td>
+              <td>$0.03 / $0.09</td>
+            </tr>
+            <tr>
+              <td><strong>FLUX 1.1 Pro Ultra</strong></td>
+              <td>真 4MP，文字密集场景偶错</td>
+              <td>4MP</td>
+              <td>$0.06</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="card warn" style="margin-top:24px;">
+          <p class="small">排除：OpenAI gpt-image-1（≤1536px，做不出 crisp 1080p）</p>
+        </div>
+        <div class="slide-footer"><span>Path B</span><span>8/12</span></div>
+        <aside class="notes">fal.ai 是一站式聚合器，省去逐个注册各家 API 的麻烦。默认推 Seedream 4.5：2K 原生、文字密集场景接近 Nano Banana Pro。Recraft 适合长正文与矢量品牌图。OpenAI gpt-image-1 分辨率上限太低，直接排除。</aside>
+      </section>
+
+      <section>
+        <h2>通过 MCP 接入 Claude Code</h2>
+        <div class="split">
+          <div>
+<pre><code>{
+  "mcpServers": {
+    "fal-ai": {
+      "command": "uvx",
+      "args": ["--from", "fal-mcp-server", "fal-mcp"],
+      "env": { "FAL_KEY": "..." }
+    }
+  }
+}</code></pre>
+          </div>
+          <div>
+            <svg viewBox="0 0 600 400" width="100%" aria-hidden="true">
+              <defs>
+                <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                  <path d="M0 0 L10 5 L0 10 z" fill="var(--ink)"/>
+                </marker>
+              </defs>
+              <rect x="20" y="160" width="120" height="80" rx="8" class="fill-navy"/>
+              <text x="80" y="208" text-anchor="middle" fill="var(--bg)" font-size="20" font-weight="600">Claude</text>
+              <rect x="190" y="160" width="120" height="80" rx="8" class="fill-teal"/>
+              <text x="250" y="208" text-anchor="middle" fill="var(--bg)" font-size="20" font-weight="600">MCP</text>
+              <path d="M360 200 q 20 -40 60 -40 q 30 0 40 20 q 30 -5 40 25 q 30 5 20 35 q -10 25 -40 20 q -20 25 -60 15 q -30 10 -50 -15 q -25 5 -30 -25 q -10 -25 20 -35 z" class="fill-orange" opacity="0.85"/>
+              <text x="445" y="208" text-anchor="middle" fill="var(--bg)" font-size="18" font-weight="600">fal.ai</text>
+              <rect x="220" y="320" width="160" height="44" rx="22" fill="none" stroke="var(--orange)" stroke-width="2"/>
+              <text x="300" y="350" text-anchor="middle" class="text-orange" font-size="18" font-weight="600">600+ models</text>
+              <line x1="140" y1="200" x2="190" y2="200" stroke="var(--ink)" stroke-width="2" marker-end="url(#arr)"/>
+              <line x1="310" y1="200" x2="360" y2="200" stroke="var(--ink)" stroke-width="2" marker-end="url(#arr)"/>
+              <line x1="445" y1="240" x2="320" y2="320" stroke="var(--ink)" stroke-width="2" stroke-dasharray="4 4"/>
+            </svg>
+          </div>
+        </div>
+        <p class="small muted" style="margin-top:20px;">源：raveenb/fal-mcp-server，45★ · 2025-12 active</p>
+        <div class="slide-footer"><span>Path B</span><span>9/12</span></div>
+        <aside class="notes">配置极简：一段 JSON 加一把 FAL_KEY，Claude Code 就能在对话里直接生成图。MCP 把 fal.ai 的 600+ 模型变成原生工具调用，不用手写 HTTP。社区维护活跃，可以放心用。</aside>
+      </section>
+
+      <section>
+        <h2>三个 agent 的独立共识</h2>
+        <p class="small muted">调研方法：3 个 background subagent 并行 · 强制 overlap 50%+</p>
+        <table style="margin-top:24px;">
+          <thead>
+            <tr><th>共识点</th><th>API agent</th><th>MCP agent</th><th>HTML agent</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Anthropic 无原生图像生成</td><td class="accent-teal">✓</td><td class="accent-teal">✓</td><td class="muted">—</td></tr>
+            <tr><td>Nano Banana Pro 文字渲染最强之一</td><td class="accent-teal">✓</td><td class="accent-teal">✓</td><td class="muted">—</td></tr>
+            <tr><td>fal.ai 是唯一合理的多模型聚合器</td><td class="accent-teal">✓</td><td class="accent-teal">✓</td><td class="muted">—</td></tr>
+            <tr><td>Ideogram/Recraft 文字渲染优于 Flux</td><td class="accent-teal">✓</td><td class="accent-teal">✓</td><td class="muted">—</td></tr>
+            <tr><td>OpenAI gpt-image 分辨率不够</td><td class="accent-teal">✓</td><td class="muted">—</td><td class="muted">—</td></tr>
+            <tr><td>Clean Ink 风格无需 raster image</td><td class="muted">—</td><td class="muted">—</td><td class="accent-teal">✓</td></tr>
+          </tbody>
+        </table>
+        <h3 class="accent-teal" style="margin-top:28px;">无显著矛盾。三个 agent 在各自领域结论独立、互补。</h3>
+        <div class="slide-footer"><span>Validation</span><span>10/12</span></div>
+        <aside class="notes">这是方法论的可信度证据：三个 subagent 并行、独立调研，关键结论高度一致。重叠的部分相互验证，不重叠的部分互补，没有发现需要回炉的矛盾。这本身就是 v2 工作流值得复用的证据。</aside>
+      </section>
+
+      <section>
+        <h2>三步走</h2>
+<pre class="mermaid">
+flowchart LR
+    A["Step 1<br/>今天 · 1h"] --> B["Step 2<br/>本周 · 按需"] --> C["Step 3<br/>沉淀"]
+</pre>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin-top:32px;">
+          <div class="card">
+            <h3 class="accent-navy">Step 1 — 试一张</h3>
+            <p>从 nbp_slides 的 outline 挑一张典型 slide，用 HTML+inline SVG 重写，Playwright 截图对比效果。</p>
+          </div>
+          <div class="card">
+            <h3 class="accent-navy">Step 2 — Hybrid（如需）</h3>
+            <p>如果某张 slide 的视觉 SVG 表达不了，再注册 fal.ai 装 fal-mcp-server，只对那张用 Path B。</p>
+          </div>
+          <div class="card good">
+            <h3 class="accent-teal">Step 3 — 沉淀 skill</h3>
+            <p>把流程固化进 <code>rules/skills/workflow_presentation_slides_v2.md</code>（已完成）。这份 deck 是该 skill 的第一个产出。</p>
+          </div>
+        </div>
+        <div class="slide-footer"><span>Action</span><span>11/12</span></div>
+        <aside class="notes">行动路径很短：先单张试水，验证 SVG+HTML 的视觉天花板；遇到真的必须图像生成时，再按 Step 2 引入 fal.ai；最后把流程沉淀成 skill，下一份 deck 直接复用。整套迭代成本 1 小时起步。</aside>
+      </section>
+
+      <section>
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:80%;">
+          <h1 class="accent-navy" style="text-align:center;">This deck was made with v2</h1>
+          <p class="small muted" style="margin-top:16px;">12 slides · 0 image-gen API calls · 2 background subagents · ~15min end-to-end</p>
+          <svg viewBox="0 0 400 200" width="600" style="margin-top:40px;" aria-hidden="true">
+            <g fill="none" stroke="var(--navy)" stroke-width="2">
+              <circle cx="100" cy="100" r="40"/>
+              <circle cx="100" cy="100" r="14"/>
+              <g>
+                <rect x="96" y="54" width="8" height="14"/>
+                <rect x="96" y="132" width="8" height="14"/>
+                <rect x="54" y="96" width="14" height="8"/>
+                <rect x="132" y="96" width="14" height="8"/>
+              </g>
+              <circle cx="200" cy="100" r="34"/>
+              <circle cx="200" cy="100" r="12"/>
+              <g>
+                <rect x="196" y="62" width="8" height="12"/>
+                <rect x="196" y="126" width="8" height="12"/>
+                <rect x="162" y="96" width="12" height="8"/>
+                <rect x="226" y="96" width="12" height="8"/>
+              </g>
+              <circle cx="300" cy="100" r="34"/>
+              <circle cx="300" cy="100" r="12"/>
+              <g>
+                <rect x="296" y="62" width="8" height="12"/>
+                <rect x="296" y="126" width="8" height="12"/>
+                <rect x="262" y="96" width="12" height="8"/>
+                <rect x="326" y="96" width="12" height="8"/>
+              </g>
+            </g>
+            <text x="100" y="180" text-anchor="middle" class="text-muted" font-size="14">Opus</text>
+            <text x="200" y="180" text-anchor="middle" class="text-muted" font-size="14">Sub 1</text>
+            <text x="300" y="180" text-anchor="middle" class="text-muted" font-size="14">Sub 2</text>
+          </svg>
+          <p class="tiny muted" style="margin-top:40px;">源报告：contexts/survey_sessions/slide_gen_alternatives_survey_20260521.md</p>
+        </div>
+        <div class="slide-footer"><span>End</span><span>12/12</span></div>
+        <aside class="notes">这张 slide 自指：整份 deck 本身就是 v2 工作流的产出，零图像生成调用。欢迎把这份 deck fork 成下一份的模板，把 skill 跑起来比读它更重要。三个齿轮代表 Opus 主控加两个 subagent 的协作结构。</aside>
+      </section>
+
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'base',
+      themeVariables: {
+        primaryColor: '#F0F4F8',
+        primaryTextColor: '#1C2526',
+        primaryBorderColor: '#1B3A5C',
+        lineColor: '#1B3A5C',
+        secondaryColor: '#DCE3EA',
+        tertiaryColor: '#ffffff',
+        fontFamily: 'Inter, system-ui, sans-serif'
+      }
+    });
+    Reveal.initialize({
+      width: 1920,
+      height: 1080,
+      margin: 0.04,
+      hash: true,
+      slideNumber: false,
+      controls: true,
+      progress: true
+    });
+  </script>
+</body>
+</html>

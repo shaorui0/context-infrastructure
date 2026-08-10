@@ -1,0 +1,147 @@
+:root {
+  --bg: #F0F4F8;
+  --ink: #1C2526;
+  --navy: #1B3A5C;
+  --grid: #DCE3EA;
+  --orange: #C75B39;
+  --teal: #0A6A74;
+  --accent-yellow: #E8B84A;
+  --muted: #5A6470;
+  --font-sans: "Inter", "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", "Menlo", monospace;
+}
+
+.reveal .slides section {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  text-align: left;
+  padding: 60px 80px;
+  line-height: 1.45;
+  font-size: 22px;
+}
+
+.reveal h1 { color: var(--navy); font-weight: 800; font-size: 56px; letter-spacing: -0.5px; margin-bottom: 0.3em;}
+.reveal h2 { color: var(--navy); font-weight: 700; font-size: 40px; letter-spacing: -0.3px; margin-bottom: 0.6em;}
+.reveal h3 { color: var(--navy); font-weight: 600; font-size: 26px; margin-bottom: 0.4em;}
+.reveal p, .reveal li { font-size: 22px; }
+.reveal small { font-size: 18px; color: var(--muted); }
+.reveal code { font-family: var(--font-mono); background: rgba(27,58,92,0.08); padding: 2px 6px; border-radius: 4px; font-size: 0.92em; color: var(--navy);}
+.reveal pre code { display: block; padding: 16px 20px; background: #FFFFFF; border-left: 4px solid var(--navy); font-size: 18px; line-height: 1.5;}
+
+.reveal .accent-orange { color: var(--orange); font-weight: 600; }
+.reveal .accent-teal   { color: var(--teal);   font-weight: 600; }
+.reveal .accent-navy   { color: var(--navy);   font-weight: 600; }
+.reveal .muted         { color: var(--muted); }
+
+/* Split layouts — must self-include display:grid (see skill 陷阱表) */
+.split, .split-1-1, .split-1-2, .split-2-1, .split-2-3, .split-3-2 {
+  display: grid; gap: 48px; align-items: start;
+}
+.split, .split-1-1 { grid-template-columns: 1fr 1fr; }
+.split-1-2 { grid-template-columns: 1fr 2fr; }
+.split-2-1 { grid-template-columns: 2fr 1fr; }
+.split-2-3 { grid-template-columns: 2fr 3fr; }
+.split-3-2 { grid-template-columns: 3fr 2fr; }
+
+/* SVG safety net */
+.reveal .slides section svg { max-width: 100%; max-height: 620px; height: auto; }
+.reveal .slides section .card svg { max-height: 100px; }
+
+/* Cards */
+.card {
+  background: #FFFFFF;
+  border: 1px solid var(--grid);
+  border-left: 4px solid var(--navy);
+  padding: 16px 20px;
+  margin: 8px 0;
+}
+.card-orange { border-left-color: var(--orange); }
+.card-teal   { border-left-color: var(--teal); }
+.card, .card * { font-size: 18px; line-height: 1.4; }
+.card h3 { font-size: 20px; margin-bottom: 6px; }
+.card code { font-size: 17px; }
+.card b { font-weight: 700; color: var(--navy); }
+
+/* Grid backdrop (optional class) */
+section.grid-bg {
+  background-image:
+    linear-gradient(to right, var(--grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Tables */
+.reveal table { font-size: 18px; border-collapse: collapse; width: 100%; }
+.reveal table th { background: var(--navy); color: #FFFFFF; padding: 8px 12px; text-align: left; font-weight: 600;}
+.reveal table td { padding: 6px 12px; border-bottom: 1px solid var(--grid); vertical-align: top;}
+.reveal table tr:nth-child(even) td { background: rgba(27,58,92,0.03); }
+
+/* Stat block */
+.stat { text-align: center; padding: 12px;}
+.stat .num { font-size: 56px; font-weight: 800; color: var(--navy); line-height: 1; font-family: var(--font-mono); }
+.stat .lbl { font-size: 16px; color: var(--muted); margin-top: 4px;}
+
+/* SVG defaults.
+   ⚠️ Do NOT add a `svg text { fill: ... }` rule (not even with :where()).
+   SVG presentation attributes like `<text fill="#FFFFFF">` are lower
+   priority than ANY author CSS — even specificity 0 (:where) wins.
+   That means a global text-color rule will hijack every per-text fill="..."
+   attribute and silently turn navy-banner labels dark-on-dark.
+   Default SVG text fills to black via UA stylesheet, which is fine because
+   every <text> in our slides explicitly sets fill or a .fill-* class.
+
+   ⚠️ The `svg { stroke: ... }` rule below ALSO inherits to <text> by default,
+   painting a navy outline around every glyph (renders as "dark letterform
+   with white halo" — classic bug). Text never wants a stroke, so explicitly
+   reset it. This stroke-reset on <text> is safe (doesn't hijack any common
+   author intent) — we don't want stroked-text effects in this deck anyway. */
+svg { stroke: var(--navy); stroke-width: 1.5; fill: none; }
+svg text { stroke: none; }
+svg .fill-navy   { fill: var(--navy);   stroke: none; }
+svg .fill-orange { fill: var(--orange); stroke: none; }
+svg .fill-teal   { fill: var(--teal);   stroke: none; }
+svg .fill-yellow { fill: var(--accent-yellow); stroke: none; }
+svg .stroke-orange { stroke: var(--orange); }
+svg .stroke-teal   { stroke: var(--teal); }
+
+/* Title slide */
+.title-slide { text-align: center !important; padding: 80px !important; }
+.title-slide h1 { font-size: 72px; }
+.title-slide .subtitle { font-size: 28px; color: var(--muted); margin-top: 0.5em;}
+.title-slide .meta { margin-top: 2em; font-size: 18px; color: var(--muted);}
+
+/* Dark banner / on-navy / on-orange utility — for any block painted dark */
+.on-navy, .banner-navy, .on-orange, .banner-orange {
+  padding: 14px 24px; border-radius: 6px; color: #FFFFFF;
+}
+.on-navy, .banner-navy { background: var(--navy); }
+.on-orange, .banner-orange { background: var(--orange); }
+.on-navy *, .banner-navy *, .on-orange *, .banner-orange * { color: #FFFFFF; }
+.on-navy h1, .on-navy h2, .on-navy h3,
+.banner-navy h1, .banner-navy h2, .banner-navy h3,
+.on-orange h1, .on-orange h2, .on-orange h3,
+.banner-orange h1, .banner-orange h2, .banner-orange h3 { color: #FFFFFF; }
+.on-navy code, .banner-navy code,
+.on-orange code, .banner-orange code {
+  background: rgba(255,255,255,0.18); color: #FFFFFF;
+}
+.on-navy b, .banner-navy b, .on-orange b, .banner-orange b { color: #FFFFFF; }
+/* SVG text inside on-navy stays white too */
+.on-navy svg text, .banner-navy svg text { fill: #FFFFFF; }
+
+/* Anchors — make all URLs / dashboard UIDs clickable + visually distinct */
+.reveal a { color: var(--teal); text-decoration: none; border-bottom: 1px dashed var(--teal); }
+.reveal a:hover { color: var(--orange); border-bottom-color: var(--orange); }
+.reveal a code {
+  background: rgba(10,106,116,0.10); color: var(--teal);
+  border-bottom: none;
+}
+.reveal a:hover code { background: rgba(199,91,57,0.12); color: var(--orange); }
+.on-navy a, .banner-navy a, .on-orange a, .banner-orange a {
+  color: #FFFFFF; border-bottom-color: rgba(255,255,255,0.6);
+}
+.on-navy a code, .banner-navy a code,
+.on-orange a code, .banner-orange a code {
+  background: rgba(255,255,255,0.22); color: #FFFFFF;
+}

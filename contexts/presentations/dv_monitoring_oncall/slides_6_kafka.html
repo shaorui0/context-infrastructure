@@ -1,0 +1,84 @@
+<section data-slide="6">
+  <h2 style="margin-bottom:6px;">Example 2 — Kafka Lag / MirrorMaker Triage</h2>
+  <p class="muted" style="margin-bottom:8px; font-size:16px;">Two alertnames, two dashboards. Mixing them up is the #1 mistake — always reverse-match alertname first.</p>
+
+  <!-- Top: architecture SVG -->
+  <svg viewBox="0 0 1700 180" xmlns="http://www.w3.org/2000/svg" role="img"
+       aria-label="MirrorMaker2 bidirectional replication between two Kafka clusters"
+       style="max-height:170px; width:100%;">
+    <defs>
+      <marker id="arrMM" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" class="fill-orange"/>
+      </marker>
+    </defs>
+
+    <!-- cluster_a box -->
+    <rect x="40" y="40" width="380" height="100" rx="8" fill="#FFFFFF" class="stroke-navy" stroke="currentColor" stroke-width="2"/>
+    <text x="230" y="76" text-anchor="middle" class="fill-navy" font-size="18" font-weight="700">Kafka cluster · cluster_a</text>
+    <text x="230" y="100" text-anchor="middle" class="fill-navy" font-size="13">topic foo lives here</text>
+    <text x="230" y="122" text-anchor="middle" class="fill-navy" font-size="13">(source AND target — bidirectional)</text>
+
+    <!-- MM2 in the middle -->
+    <rect x="640" y="40" width="420" height="100" rx="8" class="fill-orange"/>
+    <text x="850" y="76" text-anchor="middle" fill="#FFFFFF" font-size="18" font-weight="700">MirrorMaker2 (Kafka Connect)</text>
+    <text x="850" y="100" text-anchor="middle" fill="#FFFFFF" font-size="13">replicates by source / target labels</text>
+    <text x="850" y="122" text-anchor="middle" fill="#FFFFFF" font-size="13">metric: kafka_mirror_sync_lag</text>
+
+    <!-- cluster_b box -->
+    <rect x="1280" y="40" width="380" height="100" rx="8" fill="#FFFFFF" class="stroke-navy" stroke="currentColor" stroke-width="2"/>
+    <text x="1470" y="76" text-anchor="middle" class="fill-navy" font-size="18" font-weight="700">Kafka cluster · cluster_b</text>
+    <text x="1470" y="100" text-anchor="middle" class="fill-navy" font-size="13">SAME topic name foo</text>
+    <text x="1470" y="122" text-anchor="middle" class="fill-navy" font-size="13">(NO &lt;source&gt;.&lt;topic&gt; renaming)</text>
+
+    <!-- arrows -->
+    <line x1="420" y1="78"  x2="640" y2="78"  class="stroke-orange" stroke-width="3" marker-end="url(#arrMM)"/>
+    <line x1="640" y1="106" x2="420" y2="106" class="stroke-orange" stroke-width="3" marker-end="url(#arrMM)"/>
+    <line x1="1060" y1="78"  x2="1280" y2="78"  class="stroke-orange" stroke-width="3" marker-end="url(#arrMM)"/>
+    <line x1="1280" y1="106" x2="1060" y2="106" class="stroke-orange" stroke-width="3" marker-end="url(#arrMM)"/>
+  </svg>
+
+  <!-- Two alert families table -->
+  <table style="font-size:15px; margin-top:8px;">
+    <thead>
+      <tr><th style="width:32%;">Alertname pattern</th><th style="width:8%;">Sev</th><th>What it means</th><th style="width:24%;">Dashboard</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>MirrorMakerConsumerLagDecliningTooSlow</code></td>
+        <td><span class="accent-orange">PAGER</span></td>
+        <td>MM2 replication slow. Decline-rate: <code>(L<sub>5m</sub> − L<sub>now</sub>) / L<sub>5m</sub> &lt; 0.3</code> AND <code>L<sub>now</sub> &gt; 500</code></td>
+        <td><b>MirrorLag v2</b> — <a href="https://grafana-mgt.dv-api.com/d/-N7cUPZNk" target="_blank"><code>-N7cUPZNk</code></a></td>
+      </tr>
+      <tr>
+        <td><code>Kafka_*_consumergroup_lag_High</code> (cm / fp / detection / VelocityDetail_*)</td>
+        <td><span class="accent-orange">HIGH</span></td>
+        <td>Business consumer group can't keep up. Per-client variants: galileo / onefinance / tabapay / wex …</td>
+        <td><b>Kafka Exporter for all</b> — <a href="https://grafana-mgt.dv-api.com/d/cluster_kafkfa_exporter" target="_blank"><code>cluster_kafkfa_exporter</code></a></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Triage flow + caveats -->
+  <div style="display:grid; grid-template-columns: 3fr 2fr; gap: 16px; margin-top:8px; font-size:15px;">
+    <div>
+      <h3 style="font-size:18px; margin:0 0 4px 0;">4-step triage flow</h3>
+      <ol style="margin:0; padding-left:22px; line-height:1.45;">
+        <li><b>Read alertname.</b> <code>MirrorMaker*</code> → MirrorLag v2. <code>Kafka_*_consumergroup_lag_High</code> → Exporter.</li>
+        <li><b>Set variables.</b> MirrorLag: <code>cluster</code> (group prefix, no <code>-a/-b</code>) / <code>namespace</code> / <code>topic</code>. Exporter: <code>pod</code> (binds to one cluster) / <code>topic</code> / <code>consumergroup</code>.</li>
+        <li><b>Read the primary panel.</b><br>MirrorLag: panel 1 (MM2 pod <code>up</code>) + 2/3 (lag a→b, b→a).<br>Exporter: panel 12 <b>Lag by Consumer Group</b> (per cg + topic + partition).</li>
+        <li><b>Diagnose root.</b> ① MM2 pod down → restart (most common). ② Lag stuck + consumer offset rate ≈ 0 → consumer crashed. ③ Lag growing + producer rate &gt; consumer rate → consumer can't keep up; compare Exporter panel 3 (produce) vs 4 (consume).</li>
+      </ol>
+    </div>
+    <div class="card card-orange" style="margin:0; padding:12px 16px;">
+      <b style="font-size:16px;">Caveats</b>
+      <ul style="margin:6px 0 0 0; padding-left:18px; font-size:14px; line-height:1.4;">
+        <li><code>MirrorMakerConsumerLagDecliningTooSlow</code> namespace filter is hardcoded <code>prod|pci|gov|demo</code> — <code>useastprod</code>-style namespaces are <b>not covered</b>.</li>
+        <li>Default MirrorLag window is 30m — for alerts that fired 20-30min ago, expand to 1h to see the trigger trend.</li>
+        <li><code>cluster</code> var in MirrorLag is <code>kubernetes_cluster_groups</code> (e.g. <code>aws-uswest2-prod</code>), without <code>-a/-b</code> suffix.</li>
+        <li>DV does <b>NOT</b> use MM2's default <code>&lt;source&gt;.&lt;topic&gt;</code> renaming — same topic name on both clusters, direction is in the <code>source</code> / <code>target</code> labels.</li>
+      </ul>
+    </div>
+  </div>
+
+  <aside class="notes">Kafka lag is the second-most-common alert family. The #1 mistake is opening the wrong dashboard — MirrorLag v2 is ONLY for MM2 replication; Kafka Exporter handles every other consumer group (including MM2 if it happens to be the lagging consumer). Always reverse-match the alertname before clicking through. The DV-specific topology note (same topic on both clusters, no renaming) is worth calling out — it surprises people coming from upstream Kafka docs.</aside>
+</section>

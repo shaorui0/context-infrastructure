@@ -1,0 +1,80 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    meta.helm.sh/release-name: dv-liquibase
+    meta.helm.sh/release-namespace: qa-security
+  creationTimestamp: "2026-06-15T04:54:43Z"
+  generation: 1
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  name: dv-liquibase
+  namespace: qa-security
+  resourceVersion: "15101911"
+  uid: 9d90c261-13a3-4ece-b131-ec12504234c8
+spec:
+  backoffLimit: 2
+  completionMode: NonIndexed
+  completions: 1
+  manualSelector: false
+  parallelism: 1
+  podReplacementPolicy: TerminatingOrFailed
+  selector:
+    matchLabels:
+      batch.kubernetes.io/controller-uid: 9d90c261-13a3-4ece-b131-ec12504234c8
+  suspend: false
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        batch.kubernetes.io/controller-uid: 9d90c261-13a3-4ece-b131-ec12504234c8
+        batch.kubernetes.io/job-name: dv-liquibase
+        controller-uid: 9d90c261-13a3-4ece-b131-ec12504234c8
+        job-name: dv-liquibase
+    spec:
+      containers:
+      - env:
+        - name: LIQUIBASE_HOST
+          value: 172.27.44.126
+        - name: LIQUIBASE_DATABASE
+          value: risk
+        - name: LIQUIBASE_USERNAME
+          value: root
+        - name: LIQUIBASE_PASSWORD
+          value: password
+        - name: ACTIVE_TENANTS
+        - name: LIQUIBASE_LOGLEVEL
+          value: info
+        - name: PARALLELISM
+        image: docker-registry.dv-api.com/cloud/dv-liquibase:DV.202602AM1.External.weeklyhotfix_DAPP5225-ce08b33
+        imagePullPolicy: Always
+        name: dv-liquibase
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      imagePullSecrets:
+      - {}
+      restartPolicy: Never
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status:
+  conditions:
+  - lastProbeTime: "2026-06-15T05:05:04Z"
+    lastTransitionTime: "2026-06-15T05:05:04Z"
+    message: Job has reached the specified backoff limit
+    reason: BackoffLimitExceeded
+    status: "True"
+    type: FailureTarget
+  - lastProbeTime: "2026-06-15T05:05:04Z"
+    lastTransitionTime: "2026-06-15T05:05:04Z"
+    message: Job has reached the specified backoff limit
+    reason: BackoffLimitExceeded
+    status: "True"
+    type: Failed
+  failed: 3
+  ready: 0
+  startTime: "2026-06-15T04:54:43Z"
+  terminating: 0
+  uncountedTerminatedPods: {}

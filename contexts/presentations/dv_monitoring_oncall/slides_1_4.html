@@ -1,0 +1,248 @@
+<section class="title-slide">
+  <h1>DataVisor Monitoring Tour</h1>
+  <p class="subtitle">From Slack alert to root cause — an onboarding deck for new oncall</p>
+  <p class="muted">20 minutes covers three things — architecture, latency chain bisection, alert→playbook routing. After this you can handle 80% of alerts on your own.</p>
+
+  <div class="split" style="margin-top:48px;">
+    <div style="text-align:center;">
+      <svg viewBox="0 0 160 120" style="max-height:140px;">
+        <rect x="30" y="20" width="100" height="22" rx="3" fill="none" class="stroke-orange" stroke="currentColor" stroke-width="2"/>
+        <rect x="30" y="50" width="100" height="22" rx="3" fill="none" class="stroke-orange" stroke="currentColor" stroke-width="2"/>
+        <rect x="30" y="80" width="100" height="22" rx="3" fill="none" class="stroke-orange" stroke="currentColor" stroke-width="2"/>
+      </svg>
+      <div><b>Monitoring Architecture</b></div>
+    </div>
+    <div style="text-align:center;">
+      <svg viewBox="0 0 200 120" style="max-height:140px;">
+        <circle cx="30" cy="60" r="22" fill="none" class="stroke-orange" stroke="currentColor" stroke-width="2"/>
+        <circle cx="100" cy="60" r="22" fill="none" class="stroke-orange" stroke="currentColor" stroke-width="2"/>
+        <circle cx="170" cy="60" r="22" fill="none" class="stroke-orange" stroke="currentColor" stroke-width="2"/>
+        <line x1="52" y1="60" x2="78" y2="60" class="stroke-orange" stroke="currentColor" stroke-width="2"/>
+        <line x1="122" y1="60" x2="148" y2="60" class="stroke-orange" stroke="currentColor" stroke-width="2"/>
+      </svg>
+      <div><b>Latency Chain Bisection</b></div>
+    </div>
+    <div style="text-align:center;">
+      <svg viewBox="0 0 160 120" style="max-height:140px;">
+        <polygon points="80,15 140,55 140,100 20,100 20,55" fill="none" class="stroke-teal" stroke="currentColor" stroke-width="2"/>
+        <rect x="65" y="70" width="30" height="30" fill="none" class="stroke-teal" stroke="currentColor" stroke-width="2"/>
+      </svg>
+      <div><b>Alert → Playbook Routing</b></div>
+    </div>
+  </div>
+
+  <p class="muted" style="margin-top:48px; text-align:center;">2026-05-21 · Based on monitoring_overview_20260521 survey</p>
+
+  <aside class="notes">This is the cover. Opener: "Today's 20 minutes is three things — architecture, chain, routing. By the end you can independently handle 80% of alerts."</aside>
+</section>
+
+<section>
+  <h2>Monitoring Stack Architecture <span class="muted">(one picture)</span></h2>
+  <p class="muted">Metrics all live in VictoriaMetrics, alerts all go through <b>vmalert</b> (NOT Grafana managed alerting), logs all live in Loki with multi-tenancy.</p>
+
+  <div class="split-3-2">
+    <div>
+      <svg viewBox="0 0 800 560" style="max-height:560px;">
+        <defs>
+          <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="fill-orange" fill="currentColor"/>
+          </marker>
+        </defs>
+
+        <!-- cluster row -->
+        <g font-size="13" text-anchor="middle">
+          <rect x="20"  y="20" width="115" height="44" rx="4" fill="none" class="stroke-navy" stroke="currentColor" stroke-width="1.5"/>
+          <text x="77"  y="47" class="fill-navy">aws-prod-a</text>
+          <rect x="145" y="20" width="115" height="44" rx="4" fill="none" class="stroke-navy" stroke="currentColor" stroke-width="1.5"/>
+          <text x="202" y="47" class="fill-navy">aws-prod-b</text>
+          <rect x="270" y="20" width="115" height="44" rx="4" fill="none" class="stroke-navy" stroke="currentColor" stroke-width="1.5"/>
+          <text x="327" y="47" class="fill-navy">aws-pci</text>
+          <rect x="395" y="20" width="115" height="44" rx="4" fill="none" class="stroke-navy" stroke="currentColor" stroke-width="1.5"/>
+          <text x="452" y="47" class="fill-navy">gcp-prod-a</text>
+          <rect x="520" y="20" width="115" height="44" rx="4" fill="none" class="stroke-navy" stroke="currentColor" stroke-width="1.5"/>
+          <text x="577" y="47" class="fill-navy">aws-mgt</text>
+          <rect x="645" y="20" width="135" height="44" rx="4" fill="none" class="stroke-navy" stroke="currentColor" stroke-width="1.5"/>
+          <text x="712" y="47" class="fill-navy">sandbox</text>
+        </g>
+
+        <!-- arrows down to VM -->
+        <g class="stroke-orange" stroke="currentColor" stroke-width="2" fill="none" marker-end="url(#ar)">
+          <line x1="77"  y1="64" x2="280" y2="170"/>
+          <line x1="202" y1="64" x2="320" y2="170"/>
+          <line x1="327" y1="64" x2="360" y2="170"/>
+          <line x1="452" y1="64" x2="400" y2="170"/>
+          <line x1="577" y1="64" x2="440" y2="170"/>
+          <line x1="712" y1="64" x2="480" y2="170"/>
+        </g>
+
+        <!-- VM box (navy fill) -->
+        <g>
+          <rect x="220" y="175" width="360" height="110" rx="6" class="fill-navy" fill="currentColor"/>
+          <text x="400" y="205" text-anchor="middle" font-size="18" font-weight="700" fill="#FFFFFF">VictoriaMetrics</text>
+          <text x="400" y="230" text-anchor="middle" font-size="13" fill="#FFFFFF">vm-mgt-a.dv-api.com</text>
+          <text x="400" y="250" text-anchor="middle" font-size="12" fill="#FFFFFF">primary metrics backend</text>
+          <text x="400" y="270" text-anchor="middle" font-size="12" fill="#FFFFFF">+ Deepflow-Prometheus as fallback DS</text>
+          <!-- vmalert sidecar -->
+          <rect x="585" y="200" width="100" height="60" rx="4" class="fill-orange" fill="currentColor"/>
+          <text x="635" y="225" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">vmalert</text>
+          <text x="635" y="245" text-anchor="middle" font-size="11" fill="#FFFFFF">540 rules</text>
+        </g>
+
+        <!-- vmalert -> alertmanager -> slack -->
+        <g class="stroke-orange" stroke="currentColor" stroke-width="2" fill="none" marker-end="url(#ar)">
+          <line x1="635" y1="260" x2="635" y2="320"/>
+          <line x1="635" y1="370" x2="635" y2="420"/>
+        </g>
+        <rect x="565" y="320" width="140" height="50" rx="4" fill="none" class="stroke-navy" stroke="currentColor" stroke-width="1.5"/>
+        <text x="635" y="350" text-anchor="middle" font-size="13" class="fill-navy">alertmanager</text>
+        <rect x="585" y="420" width="100" height="44" rx="4" fill="none" class="stroke-navy" stroke="currentColor" stroke-width="1.5"/>
+        <text x="635" y="447" text-anchor="middle" font-size="13" class="fill-navy">Slack</text>
+
+        <!-- Grafana box -->
+        <rect x="100" y="320" width="140" height="50" rx="4" fill="none" class="stroke-navy" stroke="currentColor" stroke-width="1.5"/>
+        <text x="170" y="350" text-anchor="middle" font-size="13" class="fill-navy">Grafana</text>
+        <line x1="170" y1="320" x2="260" y2="285" class="stroke-navy" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+        <!-- Loki side branch -->
+        <g>
+          <rect x="220" y="460" width="360" height="80" rx="6" fill="none" class="stroke-teal" stroke="currentColor" stroke-width="2" stroke-dasharray="6,4"/>
+          <text x="400" y="487" text-anchor="middle" font-size="16" font-weight="700" class="fill-teal">Loki</text>
+          <text x="400" y="508" text-anchor="middle" font-size="12" class="fill-teal">multi-tenant: prod / nonprod</text>
+          <text x="400" y="526" text-anchor="middle" font-size="11" class="muted">logs path independent · does not go through vmalert</text>
+          <line x1="200" y1="64" x2="320" y2="460" class="stroke-teal" stroke="currentColor" stroke-width="1" stroke-dasharray="3,3"/>
+          <line x1="500" y1="64" x2="480" y2="460" class="stroke-teal" stroke="currentColor" stroke-width="1" stroke-dasharray="3,3"/>
+        </g>
+      </svg>
+    </div>
+
+    <div>
+      <div class="card card-teal">
+        <h3>Metrics backend</h3>
+        <p>VictoriaMetrics @ <a href="https://vm-mgt-a.dv-api.com" target="_blank"><code>vm-mgt-a.dv-api.com</code></a>. Deepflow-Prometheus as backup datasource.</p>
+      </div>
+      <div class="card card-orange">
+        <h3>Alerting</h3>
+        <p><b>540 rules</b> running on vmalert. Grafana managed alerting is not enabled.</p>
+      </div>
+      <div class="card card-teal">
+        <h3>Logs</h3>
+        <p>Loki multi-tenant. tenant = <code>prod</code> / <code>nonprod</code>.</p>
+      </div>
+    </div>
+  </div>
+
+  <aside class="notes">Emphasize "alerts all go through vmalert" — this is the #1 misconception for new oncall. Grafana's left-sidebar Alerting is empty; check vmalert UI or alertmanager for alert state.</aside>
+</section>
+
+<section>
+  <h2>Before Your First Page</h2>
+  <p class="muted">Three things to memorize before pager goes off — entry URLs, severity SLAs, and the cluster-name → tenant trap.</p>
+
+  <div style="display:grid; grid-template-columns: 1fr 1.2fr 1fr; gap:32px;">
+    <div class="card">
+      <h3 class="accent-navy">Entry URLs</h3>
+      <ul>
+        <li><b>Grafana</b> — <a href="https://grafana-mgt.dv-api.com" target="_blank"><code>grafana-mgt.dv-api.com</code></a> (SSO + VPN)</li>
+        <li><b>VictoriaMetrics</b> — <a href="https://vm-mgt-a.dv-api.com/vmui/" target="_blank"><code>vm-mgt-a.dv-api.com/vmui/</code></a> (raw queries)</li>
+        <li><b>Alertmanager</b> — <a href="https://k8s-us-mgt-a.dv-api.com/alertmanager/" target="_blank"><code>k8s-us-mgt-a.dv-api.com/alertmanager/</code></a> (silence ops)</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3 class="accent-navy">Severity → Response SLA</h3>
+      <table>
+        <thead>
+          <tr><th>Severity</th><th>Response</th><th>Routing</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>CRITICAL</td><td>Immediate</td><td>Single rule: <code>LokiPanics</code></td></tr>
+          <tr><td>PAGER</td><td>5 min</td><td>PagerDuty</td></tr>
+          <tr><td>HIGH</td><td>30 min</td><td>Slack high-priority</td></tr>
+          <tr><td>MEDIUM / WARNING</td><td>Business hours</td><td>Slack default</td></tr>
+          <tr><td>No severity (91 rules)</td><td>default</td><td>Often dropped</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card card-orange">
+      <h3 class="accent-navy">Cluster naming trap</h3>
+      <ul>
+        <li><code>aws-*-prod-*</code>, <code>*-pci-*</code>, <code>*-mgt-*</code>, <code>*-sandbox-*</code> → Loki tenant <b>prod</b></li>
+        <li><code>aws-*-dev-*</code>, <code>*-preprod-*</code> → tenant <b>nonprod</b></li>
+        <li>⚠️ <b>Biggest trap</b>: <code>gcp-uswest1-prod-a</code> has <code>prod</code> in its name but tenant is <b>nonprod</b></li>
+      </ul>
+    </div>
+  </div>
+
+  <aside class="notes">This is the one slide in the deck worth printing and taping to your monitor.</aside>
+</section>
+
+<section>
+  <h2>Latency Chain Mental Model</h2>
+  <p class="muted">Every request crosses client → APISIX → Ingress(nginx) → Feature Platform → YugabyteDB / MySQL. Each hop has a dashboard. Memorize the chain; bisection becomes mechanical.</p>
+
+  <svg viewBox="0 0 1800 620" style="max-height:620px; width:100%;">
+    <defs>
+      <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" class="fill-orange" fill="currentColor"/>
+      </marker>
+    </defs>
+
+    <!-- 5 boxes -->
+    <g font-size="20" text-anchor="middle">
+      <rect x="40"   y="220" width="220" height="100" rx="8" fill="none" class="stroke-navy" stroke="currentColor" stroke-width="2.5"/>
+      <text x="150"  y="278" class="fill-navy" font-weight="700">client</text>
+
+      <rect x="360"  y="220" width="240" height="100" rx="8" fill="none" class="stroke-navy" stroke="currentColor" stroke-width="2.5"/>
+      <text x="480"  y="270" class="fill-navy" font-weight="700">APISIX</text>
+      <text x="480"  y="295" font-size="14" class="muted">Apisix Logging</text>
+
+      <rect x="700"  y="220" width="260" height="100" rx="8" fill="none" class="stroke-navy" stroke="currentColor" stroke-width="2.5"/>
+      <text x="830"  y="270" class="fill-navy" font-weight="700">Ingress (nginx)</text>
+      <text x="830"  y="295" font-size="14" class="muted">nginx</text>
+
+      <rect x="1060" y="220" width="300" height="100" rx="8" fill="none" class="stroke-navy" stroke="currentColor" stroke-width="2.5"/>
+      <text x="1210" y="270" class="fill-navy" font-weight="700">Feature Platform (fp)</text>
+      <text x="1210" y="295" font-size="14" class="muted">Feature Platform Metrics</text>
+
+      <rect x="1460" y="80" width="280" height="100" rx="8" fill="none" class="stroke-navy" stroke="currentColor" stroke-width="2.5"/>
+      <text x="1600" y="130" class="fill-navy" font-weight="700">YugabyteDB</text>
+      <text x="1600" y="155" font-size="14" class="muted">YCQL</text>
+
+      <rect x="1460" y="360" width="280" height="100" rx="8" fill="none" class="stroke-navy" stroke="currentColor" stroke-width="2.5"/>
+      <text x="1600" y="410" class="fill-navy" font-weight="700">MySQL</text>
+    </g>
+
+    <!-- arrows -->
+    <g class="stroke-orange" stroke="currentColor" stroke-width="3" fill="none" marker-end="url(#ar2)">
+      <line x1="260"  y1="270" x2="358"  y2="270"/>
+      <line x1="600"  y1="270" x2="698"  y2="270"/>
+      <line x1="960"  y1="270" x2="1058" y2="270"/>
+      <line x1="1360" y1="250" x2="1458" y2="140"/>
+      <line x1="1360" y1="290" x2="1458" y2="400"/>
+    </g>
+
+    <!-- UID labels in monospace orange under each box -->
+    <g font-family="monospace" font-size="20" text-anchor="middle" class="fill-orange" fill="currentColor">
+      <text x="480"  y="350">0lpCu9kHk</text>
+      <text x="830"  y="350">HFAlVh2Nz</text>
+      <text x="1210" y="350">EP_yHg7Gk</text>
+      <text x="1600" y="210">1IGjQaiMk</text>
+      <text x="1600" y="490">MQWgroiiz</text>
+    </g>
+  </svg>
+
+  <div class="on-navy banner-navy" style="margin-top:24px; padding:24px 32px; border-radius:6px; text-align:center; font-size:20px;">
+    Every hop has a dashboard ·
+    the SLA dashboard is the top entry — it tells you which hop is slow
+    <div style="margin-top:14px; font-size:15px; opacity:0.9;">
+      APISIX → Apisix Logging → <a href="https://grafana-mgt.dv-api.com/d/0lpCu9kHk" target="_blank"><code>0lpCu9kHk</code></a> ·
+      Ingress → nginx → <a href="https://grafana-mgt.dv-api.com/d/HFAlVh2Nz" target="_blank"><code>HFAlVh2Nz</code></a> ·
+      Feature Platform → Feature Platform Metrics → <a href="https://grafana-mgt.dv-api.com/d/EP_yHg7Gk" target="_blank"><code>EP_yHg7Gk</code></a> ·
+      YugabyteDB → <a href="https://grafana-mgt.dv-api.com/d/1IGjQaiMk" target="_blank"><code>1IGjQaiMk</code></a> ·
+      MySQL → <a href="https://grafana-mgt.dv-api.com/d/MQWgroiiz" target="_blank"><code>MQWgroiiz</code></a>
+    </div>
+  </div>
+
+  <aside class="notes">This diagram is the skeleton for every playbook that follows. Next slide shows how the SLA dashboard does bisection along this chain.</aside>
+</section>

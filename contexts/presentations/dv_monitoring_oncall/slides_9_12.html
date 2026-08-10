@@ -1,0 +1,166 @@
+<section>
+  <h2>Alerting System — Current State</h2>
+  <p class="muted">540 rules, 932 firing — but 67% of firings come from TOP 3 alerts. 91 rules have no severity label, 79 have no team label. Noise tax is concentrated.</p>
+
+  <div class="split" style="grid-template-columns: repeat(5, 1fr); gap: 24px; margin-top: 24px;">
+    <div class="stat">
+      <div class="num" style="color: var(--navy)">540</div>
+      <div class="lbl">alerting rules</div>
+    </div>
+    <div class="stat">
+      <div class="num" style="color: var(--orange)">0</div>
+      <div class="lbl">recording rules (in <code>recored.yaml</code>)</div>
+    </div>
+    <div class="stat">
+      <div class="num" style="color: var(--orange)">932</div>
+      <div class="lbl">currently firing</div>
+    </div>
+    <div class="stat">
+      <div class="num" style="color: var(--orange)">67%</div>
+      <div class="lbl">TOP 3 alerts' share of firings</div>
+    </div>
+    <div class="stat">
+      <div class="num" style="color: var(--accent-yellow)">91</div>
+      <div class="lbl">rules missing severity label</div>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 1900 460" style="width: 100%; max-height: 480px; margin-top: 32px;" xmlns="http://www.w3.org/2000/svg">
+    <!-- longest bar (469) ≈ 80% of 1900 = 1520px. Scale ≈ 3.241 -->
+    <text x="0" y="50" font-size="22" fill="#1C2526" font-family="monospace">FPTopicsOffsetIncreaseZero</text>
+    <rect x="560" y="28" width="1520" height="36" fill="#C75B39" fill-opacity="1.0"/>
+    <text x="2090" y="54" font-size="22" fill="#1C2526" font-weight="bold">469</text>
+
+    <text x="0" y="130" font-size="22" fill="#1C2526" font-family="monospace">KafkaEventExporterApplicationStderrErrors</text>
+    <rect x="560" y="108" width="314" height="36" fill="#C75B39" fill-opacity="0.7"/>
+    <text x="884" y="134" font-size="22" fill="#1C2526" font-weight="bold">97</text>
+
+    <text x="0" y="210" font-size="22" fill="#1C2526" font-family="monospace">FPRuleCountZero</text>
+    <rect x="560" y="188" width="191" height="36" fill="#C75B39" fill-opacity="0.5"/>
+    <text x="761" y="214" font-size="22" fill="#1C2526" font-weight="bold">59</text>
+
+    <text x="0" y="290" font-size="22" fill="#1C2526" font-family="monospace">QpsZero</text>
+    <rect x="560" y="268" width="104" height="36" fill="#1B3A5C" fill-opacity="0.5"/>
+    <text x="674" y="294" font-size="22" fill="#1C2526" font-weight="bold">32</text>
+
+    <text x="0" y="370" font-size="22" fill="#1C2526" font-family="monospace">yugabytedbExternalLocalDiskUsageHigh</text>
+    <rect x="560" y="348" width="81" height="36" fill="#1B3A5C" fill-opacity="0.5"/>
+    <text x="651" y="374" font-size="22" fill="#1C2526" font-weight="bold">25</text>
+  </svg>
+
+  <div style="margin-top: 24px; font-size: 22px; color: var(--muted);">
+    <p style="margin: 6px 0;"><strong>Severity distribution:</strong> PAGER 142 / HIGH 283 / MEDIUM 18 / WARNING 6 / CRITICAL 1 (<code>LokiPanics</code>) / <strong>no severity 91</strong></p>
+    <p style="margin: 6px 0;"><strong>Team distribution:</strong> fp 276 / infra 181 / decision 5 / <strong>no team 79</strong> (source of routing inaccuracy)</p>
+  </div>
+
+  <aside class="notes">67% of alert volume concentrates in TOP 3, mostly FPTopicsOffsetIncreaseZero alone. This is the single biggest source of oncall noise tax — see Playbook K, judge noise before triage.</aside>
+</section>
+
+<section>
+  <h2>TOP 5 Pitfalls</h2>
+  <p class="muted">Five highest-step-rate pitfalls across SLA dashboard, Loki, PromQL, and Node Resource panels.</p>
+
+  <div class="split" style="grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px;">
+    <div class="card card-orange">
+      <h3>1. OOM uses <code>container_memory_working_set_bytes</code></h3>
+      <p>Not RSS, not usage. Pod Resources panel 14. working_set includes active anonymous + active file cache, which is what the cgroup OOM killer judges against.</p>
+    </div>
+    <div class="card card-orange">
+      <h3>2. After switching <code>client</code> on SLA dashboard, re-pick <code>Batch_Pipeline</code></h3>
+      <p>Switching <code>client</code> requires re-picking <code>Batch_Pipeline</code>/<code>pipeline</code>. The two variables aren't linked; the Batch row goes falsely blank and makes you think batch is offline.</p>
+    </div>
+    <div class="card card-orange">
+      <h3>3. <code>gcp-uswest1-prod-a</code>'s Loki tenant is <code>nonprod</code></h3>
+      <p>The name misleads. When you script a query and forget <code>LOKI_ORG_ID=nonprod</code>, you get empty results.</p>
+    </div>
+    <div class="card card-orange">
+      <h3>4. Always add a cluster filter to PromQL</h3>
+      <p>Unfiltered <code>rate(kubernetes_monitoring_request_total_ingress_nginx[1m])</code> scans the whole table on VM, averaging 2.9 seconds per call — 117s of CPU per 10min.</p>
+    </div>
+  </div>
+
+  <div class="card card-orange" style="margin-top: 24px;">
+    <h3>5. Node Resource's <code>$nodeHost</code> must select a specific IP, not <code>$__all</code></h3>
+    <p>Otherwise it averages/sums all node metrics across the cluster, hiding single-node hot spots. Node-dimension panels are almost all aggregated by instance; <code>All</code> is self-deception.</p>
+  </div>
+
+  <aside class="notes">These 5 have the highest step-rate. Full list of 20 pitfalls in REPORT §7, spanning SLA dashboard, Logging, Pod/Node, DB, and VM/alert — 5 domains.</aside>
+</section>
+
+<section>
+  <h2>How to Edit / Add Alerts</h2>
+  <p class="muted">Alerts live in the <code>infra</code> repo. VM is primary, Prometheus is the compatibility backup — you must edit both. Always include <code>severity</code> and <code>team</code> labels.</p>
+
+  <div class="split split-2-3" style="margin-top: 24px;">
+    <div>
+      <pre style="background: #1C2526; color: #F0F4F8; padding: 20px; border-radius: 8px; font-size: 18px; line-height: 1.5; overflow: auto;"><code>infra repo:
+~/work/work-harness/code_repos/infra
+
+core/src/monitorV3/
+├── victoriametrics/alerts/
+│   ├── *.yml  (33 files, by topic)
+│   └── recored.yaml      ← Recording rule
+│                           (typo preserved)
+├── prometheus/
+│   ├── alerts/           ← Compatibility backup
+│   │                       must sync-edit
+│   └── alertmanager/
+│       └── config.yml    ← Receiver
+│                           / route / Slack
+└── scripts/
+    generate_*_alerts.{py,sh}</code></pre>
+      <p class="muted" style="margin-top: 12px; font-size: 20px;">VM primary / Prom backup. vmalert actually runs the VM set.</p>
+    </div>
+
+    <div>
+      <h3>Edit-alert workflow</h3>
+      <ol style="font-size: 24px; line-height: 1.6;">
+        <li>Sync-edit both yamls (VM primary, Prom backup)</li>
+        <li>PR + lint CI → merge to main</li>
+        <li>CI auto-syncs; visible in vmui Alerts/Groups within minutes</li>
+        <li>Verify: search alertname in the vmui Alerts tab</li>
+      </ol>
+
+      <div class="card card-orange" style="margin-top: 24px;">
+        <h3>Required labels for new rules</h3>
+        <ul>
+          <li><code>severity</code> — currently 91 rules missing</li>
+          <li><code>team</code> — currently 79 rules missing</li>
+          <li>Don't use alertname suffixes for per-client splits (e.g. <code>_Affirm</code>, <code>_Nasa</code>) — use the <code>client</code> label</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <aside class="notes">VM is the primary alert rule set, Prom is compatibility backup — historical reason, you must edit both. New rules without severity/team labels route inaccurately and get dropped into the default channel.</aside>
+</section>
+
+<section>
+  <h2>30-Second Elevator Summary</h2>
+
+  <blockquote style="border-left: 4px solid var(--orange); padding-left: 24px; font-size: 26px; line-height: 1.5; margin-top: 24px;">
+    <p>Monitoring is three layers: metrics all in <strong>VictoriaMetrics</strong>, alerts all through <strong>vmalert</strong> (not Grafana managed), logs all in <strong>Loki</strong> multi-tenant.</p>
+    <p>When things break, dashboard order is decided by the <strong>latency chain</strong>: client → APISIX → ingress → fp → yuga/mysql.</p>
+    <p>First stop is always the <strong>SLA dashboard</strong> (<a href="https://grafana-mgt.dv-api.com/d/p1KqfRAMk" target="_blank"><code>p1KqfRAMk</code></a>) — use panels 371 / 373 / 194 for bisection: fp slow, network slow, or client closed early.</p>
+    <p>Always add a cluster filter to PromQL. OOM uses working_set, not RSS. Node variables always pick a specific IP.</p>
+  </blockquote>
+
+  <div class="split" style="grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-top: 32px;">
+    <div class="card card-teal">
+      <h3>Full report</h3>
+      <p><code>contexts/survey_sessions/monitoring_overview_20260521/REPORT.md</code> (10 sections + 11 playbooks + 20 pitfalls)</p>
+    </div>
+    <div class="card card-teal">
+      <h3>Skill entry</h3>
+      <p><code>/workflow_dv_monitoring_oncall</code> (<code>rules/skills/workflow_dv_monitoring_oncall.md</code>)</p>
+    </div>
+    <div class="card card-teal">
+      <h3>Coming next</h3>
+      <p>alertmanager <code>-notifier.url</code>, Grafana OnCall scheduling, recording-rule online reload validation</p>
+    </div>
+  </div>
+
+  <p style="text-align:center; font-size: 30px; color: var(--muted); margin-top: 40px;">Questions?</p>
+
+  <aside class="notes">This single slide is the 30-second takeaway. All details have indexes in REPORT.md; the skill entry is invocable via /workflow_dv_monitoring_oncall.</aside>
+</section>

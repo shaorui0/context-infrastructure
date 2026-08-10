@@ -1,0 +1,84 @@
+{
+ "w-cs-doris": {
+  "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_rebuilding-a-5b-row-event-store_en/",
+  "zh": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_rebuilding-a-5b-row-event-store_zh/"
+ },
+ "w-inc-p100": {
+  "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_the-p100-that-was-exactly-one-second_en/",
+  "zh": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_the-p100-that-was-exactly-one-second_zh/"
+ },
+ "w-inc-qps": {
+  "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_order-of-operations-under-fire_en/",
+  "zh": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_order-of-operations-under-fire_zh/"
+ },
+ "w-inc-refused": {
+  "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_refused-is-not-timeout_en/",
+  "zh": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_refused-is-not-timeout_zh/"
+ },
+ "w-dr-restore": {
+  "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_restoring-5b-rows-without-touching-prod_en/",
+  "zh": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_restoring-5b-rows-without-touching-prod_zh/"
+ },
+ "w-p-vm": {
+  "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_replacing-prometheus-federation_en/",
+  "zh": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_replacing-prometheus-federation_zh/"
+ },
+ "w-p-upgrade": {
+  "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_kubernetes-upgrade-engineering_en/",
+  "zh": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_kubernetes-upgrade-engineering_zh/"
+ },
+ "w-p-routing": {
+  "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_engine-level-query-routing_en/",
+  "zh": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_engine-level-query-routing_zh/"
+ },
+ "w-p-fanout": {
+  "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_fan-out-is-the-floor_en/",
+  "zh": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_fan-out-is-the-floor_zh/"
+ },
+ "w-p-elastic": {
+  "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_designing-the-elastic-compute-tier_en/",
+  "zh": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_designing-the-elastic-compute-tier_zh/"
+ },
+ "w-p-alertgov": {
+  "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_alert-governance_en/",
+  "zh": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_alert-governance_zh/"
+ },
+ "w-p-jenkins": {
+  "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_what-knows-jenkins-actually-tests_en/",
+  "zh": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_what-knows-jenkins-actually-tests_zh/"
+ },
+ "w-p-agentops": {
+  "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_sre-oncall-triage-harness_en/",
+  "zh": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_sre-oncall-triage-harness_zh/"
+ },
+ "w-p-bkc": {
+  "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_compiling-a-document-into-a-control-loop_en/",
+  "zh": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_compiling-a-document-into-a-control-loop_zh/"
+ },
+ "w-inc-oom": {
+  "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_zombie-system-tables-subsecond-oom_en/",
+  "zh": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_zombie-system-tables-subsecond-oom_zh/"
+ },
+ "w-v-capabilities": {
+  "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_what-i-understand-sre-to-require_en/",
+  "zh": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_what-i-understand-sre-to-require_zh/"
+ },
+ "w-v-mapping": {
+  "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_an-audit-of-my-own-radar_en/",
+  "zh": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_an-audit-of-my-own-radar_zh/"
+ },
+ "w-v-next": {
+  "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_what-i-know-i-cant-do-yet_en/",
+  "zh": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_what-i-know-i-cant-do-yet_zh/"
+ },
+ "w-v-agents": {
+  "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_sre-in-the-age-of-ai-agents_en/",
+  "zh": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_sre-in-the-age-of-ai-agents_zh/"
+ },
+ "w-g-slo": {
+  "zh": "https://shaorui0.github.io/tech/2026/07/20/2026-07-20_slo-top-down-monitoring_zh/"
+ },
+ "w-g-infravalue": {
+  "zh": "https://shaorui0.github.io/tech/2026/07/20/2026-07-20_infra-engineer-value-cloud-philosophy_zh/"
+ }
+}

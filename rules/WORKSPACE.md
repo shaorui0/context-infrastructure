@@ -16,7 +16,10 @@
 - 通用调研报告：`contexts/survey_sessions/`
 - 思考 / 复盘 / 方法论：`contexts/thought_review/`
 - 每日日志：`contexts/daily_records/`
+- 日语 / N2 / Anki 相关一切内容（学习笔记、语料库生成器、备考计划、调研）统一收纳：`contexts/japanese/`
+  - 语料库生成器（corpus-as-code + apkg）：`contexts/japanese/anki_decks/`
 - 待消化任务 / 阅读清单 / 定期 audit：`TODO/`（详见 `TODO/README.md`）
+- `survey_sessions/`、`thought_review/`、`builder_brainstorm/` 里**仅 AI Agent 相关**的文件（agent 架构/ops/harness/编排/agentic control theory/agent 产品脑暴），积累到一定量后定期迁移进博客仓库的 `source/_surveys/`（见下方快速查询），作为唯一事实来源存档；非 agent 主题（通用 AI 行业调研、职业/财务/生活类笔记、无 agent 视角的基础设施主题）留在本地，不要迁移
 
 ### 系统与规则
 - 可复用技术方案 / Skill：`rules/skills/`
@@ -35,3 +38,6 @@
 
 <!-- 随着你的项目增长，在这里添加活跃项目的快捷路由 -->
 <!-- 格式：- `project-name` → `adhoc_jobs/project_name/` (说明) -->
+- `dynamic-resume-site` → `adhoc_jobs/dynamic_resume_site/` (个人站点：`site/index.html`=karpathy 式落地页，`site/deep.html`=四层 deeper résumé；内容总纲 content_plan.md，事实源=cre6630-infra 的 interview dossier)
+- `senior-sre-interview-prep` → `adhoc_jobs/senior_sre_interview_prep/` (7 方向面试备考体系，先读 PLAN.md；旧面试稿在 work-contexts/career/interview/)
+- `blog-system` → `work-contexts/toy-proj/blog-system/`（独立 git 仓库，Hexo 博客；`source/_posts/`=已发布文章，`source/_surveys/`=AI 讨论/调研/复盘归档，不发表但保留为事实来源，见该目录 README.md）

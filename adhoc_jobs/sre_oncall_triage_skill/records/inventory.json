@@ -1,0 +1,821 @@
+{
+  "total": 162,
+  "by_ext": {
+    ".md": 149,
+    ".py": 7,
+    ".sh": 5,
+    ".json": 1
+  },
+  "items": [
+    {
+      "path": "facets/alert_quality.md",
+      "size": 1127,
+      "ext": ".md"
+    },
+    {
+      "path": "facets/client_mapping.md",
+      "size": 748,
+      "ext": ".md"
+    },
+    {
+      "path": "facets/compute_pods.md",
+      "size": 787,
+      "ext": ".md"
+    },
+    {
+      "path": "facets/index.md",
+      "size": 2027,
+      "ext": ".md"
+    },
+    {
+      "path": "facets/logs_evidence.md",
+      "size": 964,
+      "ext": ".md"
+    },
+    {
+      "path": "facets/signal_extraction.md",
+      "size": 873,
+      "ext": ".md"
+    },
+    {
+      "path": "facets/sla_pipeline.md",
+      "size": 840,
+      "ext": ".md"
+    },
+    {
+      "path": "facets/slack_alert_intake.md",
+      "size": 3529,
+      "ext": ".md"
+    },
+    {
+      "path": "facets/state_database.md",
+      "size": 763,
+      "ext": ".md"
+    },
+    {
+      "path": "facets/traffic_interface.md",
+      "size": 2351,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/CLAUDE.md",
+      "size": 2712,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/README.md",
+      "size": 35000,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/README.template.md",
+      "size": 1953,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/agent-routing-table.md",
+      "size": 7165,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cards/card-aws-k8s-network-triage-chain.md",
+      "size": 1732,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cards/card-clickhouse-disk-space-fast.md",
+      "size": 882,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cards/card-clickhouse-merge-pressure-fast-signals.md",
+      "size": 1244,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cards/card-db-issue-fast-entrypoints.md",
+      "size": 1332,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cards/card-dcluster-spark-fast-triage.md",
+      "size": 887,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cards/card-dns-fast-triage.md",
+      "size": 1158,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cards/card-fp-infra-fast-entrypoints.md",
+      "size": 1466,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cards/card-k8s-node-notready-fast-triage.md",
+      "size": 1019,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cards/card-k8s-resource-pressure-fast-mitigation.md",
+      "size": 2063,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cards/card-kubectl-describe-node-key-signals.md",
+      "size": 2764,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cards/card-nginx-fast-triage.md",
+      "size": 2144,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cards/card-site-outage-triage.md",
+      "size": 1009,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cards/card-yugabyte-debug-ports-commands.md",
+      "size": 1693,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cards/card-yugabyte-incident-first-hour.md",
+      "size": 924,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cards/card-yugabyte-metrics-fast-checks.md",
+      "size": 5794,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-aws-asg-scale-out-node-join-failure.incident.md",
+      "size": 5350,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-aws-asg-scale-out-node-join-failure.md",
+      "size": 4610,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-clickhouse-connection-refused-troubleshooting.incident.md",
+      "size": 7374,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-clickhouse-connection-refused-troubleshooting.md",
+      "size": 5725,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-clickhouse-connection-refused-troubleshooting.trace.md",
+      "size": 8757,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-clickhouse-copydata-recovery-failure.incident.md",
+      "size": 5407,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-clickhouse-copydata-recovery-failure.md",
+      "size": 3768,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-clickhouse-pod-pending-scheduling-resource-nodegroup.incident.md",
+      "size": 6646,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-clickhouse-pod-pending-scheduling-resource-nodegroup.md",
+      "size": 10669,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-clickhouse-ttl-merge-cpu-saturation.md",
+      "size": 7084,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-debezium-schema-change-snapshot-sign-null.md",
+      "size": 5838,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-fp-latency-waiting-latency-prod-qps-spike.incident.md",
+      "size": 6223,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-fp-latency-waiting-latency-prod-qps-spike.md",
+      "size": 7011,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-k8s-pod-evicted-diskpressure-asg-fast-mitigation.incident.md",
+      "size": 5985,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-k8s-pod-evicted-diskpressure-asg-fast-mitigation.md",
+      "size": 6602,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-kafka-kraft-livenessprobe-restart-loop.incident.md",
+      "size": 4896,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-kafka-kraft-livenessprobe-restart-loop.md",
+      "size": 2587,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-kafka-lag-issues.incident.md",
+      "size": 4741,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-kafka-lag-issues.md",
+      "size": 7328,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-kafka-lag-issues.trace.md",
+      "size": 8386,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-large-tenant-qps-spike-joint-mitigation.incident.md",
+      "size": 5119,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-large-tenant-qps-spike-joint-mitigation.md",
+      "size": 7530,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-monitoring-alert-delay-histogram-skew.incident.md",
+      "size": 5622,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-monitoring-alert-delay-histogram-skew.md",
+      "size": 3112,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-monitoring-alert-delay-histogram-skew.trace.md",
+      "size": 6987,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-mysql-connect-timeout-fp-dns-node.incident.md",
+      "size": 7994,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-mysql-connect-timeout-fp-dns-node.md",
+      "size": 5902,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-onefinance-qps-spike-joint-mitigation.incident.md",
+      "size": 6778,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-onefinance-qps-spike-joint-mitigation.md",
+      "size": 6370,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-qa-deployment-failure-disk-cleanup.incident.md",
+      "size": 5281,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-qa-deployment-failure-disk-cleanup.md",
+      "size": 3507,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-spark-job-pending-not-running.incident.md",
+      "size": 4895,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-spark-job-pending-not-running.md",
+      "size": 3997,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/case-starrocks-fe-crashloop-bdb-ip-binding.md",
+      "size": 4085,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/cluster2-scheduling-node-pressure.trace.md",
+      "size": 8185,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/cluster5-identity-access.trace.md",
+      "size": 6419,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/cases/cluster6-change-management.trace.md",
+      "size": 7551,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/checklists/checklist-aws-lb-ingress-troubleshooting-checklist.md",
+      "size": 2212,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/checklists/checklist-cluster-troubleshooting-checklist.md",
+      "size": 2106,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/checklists/checklist-fp-latency-uswest-preprod-checklist.md",
+      "size": 11569,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/debug-trees/debug-tree-connection-refused-layered.md",
+      "size": 8749,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/debug-trees/debug-tree-false-p99-histogram-skew.md",
+      "size": 7961,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/debug-trees/debug-tree-kafka-lag-downstream.md",
+      "size": 8560,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/debug-trees/debug-tree-latency-breakdown.md",
+      "size": 7382,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/debug-trees/debug-tree-rate-limit-429.md",
+      "size": 6200,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/debug-trees/debug-tree-sawtooth-qps.md",
+      "size": 5844,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/debug-trees/debug-tree-spark-job-pending.md",
+      "size": 5306,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/patterns/pattern-aws-k8s-networking-troubleshooting-pattern.md",
+      "size": 3777,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/patterns/pattern-clickhouse-merge-cpu-root-cause.md",
+      "size": 11643,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/patterns/pattern-fp-latency-waiting-latency-pattern.md",
+      "size": 1757,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/patterns/pattern-ingress-rate-limit-429-window-mismatch.md",
+      "size": 2753,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/references/README.md",
+      "size": 1170,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/references/reference-aws-asg-k8s-node-join-flow.md",
+      "size": 2171,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/references/reference-aws-cli.md",
+      "size": 5152,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/references/reference-clients.md",
+      "size": 836,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/references/reference-clusters.md",
+      "size": 5955,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/references/reference-data-copy-snapshot-backup-restore.md",
+      "size": 6307,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/references/reference-datavisor-core-job-workflow.md",
+      "size": 2519,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/references/reference-dcluster-api-quick-reference.md",
+      "size": 2778,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/references/reference-defaults.md",
+      "size": 926,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/references/reference-dns-configuration-reference.md",
+      "size": 5971,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/references/reference-fp-service-infra-reference.md",
+      "size": 4873,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/references/reference-grafana-dashboards.md",
+      "size": 5179,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/references/reference-iac-first-principles.md",
+      "size": 3961,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/references/reference-jenkins-credential-export-notes.md",
+      "size": 883,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/references/reference-k8s-storage-affinity-scheduling.md",
+      "size": 11962,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/references/reference-k8s-upgrade-mechanics-1-24-to-1-26.md",
+      "size": 7764,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/references/reference-knowledge-base-index.md",
+      "size": 57734,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/references/reference-kubectl-describe-node-analysis.md",
+      "size": 15159,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/references/reference-kubernetes.md",
+      "size": 2883,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/references/reference-latency-metrics-ingress-apisix.md",
+      "size": 4506,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/references/reference-link-templates.md",
+      "size": 6110,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/references/reference-logging.md",
+      "size": 733,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/references/reference-monitoring-system-k8s-overview.md",
+      "size": 2028,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/references/reference-mysql-database-size-backup-notes.md",
+      "size": 1777,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/references/reference-mysql-multi-region-arch.md",
+      "size": 554,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/references/reference-opsgenie-460-code-checkbook.md",
+      "size": 628,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/references/reference-permissions.md",
+      "size": 1140,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/references/reference-request-routing-flow.md",
+      "size": 16973,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/references/reference-vmalert.md",
+      "size": 958,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/references/reference-yugabyte-monitoring-commands-reference.md",
+      "size": 5195,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/runbooks/runbook-aws-iam-access-denied-troubleshooting.md",
+      "size": 7749,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/runbooks/runbook-clickhouse-backfill-data-extraction.md",
+      "size": 5332,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/runbooks/runbook-clickhouse-disk-space-exhaustion.md",
+      "size": 7051,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/runbooks/runbook-client-marqeta-alert-storm-runbook.md",
+      "size": 4744,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/runbooks/runbook-database-incident-troubleshooting.md",
+      "size": 2728,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/runbooks/runbook-dcluster-spark-job-troubleshooting.md",
+      "size": 4914,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/runbooks/runbook-debezium-cdc-connector-troubleshooting.md",
+      "size": 5561,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/runbooks/runbook-dns-url-creation-runbook.md",
+      "size": 4539,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/runbooks/runbook-ingress-nginx-tcp-services-nlb-port-config.md",
+      "size": 10223,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/runbooks/runbook-jenkins-s3-permission-troubleshooting.md",
+      "size": 7593,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/runbooks/runbook-jenkins-selenium-dns-failures.md",
+      "size": 3649,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/runbooks/runbook-k8s-ingress-setup-runbook.md",
+      "size": 6829,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/runbooks/runbook-k8s-node-notready-runbook.md",
+      "size": 3254,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/runbooks/runbook-k8s-pod-pending-asg-cluster-autoscaler.md",
+      "size": 9138,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/runbooks/runbook-k8s-resource-exhaustion.md",
+      "size": 8130,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/runbooks/runbook-k8s-upgrade-plan-runbook.md",
+      "size": 49418,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/runbooks/runbook-mysql-backup-restore-runbook.md",
+      "size": 8375,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/runbooks/runbook-nginx-debugging-runbook.md",
+      "size": 18414,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/runbooks/runbook-site-outage-access-troubleshooting.md",
+      "size": 8400,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/runbooks/runbook-starrocks-iceberg-deployment.md",
+      "size": 7295,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/runbooks/runbook-yugabyte-connection-bootstrapping.md",
+      "size": 5831,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/runbooks/runbook-yugabyte-debug-process.md",
+      "size": 1435,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/runbooks/runbook-yugabyte-incident-recovery-steps.md",
+      "size": 4733,
+      "ext": ".md"
+    },
+    {
+      "path": "skills/sre-oncall-acceptance-criteria/SKILL.md",
+      "size": 1614,
+      "ext": ".md"
+    },
+    {
+      "path": "skills/sre-oncall-compound-learning/SKILL.md",
+      "size": 2595,
+      "ext": ".md"
+    },
+    {
+      "path": "skills/sre-oncall-data-tools/SKILL.md",
+      "size": 4246,
+      "ext": ".md"
+    },
+    {
+      "path": "skills/sre-oncall-init/SKILL.md",
+      "size": 8452,
+      "ext": ".md"
+    },
+    {
+      "path": "skills/sre-oncall-output-format/SKILL.md",
+      "size": 7203,
+      "ext": ".md"
+    },
+    {
+      "path": "skills/sre-oncall-query-safety/SKILL.md",
+      "size": 2110,
+      "ext": ".md"
+    },
+    {
+      "path": "skills/sre-oncall-quick-check/SKILL.md",
+      "size": 7427,
+      "ext": ".md"
+    },
+    {
+      "path": "skills/workflow-oncall-spike/SKILL.md",
+      "size": 12990,
+      "ext": ".md"
+    },
+    {
+      "path": "tools/agent_ops/_parse.py",
+      "size": 6509,
+      "ext": ".py"
+    },
+    {
+      "path": "tools/agent_ops/audit-view.py",
+      "size": 7152,
+      "ext": ".py"
+    },
+    {
+      "path": "tools/agent_ops/hooks/audit-log.sh",
+      "size": 1564,
+      "ext": ".sh"
+    },
+    {
+      "path": "tools/agent_ops/hooks/audit-pre.sh",
+      "size": 1683,
+      "ext": ".sh"
+    },
+    {
+      "path": "tools/agent_ops/hooks/k8s-gate.sh",
+      "size": 11599,
+      "ext": ".sh"
+    },
+    {
+      "path": "tools/agent_ops/hooks/mcp-audit.sh",
+      "size": 1505,
+      "ext": ".sh"
+    },
+    {
+      "path": "tools/agent_ops/hooks-manifest.json",
+      "size": 728,
+      "ext": ".json"
+    },
+    {
+      "path": "tools/agent_ops/setup.sh",
+      "size": 6949,
+      "ext": ".sh"
+    },
+    {
+      "path": "tools/agent_ops/slo.py",
+      "size": 9829,
+      "ext": ".py"
+    },
+    {
+      "path": "tools/agent_ops/verify.py",
+      "size": 29675,
+      "ext": ".py"
+    },
+    {
+      "path": "tools/index.md",
+      "size": 2557,
+      "ext": ".md"
+    },
+    {
+      "path": "tools/knowledge.md",
+      "size": 1433,
+      "ext": ".md"
+    },
+    {
+      "path": "tools/loki_fetch/README.md",
+      "size": 80,
+      "ext": ".md"
+    },
+    {
+      "path": "tools/loki_fetch/loki_fetch.py",
+      "size": 9684,
+      "ext": ".py"
+    },
+    {
+      "path": "tools/slack_link.py",
+      "size": 3812,
+      "ext": ".py"
+    },
+    {
+      "path": "tools/vm_lookup.py",
+      "size": 9185,
+      "ext": ".py"
+    },
+    {
+      "path": "CLAUDE.md",
+      "size": 10647,
+      "ext": ".md"
+    },
+    {
+      "path": "README.md",
+      "size": 23668,
+      "ext": ".md"
+    },
+    {
+      "path": "todo.md",
+      "size": 5769,
+      "ext": ".md"
+    },
+    {
+      "path": "knowledge/references/reference-sla-dashboard.md",
+      "size": 15238,
+      "ext": ".md"
+    },
+    {
+      "path": "skills/sre-vm-query/SKILL.md",
+      "size": 8769,
+      "ext": ".md"
+    }
+  ]
+}

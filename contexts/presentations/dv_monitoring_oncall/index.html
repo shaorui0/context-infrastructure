@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>DataVisor 监控体系导览</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css" id="theme">
+  <link rel="stylesheet" href="theme.css?v=14">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <div class="reveal"><div class="slides">
+
+<section class="title-slide">
+  <h1>DataVisor Monitoring Tour</h1>
+  <p class="subtitle">From Slack alert to root cause — an onboarding deck for new oncall</p>
+  <p class="muted">20 minutes covers three things — architecture, latency chain bisection, alert→playbook routing. After this you can handle 80% of alerts on your own.</p>
+
+  <div class="split" style="margin-top:48px;">
+    <div style="text-align:center;">
+      <svg viewBox="0 0 160 120" style="max-height:140px;">
+        <rect x="30" y="20" width="100" height="22" rx="3" fill="none" class="stroke-orange" stroke="currentColor" stroke-width="2"/>
+        <rect x="30" y="50" width="100" height="22" rx="3" fill="none" class="stroke-orange" stroke="currentColor" stroke-width="2"/>
+        <rect x="30" y="80" width="100" height="22" rx="3" fill="none" class="stroke-orange" stroke="currentColor" stroke-width="2"/>
+      </svg>
+      <div><b>Monitoring Architecture</b></div>
+    </div>
+    <div style="text-align:center;">
+      <svg viewBox="0 0 200 120" style="max-height:140px;">
+        <circle cx="30" cy="60" r="22" fill="none" class="stroke-orange" stroke="currentColor" stroke-width="2"/>
+        <circle cx="100" cy="60" r="22" fill="none" class="stroke-orange" stroke="currentColor" stroke-width="2"/>
+        <circle cx="170" cy="60" r="22" fill="none" class="stroke-orange" stroke="currentColor" stroke-width="2"/>
+        <line x1="52" y1="60" x2="78" y2="60" class="stroke-orange" stroke="currentColor" stroke-width="2"/>
+        <line x1="122" y1="60" x2="148" y2="60" class="stroke-orange" stroke="currentColor" stroke-width="2"/>
+      </svg>
+      <div><b>Latency Chain Bisection</b></div>
+    </div>
+    <div style="text-align:center;">
+      <svg viewBox="0 0 160 120" style="max-height:140px;">
+        <polygon points="80,15 140,55 140,100 20,100 20,55" fill="none" class="stroke-teal" stroke="currentColor" stroke-width="2"/>
+        <rect x="65" y="70" width="30" height="30" fill="none" class="stroke-teal" stroke="currentColor" stroke-width="2"/>
+      </svg>
+      <div><b>Alert → Playbook Routing</b></div>
+    </div>
+  </div>
+
+  <p class="muted" style="margin-top:48px; text-align:center;">2026-05-21 · Based on monitoring_overview_20260521 survey</p>
+
+  <aside class="notes">This is the cover. Opener: "Today's 20 minutes is three things — architecture, chain, routing. By the end you can independently handle 80% of alerts."</aside>
+</section>
+
+<section>
+  <h2>Monitoring Stack Architecture <span class="muted">(one picture)</span></h2>
+  <p class="muted">Metrics all live in VictoriaMetrics, alerts all go through <b>vmalert</b> (NOT Grafana managed alerting), logs all live in Loki with multi-tenancy.</p>
+
+  <div class="split-3-2">
+    <div>
+      <svg viewBox="0 0 800 560" style="max-height:560px;">
+        <defs>
+          <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="fill-orange" fill="currentColor"/>
+          </marker>
+        </defs>
+
+        <!-- cluster row -->
+        <g font-size="13" text-anchor="middle">
+          <rect x="20"  y="20" width="115" height="44" rx="4" fill="none" class="stroke-navy" stroke="currentColor" stroke-width="1.5"/>
+          <text x="77"  y="47" class="fill-navy">aws-prod-a</text>
+          <rect x="145" y="20" width="115" height="44" rx="4" fill="none" class="stroke-navy" stroke="currentColor" stroke-width="1.5"/>
+          <text x="202" y="47" class="fill-navy">aws-prod-b</text>
+          <rect x="270" y="20" width="115" height="44" rx="4" fill="none" class="stroke-navy" stroke="currentColor" stroke-width="1.5"/>
+          <text x="327" y="47" class="fill-navy">aws-pci</text>
+          <rect x="395" y="20" width="115" height="44" rx="4" fill="none" class="stroke-navy" stroke="currentColor" stroke-width="1.5"/>
+          <text x="452" y="47" class="fill-navy">gcp-prod-a</text>
+          <rect x="520" y="20" width="115" height="44" rx="4" fill="none" class="stroke-navy" stroke="currentColor" stroke-width="1.5"/>
+          <text x="577" y="47" class="fill-navy">aws-mgt</text>
+          <rect x="645" y="20" width="135" height="44" rx="4" fill="none" class="stroke-navy" stroke="currentColor" stroke-width="1.5"/>
+          <text x="712" y="47" class="fill-navy">sandbox</text>
+        </g>
+
+        <!-- arrows down to VM -->
+        <g class="stroke-orange" stroke="currentColor" stroke-width="2" fill="none" marker-end="url(#ar)">
+          <line x1="77"  y1="64" x2="280" y2="170"/>
+          <line x1="202" y1="64" x2="320" y2="170"/>
+          <line x1="327" y1="64" x2="360" y2="170"/>
+          <line x1="452" y1="64" x2="400" y2="170"/>
+          <line x1="577" y1="64" x2="440" y2="170"/>
+          <line x1="712" y1="64" x2="480" y2="170"/>
+        </g>
+
+        <!-- VM box (navy fill) -->
+        <g>
+          <rect x="220" y="175" width="360" height="110" rx="6" class="fill-navy" fill="currentColor"/>
+          <text x="400" y="205" text-anchor="middle" font-size="18" font-weight="700" fill="#FFFFFF">VictoriaMetrics</text>
+          <text x="400" y="230" text-anchor="middle" font-size="13" fill="#FFFFFF">vm-mgt-a.dv-api.com</text>
+          <text x="400" y="250" text-anchor="middle" font-size="12" fill="#FFFFFF">primary metrics backend</text>
+          <text x="400" y="270" text-anchor="middle" font-size="12" fill="#FFFFFF">+ Deepflow-Prometheus as fallback DS</text>
+          <!-- vmalert sidecar -->
+          <rect x="585" y="200" width="100" height="60" rx="4" class="fill-orange" fill="currentColor"/>
+          <text x="635" y="225" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">vmalert</text>
+          <text x="635" y="245" text-anchor="middle" font-size="11" fill="#FFFFFF">540 rules</text>
+        </g>
+
+        <!-- vmalert -> alertmanager -> slack -->
+        <g class="stroke-orange" stroke="currentColor" stroke-width="2" fill="none" marker-end="url(#ar)">
+          <line x1="635" y1="260" x2="635" y2="320"/>
+          <line x1="635" y1="370" x2="635" y2="420"/>
+        </g>
+        <rect x="565" y="320" width="140" height="50" rx="4" fill="none" class="stroke-navy" stroke="currentColor" stroke-width="1.5"/>
+        <text x="635" y="350" text-anchor="middle" font-size="13" class="fill-navy">alertmanager</text>
+        <rect x="585" y="420" width="100" height="44" rx="4" fill="none" class="stroke-navy" stroke="currentColor" stroke-width="1.5"/>
+        <text x="635" y="447" text-anchor="middle" font-size="13" class="fill-navy">Slack</text>
+
+        <!-- Grafana box -->
+        <rect x="100" y="320" width="140" height="50" rx="4" fill="none" class="stroke-navy" stroke="currentColor" stroke-width="1.5"/>
+        <text x="170" y="350" text-anchor="middle" font-size="13" class="fill-navy">Grafana</text>
+        <line x1="170" y1="320" x2="260" y2="285" class="stroke-navy" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+        <!-- Loki side branch -->
+        <g>
+          <rect x="220" y="460" width="360" height="80" rx="6" fill="none" class="stroke-teal" stroke="currentColor" stroke-width="2" stroke-dasharray="6,4"/>
+          <text x="400" y="487" text-anchor="middle" font-size="16" font-weight="700" class="fill-teal">Loki</text>
+          <text x="400" y="508" text-anchor="middle" font-size="12" class="fill-teal">multi-tenant: prod / nonprod</text>
+          <text x="400" y="526" text-anchor="middle" font-size="11" class="muted">logs path independent · does not go through vmalert</text>
+          <line x1="200" y1="64" x2="320" y2="460" class="stroke-teal" stroke="currentColor" stroke-width="1" stroke-dasharray="3,3"/>
+          <line x1="500" y1="64" x2="480" y2="460" class="stroke-teal" stroke="currentColor" stroke-width="1" stroke-dasharray="3,3"/>
+        </g>
+      </svg>
+    </div>
+
+    <div>
+      <div class="card card-teal">
+        <h3>Metrics backend</h3>
+        <p>VictoriaMetrics @ <a href="https://vm-mgt-a.dv-api.com" target="_blank"><code>vm-mgt-a.dv-api.com</code></a>. Deepflow-Prometheus as backup datasource.</p>
+      </div>
+      <div class="card card-orange">
+        <h3>Alerting</h3>
+        <p><b>540 rules</b> running on vmalert. Grafana managed alerting is not enabled.</p>
+      </div>
+      <div class="card card-teal">
+        <h3>Logs</h3>
+        <p>Loki multi-tenant. tenant = <code>prod</code> / <code>nonprod</code>.</p>
+      </div>
+    </div>
+  </div>
+
+  <aside class="notes">Emphasize "alerts all go through vmalert" — this is the #1 misconception for new oncall. Grafana's left-sidebar Alerting is empty; check vmalert UI or alertmanager for alert state.</aside>
+</section>
+
+<section>
+  <h2>Before Your First Page</h2>
+  <p class="muted">Three things to memorize before pager goes off — entry URLs, severity SLAs, and the cluster-name → tenant trap.</p>
+
+  <div style="display:grid; grid-template-columns: 1fr 1.2fr 1fr; gap:32px;">
+    <div class="card">
+      <h3 class="accent-navy">Entry URLs</h3>
+      <ul>
+        <li><b>Grafana</b> — <a href="https://grafana-mgt.dv-api.com" target="_blank"><code>grafana-mgt.dv-api.com</code></a> (SSO + VPN)</li>
+        <li><b>VictoriaMetrics</b> — <a href="https://vm-mgt-a.dv-api.com/vmui/" target="_blank"><code>vm-mgt-a.dv-api.com/vmui/</code></a> (raw queries)</li>
+        <li><b>Alertmanager</b> — <a href="https://k8s-us-mgt-a.dv-api.com/alertmanager/" target="_blank"><code>k8s-us-mgt-a.dv-api.com/alertmanager/</code></a> (silence ops)</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3 class="accent-navy">Severity → Response SLA</h3>
+      <table>
+        <thead>
+          <tr><th>Severity</th><th>Response</th><th>Routing</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>CRITICAL</td><td>Immediate</td><td>Single rule: <code>LokiPanics</code></td></tr>
+          <tr><td>PAGER</td><td>5 min</td><td>PagerDuty</td></tr>
+          <tr><td>HIGH</td><td>30 min</td><td>Slack high-priority</td></tr>
+          <tr><td>MEDIUM / WARNING</td><td>Business hours</td><td>Slack default</td></tr>
+          <tr><td>No severity (91 rules)</td><td>default</td><td>Often dropped</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card card-orange">
+      <h3 class="accent-navy">Cluster naming trap</h3>
+      <ul>
+        <li><code>aws-*-prod-*</code>, <code>*-pci-*</code>, <code>*-mgt-*</code>, <code>*-sandbox-*</code> → Loki tenant <b>prod</b></li>
+        <li><code>aws-*-dev-*</code>, <code>*-preprod-*</code> → tenant <b>nonprod</b></li>
+        <li>⚠️ <b>Biggest trap</b>: <code>gcp-uswest1-prod-a</code> has <code>prod</code> in its name but tenant is <b>nonprod</b></li>
+      </ul>
+    </div>
+  </div>
+
+  <aside class="notes">This is the one slide in the deck worth printing and taping to your monitor.</aside>
+</section>
+
+<section>
+  <h2>Latency Chain Mental Model</h2>
+  <p class="muted">Every request crosses client → APISIX → Ingress(nginx) → Feature Platform → YugabyteDB / MySQL. Each hop has a dashboard. Memorize the chain; bisection becomes mechanical.</p>
+
+  <svg viewBox="0 0 1800 620" style="max-height:620px; width:100%;">
+    <defs>
+      <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" class="fill-orange" fill="currentColor"/>
+      </marker>
+    </defs>
+
+    <!-- 5 boxes -->
+    <g font-size="20" text-anchor="middle">
+      <rect x="40"   y="220" width="220" height="100" rx="8" fill="none" class="stroke-navy" stroke="currentColor" stroke-width="2.5"/>
+      <text x="150"  y="278" class="fill-navy" font-weight="700">client</text>
+
+      <rect x="360"  y="220" width="240" height="100" rx="8" fill="none" class="stroke-navy" stroke="currentColor" stroke-width="2.5"/>
+      <text x="480"  y="270" class="fill-navy" font-weight="700">APISIX</text>
+      <text x="480"  y="295" font-size="14" class="muted">Apisix Logging</text>
+
+      <rect x="700"  y="220" width="260" height="100" rx="8" fill="none" class="stroke-navy" stroke="currentColor" stroke-width="2.5"/>
+      <text x="830"  y="270" class="fill-navy" font-weight="700">Ingress (nginx)</text>
+      <text x="830"  y="295" font-size="14" class="muted">nginx</text>
+
+      <rect x="1060" y="220" width="300" height="100" rx="8" fill="none" class="stroke-navy" stroke="currentColor" stroke-width="2.5"/>
+      <text x="1210" y="270" class="fill-navy" font-weight="700">Feature Platform (fp)</text>
+      <text x="1210" y="295" font-size="14" class="muted">Feature Platform Metrics</text>
+
+      <rect x="1460" y="80" width="280" height="100" rx="8" fill="none" class="stroke-navy" stroke="currentColor" stroke-width="2.5"/>
+      <text x="1600" y="130" class="fill-navy" font-weight="700">YugabyteDB</text>
+      <text x="1600" y="155" font-size="14" class="muted">YCQL</text>
+
+      <rect x="1460" y="360" width="280" height="100" rx="8" fill="none" class="stroke-navy" stroke="currentColor" stroke-width="2.5"/>
+      <text x="1600" y="410" class="fill-navy" font-weight="700">MySQL</text>
+    </g>
+
+    <!-- arrows -->
+    <g class="stroke-orange" stroke="currentColor" stroke-width="3" fill="none" marker-end="url(#ar2)">
+      <line x1="260"  y1="270" x2="358"  y2="270"/>
+      <line x1="600"  y1="270" x2="698"  y2="270"/>
+      <line x1="960"  y1="270" x2="1058" y2="270"/>
+      <line x1="1360" y1="250" x2="1458" y2="140"/>
+      <line x1="1360" y1="290" x2="1458" y2="400"/>
+    </g>
+
+    <!-- UID labels in monospace orange under each box -->
+    <g font-family="monospace" font-size="20" text-anchor="middle" class="fill-orange" fill="currentColor">
+      <text x="480"  y="350">0lpCu9kHk</text>
+      <text x="830"  y="350">HFAlVh2Nz</text>
+      <text x="1210" y="350">EP_yHg7Gk</text>
+      <text x="1600" y="210">1IGjQaiMk</text>
+      <text x="1600" y="490">MQWgroiiz</text>
+    </g>
+  </svg>
+
+  <div class="on-navy banner-navy" style="margin-top:24px; padding:24px 32px; border-radius:6px; text-align:center; font-size:20px;">
+    Every hop has a dashboard ·
+    the SLA dashboard is the top entry — it tells you which hop is slow
+    <div style="margin-top:14px; font-size:15px; opacity:0.9;">
+      APISIX → Apisix Logging → <a href="https://grafana-mgt.dv-api.com/d/0lpCu9kHk" target="_blank"><code>0lpCu9kHk</code></a> ·
+      Ingress → nginx → <a href="https://grafana-mgt.dv-api.com/d/HFAlVh2Nz" target="_blank"><code>HFAlVh2Nz</code></a> ·
+      Feature Platform → Feature Platform Metrics → <a href="https://grafana-mgt.dv-api.com/d/EP_yHg7Gk" target="_blank"><code>EP_yHg7Gk</code></a> ·
+      YugabyteDB → <a href="https://grafana-mgt.dv-api.com/d/1IGjQaiMk" target="_blank"><code>1IGjQaiMk</code></a> ·
+      MySQL → <a href="https://grafana-mgt.dv-api.com/d/MQWgroiiz" target="_blank"><code>MQWgroiiz</code></a>
+    </div>
+  </div>
+
+  <aside class="notes">This diagram is the skeleton for every playbook that follows. Next slide shows how the SLA dashboard does bisection along this chain.</aside>
+</section>
+
+<section data-slide="5">
+  <h2 style="margin-bottom:6px;">Core — SLA Panels → Latency Segments → Decision Tree</h2>
+  <p class="muted" style="margin-bottom:6px; font-size:16px;">Each panel measures a <b>specific segment</b> of the request path (based on nginx <code>request_time</code> / <code>upstream_response_time</code>). Dashboard: <a href="https://grafana-mgt.dv-api.com/d/p1KqfRAMk" target="_blank"><code>p1KqfRAMk</code></a></p>
+
+  <svg viewBox="0 0 1700 260" xmlns="http://www.w3.org/2000/svg" role="img"
+       aria-label="Panel-to-segment map: which SLA panel measures which hop of the request path"
+       style="max-height:240px; width:100%;">
+    <defs>
+      <marker id="arrSeg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" class="fill-navy"/>
+      </marker>
+    </defs>
+
+    <!-- Chain: client → nginx → FP → DB. Nodes at x=80,420,920,1350,1620 -->
+    <g font-size="15" text-anchor="middle">
+      <rect x="40"   y="40" width="140" height="48" rx="6" fill="#FFFFFF" class="stroke-navy" stroke="currentColor" stroke-width="2"/>
+      <text x="110"  y="70" class="fill-navy" font-weight="700">client</text>
+
+      <rect x="280"  y="40" width="200" height="48" rx="6" fill="#FFFFFF" class="stroke-navy" stroke="currentColor" stroke-width="2"/>
+      <text x="380"  y="62" class="fill-navy" font-weight="700">Ingress (nginx)</text>
+      <text x="380"  y="80" class="fill-navy" font-size="12">measurement vantage</text>
+
+      <rect x="580"  y="40" width="200" height="48" rx="6" fill="#FFFFFF" class="stroke-navy" stroke="currentColor" stroke-width="2"/>
+      <text x="680"  y="70" class="fill-navy" font-weight="700">Feature Platform (fp)</text>
+
+      <rect x="880"  y="40" width="200" height="48" rx="6" fill="#FFFFFF" class="stroke-navy" stroke="currentColor" stroke-width="2"/>
+      <text x="980"  y="70" class="fill-navy" font-weight="700">Yuga / MySQL</text>
+    </g>
+
+    <!-- Arrows between -->
+    <g class="stroke-orange" stroke="currentColor" stroke-width="2" fill="none" marker-end="url(#arrSeg)">
+      <line x1="180" y1="64" x2="278" y2="64"/>
+      <line x1="480" y1="64" x2="578" y2="64"/>
+      <line x1="780" y1="64" x2="878" y2="64"/>
+    </g>
+    <!-- segment labels: A / C / D -->
+    <g font-size="11" text-anchor="middle" class="fill-orange" font-weight="700">
+      <text x="229" y="36">A: net+TLS</text>
+      <text x="529" y="36">C: net</text>
+      <text x="829" y="36">D: DB call</text>
+    </g>
+
+    <!-- Three measurement bars below the chain -->
+    <!-- Bar 1: request_time (full at nginx vantage) — spans from client (x=110) round-trip back. Show as bar from x=190 to x=1080 anchored AT nginx -->
+    <!-- Actually request_time is "from receiving first byte to writing last byte BACK at nginx". So segment-wise it's A in + (B+C+D+C'+B') + A' out. We'll show it as a wide bar spanning client→DB→client (visualised as left-to-right from x=110 to x=980 then with a return tick). -->
+    <g>
+      <rect x="110" y="120" width="870" height="22" rx="3" class="fill-orange" opacity="0.85"/>
+      <text x="545" y="136" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">
+        Panel 192/359 · request_time — A + B + C + D + C' + B' + A' (full round-trip at nginx)
+      </text>
+    </g>
+
+    <!-- Bar 2: upstream_response_time (panel 371) — spans nginx → DB → nginx (C+D+C'). x=380 (nginx center) to x=980 (DB right) -->
+    <g>
+      <rect x="380" y="155" width="600" height="22" rx="3" class="fill-teal" opacity="0.85"/>
+      <text x="680" y="171" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">
+        Panel 371 · upstream_response_time — C + D + C' (nginx ↔ FP ↔ DB, includes DB time!)
+      </text>
+    </g>
+
+    <!-- Bar 3: Waiting = request_time - upstream_response_time. Spans A + B (client → nginx + nginx own). Two segments at x=110→380 and x=380→1080-380=... actually it's A in/out + B in/out — render as bookend bars -->
+    <g>
+      <rect x="110" y="190" width="270" height="22" rx="3" class="fill-yellow"/>
+      <rect x="380" y="190" width="0" height="22"/>  <!-- separator -->
+      <text x="245" y="206" text-anchor="middle" class="fill-navy" font-size="12" font-weight="700">
+        Panel 373 · Waiting = request_time − upstream_response_time
+      </text>
+      <text x="245" y="232" text-anchor="middle" class="fill-navy" font-size="11">
+        A + B (client ↔ nginx + nginx work) · network/client signal
+      </text>
+    </g>
+
+    <!-- Nuance callout on the right -->
+    <g>
+      <rect x="1110" y="115" width="580" height="145" rx="6" fill="#FFFFFF" class="stroke-orange" stroke="currentColor" stroke-width="1.5"/>
+      <text x="1130" y="138" class="fill-orange" font-size="13" font-weight="700">Critical nuance</text>
+      <text x="1130" y="160" class="fill-navy" font-size="12">Panel 371 (upstream) INCLUDES FP's downstream DB calls —</text>
+      <text x="1130" y="176" class="fill-navy" font-size="12">FP holds request until DB returns, so DB latency rolls in.</text>
+      <text x="1130" y="200" class="fill-navy" font-size="12" font-weight="700">371 high + Yuga/MySQL also high → DB is the root, not FP code.</text>
+      <text x="1130" y="226" class="fill-navy" font-size="12">Also: "E2E real-time (ALB + ApiGateway)" panel extends</text>
+      <text x="1130" y="242" class="fill-navy" font-size="12">the chain LEFT of nginx to catch AWS-edge latency.</text>
+    </g>
+  </svg>
+
+
+  <svg viewBox="0 0 1700 460" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Latency triage decision tree" style="max-height:430px; width:100%; margin-top:8px;">
+    <defs>
+      <marker id="arrowNavy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" class="fill-navy"/>
+      </marker>
+    </defs>
+
+    <!-- Top: Alert fires -->
+    <rect x="720" y="10" width="260" height="44" rx="6" class="fill-yellow"/>
+    <text x="850" y="38" font-size="18" font-weight="700" text-anchor="middle" fill="#1C2526">Latency alert fires</text>
+    <line x1="850" y1="54" x2="850" y2="76" stroke="#1B3A5C" stroke-width="2" marker-end="url(#arrowNavy)"/>
+
+    <!-- Step 1: Waiting -->
+    <rect x="600" y="80" width="500" height="64" rx="8" class="fill-navy"/>
+    <text x="850" y="108" font-size="18" font-weight="700" text-anchor="middle" fill="#FFFFFF">Step 1 · Waiting Latency (panel 373)</text>
+    <text x="850" y="130" font-size="15" text-anchor="middle" fill="#FFFFFF">"How much impact, and is it network?"</text>
+
+    <!-- Branch from step 1 -->
+    <line x1="850" y1="144" x2="850" y2="170" stroke="#1B3A5C" stroke-width="2"/>
+    <line x1="260" y1="170" x2="1440" y2="170" stroke="#1B3A5C" stroke-width="2"/>
+
+    <!-- HIGH left branch -->
+    <line x1="260" y1="170" x2="260" y2="200" stroke="#C75B39" stroke-width="2" marker-end="url(#arrowNavy)"/>
+    <text x="275" y="190" font-size="16" font-weight="700" fill="#C75B39">HIGH</text>
+
+    <rect x="60" y="210" width="400" height="120" rx="8" class="fill-orange"/>
+    <text x="260" y="238" font-size="17" font-weight="700" text-anchor="middle" fill="#FFFFFF">Network / client side</text>
+    <text x="260" y="262" font-size="13" text-anchor="middle" fill="#FFFFFF">client ↔ datavisor net, ELB, CDN, client timeout</text>
+    <text x="260" y="290" font-size="13" text-anchor="middle" fill="#FFFFFF">Drill: ingress-nginx logs,</text>
+    <text x="260" y="308" font-size="13" text-anchor="middle" fill="#FFFFFF">client-side traces</text>
+
+    <!-- LOW right branch -->
+    <line x1="1440" y1="170" x2="1440" y2="200" stroke="#0A6A74" stroke-width="2" marker-end="url(#arrowNavy)"/>
+    <text x="1380" y="190" font-size="16" font-weight="700" fill="#0A6A74">LOW</text>
+
+    <!-- Step 2 -->
+    <rect x="1190" y="210" width="500" height="64" rx="8" class="fill-navy"/>
+    <text x="1440" y="238" font-size="18" font-weight="700" text-anchor="middle" fill="#FFFFFF">Step 2 · Upstream latency (panel 371)</text>
+    <text x="1440" y="260" font-size="15" text-anchor="middle" fill="#FFFFFF">"Is FP slow?"</text>
+
+    <!-- branch step 2 -->
+    <line x1="1440" y1="274" x2="1440" y2="296" stroke="#1B3A5C" stroke-width="2"/>
+    <line x1="1080" y1="296" x2="1620" y2="296" stroke="#1B3A5C" stroke-width="2"/>
+
+    <!-- HIGH from step 2 -->
+    <line x1="1080" y1="296" x2="1080" y2="324" stroke="#C75B39" stroke-width="2" marker-end="url(#arrowNavy)"/>
+    <text x="1095" y="316" font-size="14" font-weight="700" fill="#C75B39">HIGH</text>
+
+    <rect x="900" y="334" width="360" height="110" rx="8" class="fill-orange"/>
+    <text x="1080" y="360" font-size="16" font-weight="700" text-anchor="middle" fill="#FFFFFF">FP / DB slow</text>
+    <text x="1080" y="382" font-size="13" text-anchor="middle" fill="#FFFFFF">Go to EP_yHg7Gk</text>
+    <text x="1080" y="406" font-size="12" text-anchor="middle" fill="#FFFFFF">Drill: FP pod metrics, GC,</text>
+    <text x="1080" y="422" font-size="12" text-anchor="middle" fill="#FFFFFF">connection pool, DB latency</text>
+
+    <!-- LOW from step 2 -->
+    <line x1="1620" y1="296" x2="1620" y2="324" stroke="#0A6A74" stroke-width="2" marker-end="url(#arrowNavy)"/>
+    <text x="1560" y="316" font-size="14" font-weight="700" fill="#0A6A74">LOW</text>
+
+    <rect x="1300" y="334" width="380" height="110" rx="8" class="fill-orange"/>
+    <text x="1490" y="358" font-size="16" font-weight="700" text-anchor="middle" fill="#FFFFFF">Step 3 · Infra layer</text>
+    <text x="1490" y="378" font-size="12" text-anchor="middle" fill="#FFFFFF">(FP fast + network fast)</text>
+    <text x="1490" y="398" font-size="12" text-anchor="middle" fill="#FFFFFF">• Ingress (nginx) — HFAlVh2Nz   • APISIX — 0lpCu9kHk</text>
+    <text x="1490" y="416" font-size="12" text-anchor="middle" fill="#FFFFFF">• Recent reload / config push?</text>
+    <text x="1490" y="432" font-size="12" text-anchor="middle" fill="#FFFFFF">• Controller CPU / connection saturation?</text>
+  </svg>
+
+  <p class="muted" style="margin:4px 0; font-size:16px;">Drill into:
+    <a href="https://grafana-mgt.dv-api.com/d/EP_yHg7Gk" target="_blank"><code>EP_yHg7Gk</code></a> ·
+    <a href="https://grafana-mgt.dv-api.com/d/HFAlVh2Nz" target="_blank"><code>HFAlVh2Nz</code></a> ·
+    <a href="https://grafana-mgt.dv-api.com/d/0lpCu9kHk" target="_blank"><code>0lpCu9kHk</code></a>
+  </p>
+
+  <div class="card card-orange" style="margin:4px 0; padding:10px 16px;">
+    <ul style="margin:0; padding-left:20px; font-size:15px; line-height:1.35;">
+      <li>499 = client disconnected, <b>not counted in SLA</b>, suspect client network first</li>
+      <li>200/400/429 all count as success (4xx = request format issue, not our fault); <code>proxy_upstream_name=~".*backup.*"</code> is excluded</li>
+      <li>⚠️ Panel 371/373 unwrap fields are inferred from semantics (pattern truncated by MCP); confirm in Grafana UI before first use</li>
+    </ul>
+  </div>
+
+  <aside class="notes">This is the deck's most-used slide. The tree is the actual order an experienced oncall walks. Start with Waiting because it's the cheapest read — high Waiting immediately scopes you to network/client side, no need to look at the other two. Only when Waiting is clean do you check Upstream. If both are clean but Response Percentiles is high, the latency is happening BETWEEN client→ingress and ingress→FP — that means infra layer (ingress controller, APISIX, recent config push).</aside>
+</section>
+
+<section data-slide="6">
+  <h2 style="margin-bottom:6px;">Example 2 — Kafka Lag / MirrorMaker Triage</h2>
+  <p class="muted" style="margin-bottom:8px; font-size:16px;">Two alertnames, two dashboards. Mixing them up is the #1 mistake — always reverse-match alertname first.</p>
+
+  <!-- Top: architecture SVG -->
+  <svg viewBox="0 0 1700 180" xmlns="http://www.w3.org/2000/svg" role="img"
+       aria-label="MirrorMaker2 bidirectional replication between two Kafka clusters"
+       style="max-height:170px; width:100%;">
+    <defs>
+      <marker id="arrMM" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" class="fill-orange"/>
+      </marker>
+    </defs>
+
+    <!-- cluster_a box -->
+    <rect x="40" y="40" width="380" height="100" rx="8" fill="#FFFFFF" class="stroke-navy" stroke="currentColor" stroke-width="2"/>
+    <text x="230" y="76" text-anchor="middle" class="fill-navy" font-size="18" font-weight="700">Kafka cluster · cluster_a</text>
+    <text x="230" y="100" text-anchor="middle" class="fill-navy" font-size="13">topic foo lives here</text>
+    <text x="230" y="122" text-anchor="middle" class="fill-navy" font-size="13">(source AND target — bidirectional)</text>
+
+    <!-- MM2 in the middle -->
+    <rect x="640" y="40" width="420" height="100" rx="8" class="fill-orange"/>
+    <text x="850" y="76" text-anchor="middle" fill="#FFFFFF" font-size="18" font-weight="700">MirrorMaker2 (Kafka Connect)</text>
+    <text x="850" y="100" text-anchor="middle" fill="#FFFFFF" font-size="13">replicates by source / target labels</text>
+    <text x="850" y="122" text-anchor="middle" fill="#FFFFFF" font-size="13">metric: kafka_mirror_sync_lag</text>
+
+    <!-- cluster_b box -->
+    <rect x="1280" y="40" width="380" height="100" rx="8" fill="#FFFFFF" class="stroke-navy" stroke="currentColor" stroke-width="2"/>
+    <text x="1470" y="76" text-anchor="middle" class="fill-navy" font-size="18" font-weight="700">Kafka cluster · cluster_b</text>
+    <text x="1470" y="100" text-anchor="middle" class="fill-navy" font-size="13">SAME topic name foo</text>
+    <text x="1470" y="122" text-anchor="middle" class="fill-navy" font-size="13">(NO &lt;source&gt;.&lt;topic&gt; renaming)</text>
+
+    <!-- arrows -->
+    <line x1="420" y1="78"  x2="640" y2="78"  class="stroke-orange" stroke-width="3" marker-end="url(#arrMM)"/>
+    <line x1="640" y1="106" x2="420" y2="106" class="stroke-orange" stroke-width="3" marker-end="url(#arrMM)"/>
+    <line x1="1060" y1="78"  x2="1280" y2="78"  class="stroke-orange" stroke-width="3" marker-end="url(#arrMM)"/>
+    <line x1="1280" y1="106" x2="1060" y2="106" class="stroke-orange" stroke-width="3" marker-end="url(#arrMM)"/>
+  </svg>
+
+  <!-- Two alert families table -->
+  <table style="font-size:15px; margin-top:8px;">
+    <thead>
+      <tr><th style="width:32%;">Alertname pattern</th><th style="width:8%;">Sev</th><th>What it means</th><th style="width:24%;">Dashboard</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>MirrorMakerConsumerLagDecliningTooSlow</code></td>
+        <td><span class="accent-orange">PAGER</span></td>
+        <td>MM2 replication slow. Decline-rate: <code>(L<sub>5m</sub> − L<sub>now</sub>) / L<sub>5m</sub> &lt; 0.3</code> AND <code>L<sub>now</sub> &gt; 500</code></td>
+        <td><b>MirrorLag v2</b> — <a href="https://grafana-mgt.dv-api.com/d/-N7cUPZNk" target="_blank"><code>-N7cUPZNk</code></a></td>
+      </tr>
+      <tr>
+        <td><code>Kafka_*_consumergroup_lag_High</code> (cm / fp / detection / VelocityDetail_*)</td>
+        <td><span class="accent-orange">HIGH</span></td>
+        <td>Business consumer group can't keep up. Per-client variants: galileo / onefinance / tabapay / wex …</td>
+        <td><b>Kafka Exporter for all</b> — <a href="https://grafana-mgt.dv-api.com/d/cluster_kafkfa_exporter" target="_blank"><code>cluster_kafkfa_exporter</code></a></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Triage flow + caveats -->
+  <div style="display:grid; grid-template-columns: 3fr 2fr; gap: 16px; margin-top:8px; font-size:15px;">
+    <div>
+      <h3 style="font-size:18px; margin:0 0 4px 0;">4-step triage flow</h3>
+      <ol style="margin:0; padding-left:22px; line-height:1.45;">
+        <li><b>Read alertname.</b> <code>MirrorMaker*</code> → MirrorLag v2. <code>Kafka_*_consumergroup_lag_High</code> → Exporter.</li>
+        <li><b>Set variables.</b> MirrorLag: <code>cluster</code> (group prefix, no <code>-a/-b</code>) / <code>namespace</code> / <code>topic</code>. Exporter: <code>pod</code> (binds to one cluster) / <code>topic</code> / <code>consumergroup</code>.</li>
+        <li><b>Read the primary panel.</b><br>MirrorLag: panel 1 (MM2 pod <code>up</code>) + 2/3 (lag a→b, b→a).<br>Exporter: panel 12 <b>Lag by Consumer Group</b> (per cg + topic + partition).</li>
+        <li><b>Diagnose root.</b> ① MM2 pod down → restart (most common). ② Lag stuck + consumer offset rate ≈ 0 → consumer crashed. ③ Lag growing + producer rate &gt; consumer rate → consumer can't keep up; compare Exporter panel 3 (produce) vs 4 (consume).</li>
+      </ol>
+    </div>
+    <div class="card card-orange" style="margin:0; padding:12px 16px;">
+      <b style="font-size:16px;">Caveats</b>
+      <ul style="margin:6px 0 0 0; padding-left:18px; font-size:14px; line-height:1.4;">
+        <li><code>MirrorMakerConsumerLagDecliningTooSlow</code> namespace filter is hardcoded <code>prod|pci|gov|demo</code> — <code>useastprod</code>-style namespaces are <b>not covered</b>.</li>
+        <li>Default MirrorLag window is 30m — for alerts that fired 20-30min ago, expand to 1h to see the trigger trend.</li>
+        <li><code>cluster</code> var in MirrorLag is <code>kubernetes_cluster_groups</code> (e.g. <code>aws-uswest2-prod</code>), without <code>-a/-b</code> suffix.</li>
+        <li>DV does <b>NOT</b> use MM2's default <code>&lt;source&gt;.&lt;topic&gt;</code> renaming — same topic name on both clusters, direction is in the <code>source</code> / <code>target</code> labels.</li>
+      </ul>
+    </div>
+  </div>
+
+  <aside class="notes">Kafka lag is the second-most-common alert family. The #1 mistake is opening the wrong dashboard — MirrorLag v2 is ONLY for MM2 replication; Kafka Exporter handles every other consumer group (including MM2 if it happens to be the lagging consumer). Always reverse-match the alertname before clicking through. The DV-specific topology note (same topic on both clusters, no renaming) is worth calling out — it surprises people coming from upstream Kafka docs.</aside>
+</section>
+
+<section data-slide="6">
+  <h2>6 Core Dashboards Quick Reference</h2>
+  <p class="subtitle">80% daily entries + 4 deep-dive helpers.</p>
+
+  <div class="split-2-1">
+    <div class="left">
+      <table>
+        <thead>
+          <tr><th>UID</th><th>Name</th><th>When to use</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><a href="https://grafana-mgt.dv-api.com/d/p1KqfRAMk" target="_blank"><code>p1KqfRAMk</code></a></td><td>SLA - Batch &amp; RealTime</td><td><strong>Always first</strong> (customer-facing / latency / SLA)</td></tr>
+          <tr><td><a href="https://grafana-mgt.dv-api.com/d/HFAlVh2Nz" target="_blank"><code>HFAlVh2Nz</code></a></td><td>Debug logs for Ingress-nginx</td><td>Slice nginx access log by client/status/latency</td></tr>
+          <tr><td><a href="https://grafana-mgt.dv-api.com/d/9aBY8rWMz" target="_blank"><code>9aBY8rWMz</code></a></td><td>Logging (generic)</td><td>Free-form pod log exploration</td></tr>
+          <tr><td><a href="https://grafana-mgt.dv-api.com/d/b_XlLjRMz" target="_blank"><code>b_XlLjRMz</code></a></td><td>Pod Resources</td><td>Single pod CPU/mem/restart/IO</td></tr>
+          <tr><td><a href="https://grafana-mgt.dv-api.com/d/sNt6IXzGk" target="_blank"><code>sNt6IXzGk</code></a></td><td>Node Resource</td><td>Node-level pressure</td></tr>
+          <tr><td><a href="https://grafana-mgt.dv-api.com/d/1IGjQaiMk" target="_blank"><code>1IGjQaiMk</code></a></td><td>YugabyteDB</td><td>YCQL latency, tserver overload</td></tr>
+          <tr><td><a href="https://grafana-mgt.dv-api.com/d/MQWgroiiz" target="_blank"><code>MQWgroiiz</code></a></td><td>MySQL Overview</td><td>Connections / slow queries / replication lag</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="right">
+      <h3>Helper dashboards</h3>
+      <div class="card">
+        <p><a href="https://grafana-mgt.dv-api.com/d/EP_yHg7Gk" target="_blank"><code>EP_yHg7Gk</code></a> — Feature Platform Metrics (FP P99 / GC / connection pool)</p>
+      </div>
+      <div class="card">
+        <p><a href="https://grafana-mgt.dv-api.com/d/LzldHAVnz" target="_blank"><code>LzldHAVnz</code></a> — vmalert (when you suspect false firing)</p>
+      </div>
+      <div class="card">
+        <p><a href="https://grafana-mgt.dv-api.com/d/asfasqwe2r" target="_blank"><code>asfasqwe2r</code></a> — Alertmanager View (how many firing now)</p>
+      </div>
+      <div class="card">
+        <p><a href="https://grafana-mgt.dv-api.com/d/fp-gc-enhanced-v2" target="_blank"><code>fp-gc-enhanced-v2</code></a> — FP GC deep dive</p>
+      </div>
+    </div>
+  </div>
+
+  <p class="footer">Treat the UID as the dashboard's real name — the URL is <a href="https://grafana-mgt.dv-api.com" target="_blank">grafana-mgt.dv-api.com</a>/d/&lt;UID&gt;.</p>
+
+  <aside class="notes">The first 6 cover 80% of daily entries. The 4 helpers are deep-dive only. UID is the dashboard's real name; just paste it after /d/.</aside>
+</section>
+
+<section data-slide="7">
+  <h2>5-Step Universal Oncall Workflow</h2>
+  <p class="subtitle">Muscle memory: 1 → 1.5 → 2 → 3 → 4 → 5.</p>
+
+  <ol class="step-flow">
+    <li>
+      <span class="step-num">1</span>
+      <div class="step-body">
+        <h3>Read the alert (don't query yet)</h3>
+        <p>Grab severity / cluster / namespace / ts / client / metric + threshold. Stop if any field is missing. Compute window: ts ± 3min (widen 2× if rule eval interval &gt; 5min).</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-num">1.5</span>
+      <div class="step-body">
+        <h3>Click the alert's source URL <span class="accent-orange">(orange)</span></h3>
+        <p>Drops you straight into vmui with the current value; pull window to 24h to check if it's chronic noise.</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-num">2</span>
+      <div class="step-body">
+        <h3>Open the funnel-top dashboard</h3>
+        <p>Decided by alertname (see routing table on Slide 8).</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-num">3</span>
+      <div class="step-body">
+        <h3>Bisect on the SLA dashboard using the 4 quadrants</h3>
+        <p>Order: panel 192/359 → 371 → 373 → 194.</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-num">4</span>
+      <div class="step-body">
+        <h3>Drill into logs</h3>
+        <p>Window ±3min, use a time-pinned link.</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-num">5</span>
+      <div class="step-body">
+        <h3>Write one-sentence hypothesis → one query to verify → then act <span class="accent-teal">(teal)</span></h3>
+        <p>Any K8s mutating op must be prefixed with <code># INTENT:</code>.</p>
+      </div>
+    </li>
+  </ol>
+
+  <aside class="notes">These 5 steps are muscle memory. Step 1.5 is the easiest to skip but the biggest time-saver — vmalert's source URL drops you into vmui with the exact PromQL the alert was firing on.</aside>
+</section>
+
+<section data-slide="8">
+  <h2>Alert → Playbook Routing Table</h2>
+  <p class="subtitle">alertname pattern → playbook letter → first dashboard.</p>
+
+  <table>
+    <thead>
+      <tr><th>Alertname pattern</th><th>Playbook</th><th>First dashboard</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>RTIngress*</code> / <code>Apisix*</code> / <code>IngressNginx*</code> / <code>Aws(Alb|ApiGateway)*P9*</code></td>
+        <td>A</td>
+        <td><a href="https://grafana-mgt.dv-api.com/d/p1KqfRAMk" target="_blank"><code>p1KqfRAMk</code></a></td>
+      </tr>
+      <tr>
+        <td><code>*5xx*</code> / <code>*Non200*</code></td>
+        <td>B</td>
+        <td><a href="https://grafana-mgt.dv-api.com/d/HFAlVh2Nz" target="_blank"><code>HFAlVh2Nz</code></a></td>
+      </tr>
+      <tr>
+        <td><code>K8sPod*Killed</code> / <code>*Restarted*</code> / <code>OomKiller</code></td>
+        <td>C</td>
+        <td><a href="https://grafana-mgt.dv-api.com/d/b_XlLjRMz" target="_blank"><code>b_XlLjRMz</code></a></td>
+      </tr>
+      <tr>
+        <td><code>K8sNode*</code> / <code>Node*Disk*</code> / <code>Node*Memory*</code></td>
+        <td>D</td>
+        <td><a href="https://grafana-mgt.dv-api.com/d/sNt6IXzGk" target="_blank"><code>sNt6IXzGk</code></a></td>
+      </tr>
+      <tr>
+        <td><code>HighCpuUsageOfContainer*</code> / FP CPU spike</td>
+        <td>E</td>
+        <td><a href="https://grafana-mgt.dv-api.com/d/b_XlLjRMz" target="_blank"><code>b_XlLjRMz</code></a> + <a href="https://grafana-mgt.dv-api.com/d/EP_yHg7Gk" target="_blank"><code>EP_yHg7Gk</code></a></td>
+      </tr>
+      <tr>
+        <td><code>Yuga*</code> / <code>yugabytedb*</code></td>
+        <td>F</td>
+        <td><a href="https://grafana-mgt.dv-api.com/d/1IGjQaiMk" target="_blank"><code>1IGjQaiMk</code></a></td>
+      </tr>
+      <tr>
+        <td><code>Mysql*</code> / <code>MySQLReplication*</code> / <code>Hikari*</code></td>
+        <td>G</td>
+        <td><a href="https://grafana-mgt.dv-api.com/d/MQWgroiiz" target="_blank"><code>MQWgroiiz</code></a></td>
+      </tr>
+      <tr>
+        <td><code>K8sFP*Non200</code> / FP 504</td>
+        <td>H</td>
+        <td><a href="https://grafana-mgt.dv-api.com/d/HFAlVh2Nz" target="_blank"><code>HFAlVh2Nz</code></a> → <a href="https://grafana-mgt.dv-api.com/d/EP_yHg7Gk" target="_blank"><code>EP_yHg7Gk</code></a></td>
+      </tr>
+      <tr>
+        <td>Ingress → upstream waiting</td>
+        <td>I</td>
+        <td><a href="https://grafana-mgt.dv-api.com/d/p1KqfRAMk" target="_blank"><code>p1KqfRAMk</code></a> panel 373</td>
+      </tr>
+      <tr>
+        <td>Suspect false firing / unstable metric</td>
+        <td>J</td>
+        <td><a href="https://grafana-mgt.dv-api.com/d/LzldHAVnz" target="_blank"><code>LzldHAVnz</code></a></td>
+      </tr>
+      <tr>
+        <td><strong><code>FPTopicsOffsetIncreaseZero*</code></strong> etc. (67% of firings)</td>
+        <td><strong>K</strong> (noise check first)</td>
+        <td>vmui source URL</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card card-orange">
+    <p>Of the current 932 firing alerts, 469 (50%) are <code>FPTopicsOffsetIncreaseZero</code> + per-client variants. <strong>Judge whether it's chronic noise first</strong>: pull the vmui source URL window to 24h to see persistence, then decide whether to act.</p>
+  </div>
+
+  <aside class="notes">Slack shows real alertnames like RTIngressP99ResponseTime_Affirm — reverse-match by pattern to the playbook letter, then go to the first dashboard. Full playbook steps live in REPORT §5 and parts/06.</aside>
+</section>
+
+<section>
+  <h2>Alerting System — Current State</h2>
+  <p class="muted">540 rules, 932 firing — but 67% of firings come from TOP 3 alerts. 91 rules have no severity label, 79 have no team label. Noise tax is concentrated.</p>
+
+  <div class="split" style="grid-template-columns: repeat(5, 1fr); gap: 24px; margin-top: 24px;">
+    <div class="stat">
+      <div class="num" style="color: var(--navy)">540</div>
+      <div class="lbl">alerting rules</div>
+    </div>
+    <div class="stat">
+      <div class="num" style="color: var(--orange)">0</div>
+      <div class="lbl">recording rules (in <code>recored.yaml</code>)</div>
+    </div>
+    <div class="stat">
+      <div class="num" style="color: var(--orange)">932</div>
+      <div class="lbl">currently firing</div>
+    </div>
+    <div class="stat">
+      <div class="num" style="color: var(--orange)">67%</div>
+      <div class="lbl">TOP 3 alerts' share of firings</div>
+    </div>
+    <div class="stat">
+      <div class="num" style="color: var(--accent-yellow)">91</div>
+      <div class="lbl">rules missing severity label</div>
+    </div>
+  </div>
+
+  <svg viewBox="0 0 1900 460" style="width: 100%; max-height: 480px; margin-top: 32px;" xmlns="http://www.w3.org/2000/svg">
+    <!-- longest bar (469) ≈ 80% of 1900 = 1520px. Scale ≈ 3.241 -->
+    <text x="0" y="50" font-size="22" fill="#1C2526" font-family="monospace">FPTopicsOffsetIncreaseZero</text>
+    <rect x="560" y="28" width="1520" height="36" fill="#C75B39" fill-opacity="1.0"/>
+    <text x="2090" y="54" font-size="22" fill="#1C2526" font-weight="bold">469</text>
+
+    <text x="0" y="130" font-size="22" fill="#1C2526" font-family="monospace">KafkaEventExporterApplicationStderrErrors</text>
+    <rect x="560" y="108" width="314" height="36" fill="#C75B39" fill-opacity="0.7"/>
+    <text x="884" y="134" font-size="22" fill="#1C2526" font-weight="bold">97</text>
+
+    <text x="0" y="210" font-size="22" fill="#1C2526" font-family="monospace">FPRuleCountZero</text>
+    <rect x="560" y="188" width="191" height="36" fill="#C75B39" fill-opacity="0.5"/>
+    <text x="761" y="214" font-size="22" fill="#1C2526" font-weight="bold">59</text>
+
+    <text x="0" y="290" font-size="22" fill="#1C2526" font-family="monospace">QpsZero</text>
+    <rect x="560" y="268" width="104" height="36" fill="#1B3A5C" fill-opacity="0.5"/>
+    <text x="674" y="294" font-size="22" fill="#1C2526" font-weight="bold">32</text>
+
+    <text x="0" y="370" font-size="22" fill="#1C2526" font-family="monospace">yugabytedbExternalLocalDiskUsageHigh</text>
+    <rect x="560" y="348" width="81" height="36" fill="#1B3A5C" fill-opacity="0.5"/>
+    <text x="651" y="374" font-size="22" fill="#1C2526" font-weight="bold">25</text>
+  </svg>
+
+  <div style="margin-top: 24px; font-size: 22px; color: var(--muted);">
+    <p style="margin: 6px 0;"><strong>Severity distribution:</strong> PAGER 142 / HIGH 283 / MEDIUM 18 / WARNING 6 / CRITICAL 1 (<code>LokiPanics</code>) / <strong>no severity 91</strong></p>
+    <p style="margin: 6px 0;"><strong>Team distribution:</strong> fp 276 / infra 181 / decision 5 / <strong>no team 79</strong> (source of routing inaccuracy)</p>
+  </div>
+
+  <aside class="notes">67% of alert volume concentrates in TOP 3, mostly FPTopicsOffsetIncreaseZero alone. This is the single biggest source of oncall noise tax — see Playbook K, judge noise before triage.</aside>
+</section>
+
+<section>
+  <h2>TOP 5 Pitfalls</h2>
+  <p class="muted">Five highest-step-rate pitfalls across SLA dashboard, Loki, PromQL, and Node Resource panels.</p>
+
+  <div class="split" style="grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px;">
+    <div class="card card-orange">
+      <h3>1. OOM uses <code>container_memory_working_set_bytes</code></h3>
+      <p>Not RSS, not usage. Pod Resources panel 14. working_set includes active anonymous + active file cache, which is what the cgroup OOM killer judges against.</p>
+    </div>
+    <div class="card card-orange">
+      <h3>2. After switching <code>client</code> on SLA dashboard, re-pick <code>Batch_Pipeline</code></h3>
+      <p>Switching <code>client</code> requires re-picking <code>Batch_Pipeline</code>/<code>pipeline</code>. The two variables aren't linked; the Batch row goes falsely blank and makes you think batch is offline.</p>
+    </div>
+    <div class="card card-orange">
+      <h3>3. <code>gcp-uswest1-prod-a</code>'s Loki tenant is <code>nonprod</code></h3>
+      <p>The name misleads. When you script a query and forget <code>LOKI_ORG_ID=nonprod</code>, you get empty results.</p>
+    </div>
+    <div class="card card-orange">
+      <h3>4. Always add a cluster filter to PromQL</h3>
+      <p>Unfiltered <code>rate(kubernetes_monitoring_request_total_ingress_nginx[1m])</code> scans the whole table on VM, averaging 2.9 seconds per call — 117s of CPU per 10min.</p>
+    </div>
+  </div>
+
+  <div class="card card-orange" style="margin-top: 24px;">
+    <h3>5. Node Resource's <code>$nodeHost</code> must select a specific IP, not <code>$__all</code></h3>
+    <p>Otherwise it averages/sums all node metrics across the cluster, hiding single-node hot spots. Node-dimension panels are almost all aggregated by instance; <code>All</code> is self-deception.</p>
+  </div>
+
+  <aside class="notes">These 5 have the highest step-rate. Full list of 20 pitfalls in REPORT §7, spanning SLA dashboard, Logging, Pod/Node, DB, and VM/alert — 5 domains.</aside>
+</section>
+
+<section>
+  <h2>How to Edit / Add Alerts</h2>
+  <p class="muted">Alerts live in the <code>infra</code> repo. VM is primary, Prometheus is the compatibility backup — you must edit both. Always include <code>severity</code> and <code>team</code> labels.</p>
+
+  <div class="split split-2-3" style="margin-top: 24px;">
+    <div>
+      <pre style="background: #1C2526; color: #F0F4F8; padding: 20px; border-radius: 8px; font-size: 18px; line-height: 1.5; overflow: auto;"><code>infra repo:
+~/work/work-harness/code_repos/infra
+
+core/src/monitorV3/
+├── victoriametrics/alerts/
+│   ├── *.yml  (33 files, by topic)
+│   └── recored.yaml      ← Recording rule
+│                           (typo preserved)
+├── prometheus/
+│   ├── alerts/           ← Compatibility backup
+│   │                       must sync-edit
+│   └── alertmanager/
+│       └── config.yml    ← Receiver
+│                           / route / Slack
+└── scripts/
+    generate_*_alerts.{py,sh}</code></pre>
+      <p class="muted" style="margin-top: 12px; font-size: 20px;">VM primary / Prom backup. vmalert actually runs the VM set.</p>
+    </div>
+
+    <div>
+      <h3>Edit-alert workflow</h3>
+      <ol style="font-size: 24px; line-height: 1.6;">
+        <li>Sync-edit both yamls (VM primary, Prom backup)</li>
+        <li>PR + lint CI → merge to main</li>
+        <li>CI auto-syncs; visible in vmui Alerts/Groups within minutes</li>
+        <li>Verify: search alertname in the vmui Alerts tab</li>
+      </ol>
+
+      <div class="card card-orange" style="margin-top: 24px;">
+        <h3>Required labels for new rules</h3>
+        <ul>
+          <li><code>severity</code> — currently 91 rules missing</li>
+          <li><code>team</code> — currently 79 rules missing</li>
+          <li>Don't use alertname suffixes for per-client splits (e.g. <code>_Affirm</code>, <code>_Nasa</code>) — use the <code>client</code> label</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <aside class="notes">VM is the primary alert rule set, Prom is compatibility backup — historical reason, you must edit both. New rules without severity/team labels route inaccurately and get dropped into the default channel.</aside>
+</section>
+
+<section>
+  <h2>30-Second Elevator Summary</h2>
+
+  <blockquote style="border-left: 4px solid var(--orange); padding-left: 24px; font-size: 26px; line-height: 1.5; margin-top: 24px;">
+    <p>Monitoring is three layers: metrics all in <strong>VictoriaMetrics</strong>, alerts all through <strong>vmalert</strong> (not Grafana managed), logs all in <strong>Loki</strong> multi-tenant.</p>
+    <p>When things break, dashboard order is decided by the <strong>latency chain</strong>: client → APISIX → ingress → fp → yuga/mysql.</p>
+    <p>First stop is always the <strong>SLA dashboard</strong> (<a href="https://grafana-mgt.dv-api.com/d/p1KqfRAMk" target="_blank"><code>p1KqfRAMk</code></a>) — use panels 371 / 373 / 194 for bisection: fp slow, network slow, or client closed early.</p>
+    <p>Always add a cluster filter to PromQL. OOM uses working_set, not RSS. Node variables always pick a specific IP.</p>
+  </blockquote>
+
+  <div class="split" style="grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-top: 32px;">
+    <div class="card card-teal">
+      <h3>Full report</h3>
+      <p><code>contexts/survey_sessions/monitoring_overview_20260521/REPORT.md</code> (10 sections + 11 playbooks + 20 pitfalls)</p>
+    </div>
+    <div class="card card-teal">
+      <h3>Skill entry</h3>
+      <p><code>/workflow_dv_monitoring_oncall</code> (<code>rules/skills/workflow_dv_monitoring_oncall.md</code>)</p>
+    </div>
+    <div class="card card-teal">
+      <h3>Coming next</h3>
+      <p>alertmanager <code>-notifier.url</code>, Grafana OnCall scheduling, recording-rule online reload validation</p>
+    </div>
+  </div>
+
+  <p style="text-align:center; font-size: 30px; color: var(--muted); margin-top: 40px;">Questions?</p>
+
+  <aside class="notes">This single slide is the 30-second takeaway. All details have indexes in REPORT.md; the skill entry is invocable via /workflow_dv_monitoring_oncall.</aside>
+</section>
+
+  </div></div>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+  <script>
+    Reveal.initialize({
+      width: 1920, height: 1080, margin: 0.04,
+      hash: true, slideNumber: 'c/t',
+      plugins: [ RevealNotes ]
+    });
+    mermaid.initialize({
+      startOnLoad: true, theme: 'base',
+      themeVariables: {
+        primaryColor: '#F0F4F8', primaryTextColor: '#1C2526',
+        primaryBorderColor: '#1B3A5C', lineColor: '#1B3A5C',
+        secondaryColor: '#FFFFFF', tertiaryColor: '#DCE3EA',
+        fontFamily: 'Inter, system-ui, sans-serif'
+      }
+    });
+  </script>
+</body>
+</html>

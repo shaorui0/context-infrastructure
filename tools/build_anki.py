@@ -10,8 +10,55 @@ from pathlib import Path
 import genanki
 
 ROOT = Path(__file__).parent
-SRC = ROOT / "tmp-out.txt"
-OUT_APKG = ROOT / "n2_vocab_28.apkg"
+# 输入源:默认 tmp-out.txt(向后兼容)。可用 ANKI_SRC 环境变量覆盖,
+# 便于用 fixtures/sample_deck.tsv 等验收。
+SRC = Path(os.environ.get("ANKI_SRC", ROOT / "tmp-out.txt"))
+OUT_APKG = Path(os.environ.get("ANKI_OUT", ROOT / "n2_vocab_28.apkg"))
+
+# ── tag 校验器接入(producer/tag_validator.py) ─────────────────────────
+# 校验器位于 anki-learning-harness/producer/。把它加进 sys.path 以便 import。
+_VALIDATOR_DIR = (
+    ROOT.parent
+    / "work-contexts"
+    / "toy-proj"
+    / "anki-learning-harness"
+    / "producer"
+)
+if _VALIDATOR_DIR.is_dir():
+    sys.path.insert(0, str(_VALIDATOR_DIR))
+try:
+    import tag_validator  # type: ignore
+except Exception:  # 校验器缺失时不阻断旧用法(宽松降级)
+    tag_validator = None
+
+
+def _is_n2_deck(rows) -> bool:
+    """启发式:任一行含 ability:: tag → 视为 n2 deck,走严格校验。"""
+    return any("ability::" in tags for *_rest, tags in rows)
+
+
+def _validate_or_abort(rows) -> None:
+    """n2 deck 在生成前强制校验;失败则阻断,不生成。非 n2 走宽松模式。"""
+    if not _is_n2_deck(rows):
+        print("ℹ️  无 ability:: tag,按非-n2 宽松模式跳过严格校验。", flush=True)
+        return
+    if tag_validator is None:
+        print(
+            "❌ 检测到 n2 卡(含 ability::)但找不到 tag_validator,拒绝生成。",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+    cards = [(f"L{i}", tags.split()) for i, (*_r, tags) in enumerate(rows, 1)]
+    violations = tag_validator.validate_cards(cards)
+    if violations:
+        print(
+            f"❌ tag 校验失败 — {len(violations)} 条违规,阻断生成:",
+            file=sys.stderr,
+        )
+        for v in violations:
+            print(f"  {v}", file=sys.stderr)
+        sys.exit(1)
+    print(f"✅ tag 校验通过 — {len(rows)} 张 n2 卡。", flush=True)
 AUDIO_DIR = ROOT / ".anki_audio"
 AUDIO_DIR.mkdir(exist_ok=True)
 
@@ -99,6 +146,8 @@ def parse():
 
 rows = parse()
 print(f"Parsed {len(rows)} cards from {SRC.name}", flush=True)
+# n2 deck 生成前强制 tag 校验,失败则阻断(契约 tag_schema.md 规则4)
+_validate_or_abort(rows)
 
 for i, (front, back, reading, tags) in enumerate(rows, 1):
     # Audio source: prefer Reading (kana). If empty, fall back to Front.

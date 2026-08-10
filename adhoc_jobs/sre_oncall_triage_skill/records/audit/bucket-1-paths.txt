@@ -1,0 +1,13 @@
+facets/alert_quality.md
+facets/client_mapping.md
+facets/compute_pods.md
+facets/index.md
+facets/logs_evidence.md
+facets/signal_extraction.md
+facets/sla_pipeline.md
+facets/slack_alert_intake.md
+facets/state_database.md
+facets/traffic_interface.md
+CLAUDE.md
+README.md
+todo.md

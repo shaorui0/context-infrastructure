@@ -42,3 +42,11 @@ ingress-nginx-admission.yaml.bk
 
 # personal screenshots / images at repo root
 /*.png
+
+# 下线站点的线上产物快照（体积大、纯产物，不入库；说明见该目录 README）
+work-contexts/toy-proj/_published_backup/*-gh-pages/
+
+# Unsanitised oncall knowledge staged for the resume site: real customer names,
+# cluster aliases and internal URLs. The project's own notes say it must never
+# ship publicly — keep it out of this public repo entirely.
+adhoc_jobs/dynamic_resume_site/knowledge_raw/

@@ -1,0 +1,337 @@
+<section data-slide="5">
+  <h2 style="margin-bottom:6px;">Core — SLA Panels → Latency Segments → Decision Tree</h2>
+  <p class="muted" style="margin-bottom:6px; font-size:16px;">Each panel measures a <b>specific segment</b> of the request path (based on nginx <code>request_time</code> / <code>upstream_response_time</code>). Dashboard: <a href="https://grafana-mgt.dv-api.com/d/p1KqfRAMk" target="_blank"><code>p1KqfRAMk</code></a></p>
+
+  <svg viewBox="0 0 1700 260" xmlns="http://www.w3.org/2000/svg" role="img"
+       aria-label="Panel-to-segment map: which SLA panel measures which hop of the request path"
+       style="max-height:240px; width:100%;">
+    <defs>
+      <marker id="arrSeg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" class="fill-navy"/>
+      </marker>
+    </defs>
+
+    <!-- Chain: client → nginx → FP → DB. Nodes at x=80,420,920,1350,1620 -->
+    <g font-size="15" text-anchor="middle">
+      <rect x="40"   y="40" width="140" height="48" rx="6" fill="#FFFFFF" class="stroke-navy" stroke="currentColor" stroke-width="2"/>
+      <text x="110"  y="70" class="fill-navy" font-weight="700">client</text>
+
+      <rect x="280"  y="40" width="200" height="48" rx="6" fill="#FFFFFF" class="stroke-navy" stroke="currentColor" stroke-width="2"/>
+      <text x="380"  y="62" class="fill-navy" font-weight="700">Ingress (nginx)</text>
+      <text x="380"  y="80" class="fill-navy" font-size="12">measurement vantage</text>
+
+      <rect x="580"  y="40" width="200" height="48" rx="6" fill="#FFFFFF" class="stroke-navy" stroke="currentColor" stroke-width="2"/>
+      <text x="680"  y="70" class="fill-navy" font-weight="700">Feature Platform (fp)</text>
+
+      <rect x="880"  y="40" width="200" height="48" rx="6" fill="#FFFFFF" class="stroke-navy" stroke="currentColor" stroke-width="2"/>
+      <text x="980"  y="70" class="fill-navy" font-weight="700">Yuga / MySQL</text>
+    </g>
+
+    <!-- Arrows between -->
+    <g class="stroke-orange" stroke="currentColor" stroke-width="2" fill="none" marker-end="url(#arrSeg)">
+      <line x1="180" y1="64" x2="278" y2="64"/>
+      <line x1="480" y1="64" x2="578" y2="64"/>
+      <line x1="780" y1="64" x2="878" y2="64"/>
+    </g>
+    <!-- segment labels: A / C / D -->
+    <g font-size="11" text-anchor="middle" class="fill-orange" font-weight="700">
+      <text x="229" y="36">A: net+TLS</text>
+      <text x="529" y="36">C: net</text>
+      <text x="829" y="36">D: DB call</text>
+    </g>
+
+    <!-- Three measurement bars below the chain -->
+    <!-- Bar 1: request_time (full at nginx vantage) — spans from client (x=110) round-trip back. Show as bar from x=190 to x=1080 anchored AT nginx -->
+    <!-- Actually request_time is "from receiving first byte to writing last byte BACK at nginx". So segment-wise it's A in + (B+C+D+C'+B') + A' out. We'll show it as a wide bar spanning client→DB→client (visualised as left-to-right from x=110 to x=980 then with a return tick). -->
+    <g>
+      <rect x="110" y="120" width="870" height="22" rx="3" class="fill-orange" opacity="0.85"/>
+      <text x="545" y="136" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">
+        Panel 192/359 · request_time — A + B + C + D + C' + B' + A' (full round-trip at nginx)
+      </text>
+    </g>
+
+    <!-- Bar 2: upstream_response_time (panel 371) — spans nginx → DB → nginx (C+D+C'). x=380 (nginx center) to x=980 (DB right) -->
+    <g>
+      <rect x="380" y="155" width="600" height="22" rx="3" class="fill-teal" opacity="0.85"/>
+      <text x="680" y="171" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="700">
+        Panel 371 · upstream_response_time — C + D + C' (nginx ↔ FP ↔ DB, includes DB time!)
+      </text>
+    </g>
+
+    <!-- Bar 3: Waiting = request_time - upstream_response_time. Spans A + B (client → nginx + nginx own). Two segments at x=110→380 and x=380→1080-380=... actually it's A in/out + B in/out — render as bookend bars -->
+    <g>
+      <rect x="110" y="190" width="270" height="22" rx="3" class="fill-yellow"/>
+      <rect x="380" y="190" width="0" height="22"/>  <!-- separator -->
+      <text x="245" y="206" text-anchor="middle" class="fill-navy" font-size="12" font-weight="700">
+        Panel 373 · Waiting = request_time − upstream_response_time
+      </text>
+      <text x="245" y="232" text-anchor="middle" class="fill-navy" font-size="11">
+        A + B (client ↔ nginx + nginx work) · network/client signal
+      </text>
+    </g>
+
+    <!-- Nuance callout on the right -->
+    <g>
+      <rect x="1110" y="115" width="580" height="145" rx="6" fill="#FFFFFF" class="stroke-orange" stroke="currentColor" stroke-width="1.5"/>
+      <text x="1130" y="138" class="fill-orange" font-size="13" font-weight="700">Critical nuance</text>
+      <text x="1130" y="160" class="fill-navy" font-size="12">Panel 371 (upstream) INCLUDES FP's downstream DB calls —</text>
+      <text x="1130" y="176" class="fill-navy" font-size="12">FP holds request until DB returns, so DB latency rolls in.</text>
+      <text x="1130" y="200" class="fill-navy" font-size="12" font-weight="700">371 high + Yuga/MySQL also high → DB is the root, not FP code.</text>
+      <text x="1130" y="226" class="fill-navy" font-size="12">Also: "E2E real-time (ALB + ApiGateway)" panel extends</text>
+      <text x="1130" y="242" class="fill-navy" font-size="12">the chain LEFT of nginx to catch AWS-edge latency.</text>
+    </g>
+  </svg>
+
+
+  <svg viewBox="0 0 1700 460" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Latency triage decision tree" style="max-height:430px; width:100%; margin-top:8px;">
+    <defs>
+      <marker id="arrowNavy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" class="fill-navy"/>
+      </marker>
+    </defs>
+
+    <!-- Top: Alert fires -->
+    <rect x="720" y="10" width="260" height="44" rx="6" class="fill-yellow"/>
+    <text x="850" y="38" font-size="18" font-weight="700" text-anchor="middle" fill="#1C2526">Latency alert fires</text>
+    <line x1="850" y1="54" x2="850" y2="76" stroke="#1B3A5C" stroke-width="2" marker-end="url(#arrowNavy)"/>
+
+    <!-- Step 1: Waiting -->
+    <rect x="600" y="80" width="500" height="64" rx="8" class="fill-navy"/>
+    <text x="850" y="108" font-size="18" font-weight="700" text-anchor="middle" fill="#FFFFFF">Step 1 · Waiting Latency (panel 373)</text>
+    <text x="850" y="130" font-size="15" text-anchor="middle" fill="#FFFFFF">"How much impact, and is it network?"</text>
+
+    <!-- Branch from step 1 -->
+    <line x1="850" y1="144" x2="850" y2="170" stroke="#1B3A5C" stroke-width="2"/>
+    <line x1="260" y1="170" x2="1440" y2="170" stroke="#1B3A5C" stroke-width="2"/>
+
+    <!-- HIGH left branch -->
+    <line x1="260" y1="170" x2="260" y2="200" stroke="#C75B39" stroke-width="2" marker-end="url(#arrowNavy)"/>
+    <text x="275" y="190" font-size="16" font-weight="700" fill="#C75B39">HIGH</text>
+
+    <rect x="60" y="210" width="400" height="120" rx="8" class="fill-orange"/>
+    <text x="260" y="238" font-size="17" font-weight="700" text-anchor="middle" fill="#FFFFFF">Network / client side</text>
+    <text x="260" y="262" font-size="13" text-anchor="middle" fill="#FFFFFF">client ↔ datavisor net, ELB, CDN, client timeout</text>
+    <text x="260" y="290" font-size="13" text-anchor="middle" fill="#FFFFFF">Drill: ingress-nginx logs,</text>
+    <text x="260" y="308" font-size="13" text-anchor="middle" fill="#FFFFFF">client-side traces</text>
+
+    <!-- LOW right branch -->
+    <line x1="1440" y1="170" x2="1440" y2="200" stroke="#0A6A74" stroke-width="2" marker-end="url(#arrowNavy)"/>
+    <text x="1380" y="190" font-size="16" font-weight="700" fill="#0A6A74">LOW</text>
+
+    <!-- Step 2 -->
+    <rect x="1190" y="210" width="500" height="64" rx="8" class="fill-navy"/>
+    <text x="1440" y="238" font-size="18" font-weight="700" text-anchor="middle" fill="#FFFFFF">Step 2 · Upstream latency (panel 371)</text>
+    <text x="1440" y="260" font-size="15" text-anchor="middle" fill="#FFFFFF">"Is FP slow?"</text>
+
+    <!-- branch step 2 -->
+    <line x1="1440" y1="274" x2="1440" y2="296" stroke="#1B3A5C" stroke-width="2"/>
+    <line x1="1080" y1="296" x2="1620" y2="296" stroke="#1B3A5C" stroke-width="2"/>
+
+    <!-- HIGH from step 2 -->
+    <line x1="1080" y1="296" x2="1080" y2="324" stroke="#C75B39" stroke-width="2" marker-end="url(#arrowNavy)"/>
+    <text x="1095" y="316" font-size="14" font-weight="700" fill="#C75B39">HIGH</text>
+
+    <rect x="900" y="334" width="360" height="110" rx="8" class="fill-orange"/>
+    <text x="1080" y="360" font-size="16" font-weight="700" text-anchor="middle" fill="#FFFFFF">FP / DB slow</text>
+    <text x="1080" y="382" font-size="13" text-anchor="middle" fill="#FFFFFF">Go to EP_yHg7Gk</text>
+    <text x="1080" y="406" font-size="12" text-anchor="middle" fill="#FFFFFF">Drill: FP pod metrics, GC,</text>
+    <text x="1080" y="422" font-size="12" text-anchor="middle" fill="#FFFFFF">connection pool, DB latency</text>
+
+    <!-- LOW from step 2 -->
+    <line x1="1620" y1="296" x2="1620" y2="324" stroke="#0A6A74" stroke-width="2" marker-end="url(#arrowNavy)"/>
+    <text x="1560" y="316" font-size="14" font-weight="700" fill="#0A6A74">LOW</text>
+
+    <rect x="1300" y="334" width="380" height="110" rx="8" class="fill-orange"/>
+    <text x="1490" y="358" font-size="16" font-weight="700" text-anchor="middle" fill="#FFFFFF">Step 3 · Infra layer</text>
+    <text x="1490" y="378" font-size="12" text-anchor="middle" fill="#FFFFFF">(FP fast + network fast)</text>
+    <text x="1490" y="398" font-size="12" text-anchor="middle" fill="#FFFFFF">• Ingress (nginx) — HFAlVh2Nz   • APISIX — 0lpCu9kHk</text>
+    <text x="1490" y="416" font-size="12" text-anchor="middle" fill="#FFFFFF">• Recent reload / config push?</text>
+    <text x="1490" y="432" font-size="12" text-anchor="middle" fill="#FFFFFF">• Controller CPU / connection saturation?</text>
+  </svg>
+
+  <p class="muted" style="margin:4px 0; font-size:16px;">Drill into:
+    <a href="https://grafana-mgt.dv-api.com/d/EP_yHg7Gk" target="_blank"><code>EP_yHg7Gk</code></a> ·
+    <a href="https://grafana-mgt.dv-api.com/d/HFAlVh2Nz" target="_blank"><code>HFAlVh2Nz</code></a> ·
+    <a href="https://grafana-mgt.dv-api.com/d/0lpCu9kHk" target="_blank"><code>0lpCu9kHk</code></a>
+  </p>
+
+  <div class="card card-orange" style="margin:4px 0; padding:10px 16px;">
+    <ul style="margin:0; padding-left:20px; font-size:15px; line-height:1.35;">
+      <li>499 = client disconnected, <b>not counted in SLA</b>, suspect client network first</li>
+      <li>200/400/429 all count as success (4xx = request format issue, not our fault); <code>proxy_upstream_name=~".*backup.*"</code> is excluded</li>
+      <li>⚠️ Panel 371/373 unwrap fields are inferred from semantics (pattern truncated by MCP); confirm in Grafana UI before first use</li>
+    </ul>
+  </div>
+
+  <aside class="notes">This is the deck's most-used slide. The tree is the actual order an experienced oncall walks. Start with Waiting because it's the cheapest read — high Waiting immediately scopes you to network/client side, no need to look at the other two. Only when Waiting is clean do you check Upstream. If both are clean but Response Percentiles is high, the latency is happening BETWEEN client→ingress and ingress→FP — that means infra layer (ingress controller, APISIX, recent config push).</aside>
+</section>
+
+<section data-slide="6">
+  <h2>6 Core Dashboards Quick Reference</h2>
+  <p class="subtitle">80% daily entries + 4 deep-dive helpers.</p>
+
+  <div class="split-2-1">
+    <div class="left">
+      <table>
+        <thead>
+          <tr><th>UID</th><th>Name</th><th>When to use</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><a href="https://grafana-mgt.dv-api.com/d/p1KqfRAMk" target="_blank"><code>p1KqfRAMk</code></a></td><td>SLA - Batch &amp; RealTime</td><td><strong>Always first</strong> (customer-facing / latency / SLA)</td></tr>
+          <tr><td><a href="https://grafana-mgt.dv-api.com/d/HFAlVh2Nz" target="_blank"><code>HFAlVh2Nz</code></a></td><td>Debug logs for Ingress-nginx</td><td>Slice nginx access log by client/status/latency</td></tr>
+          <tr><td><a href="https://grafana-mgt.dv-api.com/d/9aBY8rWMz" target="_blank"><code>9aBY8rWMz</code></a></td><td>Logging (generic)</td><td>Free-form pod log exploration</td></tr>
+          <tr><td><a href="https://grafana-mgt.dv-api.com/d/b_XlLjRMz" target="_blank"><code>b_XlLjRMz</code></a></td><td>Pod Resources</td><td>Single pod CPU/mem/restart/IO</td></tr>
+          <tr><td><a href="https://grafana-mgt.dv-api.com/d/sNt6IXzGk" target="_blank"><code>sNt6IXzGk</code></a></td><td>Node Resource</td><td>Node-level pressure</td></tr>
+          <tr><td><a href="https://grafana-mgt.dv-api.com/d/1IGjQaiMk" target="_blank"><code>1IGjQaiMk</code></a></td><td>YugabyteDB</td><td>YCQL latency, tserver overload</td></tr>
+          <tr><td><a href="https://grafana-mgt.dv-api.com/d/MQWgroiiz" target="_blank"><code>MQWgroiiz</code></a></td><td>MySQL Overview</td><td>Connections / slow queries / replication lag</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="right">
+      <h3>Helper dashboards</h3>
+      <div class="card">
+        <p><a href="https://grafana-mgt.dv-api.com/d/EP_yHg7Gk" target="_blank"><code>EP_yHg7Gk</code></a> — Feature Platform Metrics (FP P99 / GC / connection pool)</p>
+      </div>
+      <div class="card">
+        <p><a href="https://grafana-mgt.dv-api.com/d/LzldHAVnz" target="_blank"><code>LzldHAVnz</code></a> — vmalert (when you suspect false firing)</p>
+      </div>
+      <div class="card">
+        <p><a href="https://grafana-mgt.dv-api.com/d/asfasqwe2r" target="_blank"><code>asfasqwe2r</code></a> — Alertmanager View (how many firing now)</p>
+      </div>
+      <div class="card">
+        <p><a href="https://grafana-mgt.dv-api.com/d/fp-gc-enhanced-v2" target="_blank"><code>fp-gc-enhanced-v2</code></a> — FP GC deep dive</p>
+      </div>
+    </div>
+  </div>
+
+  <p class="footer">Treat the UID as the dashboard's real name — the URL is <a href="https://grafana-mgt.dv-api.com" target="_blank">grafana-mgt.dv-api.com</a>/d/&lt;UID&gt;.</p>
+
+  <aside class="notes">The first 6 cover 80% of daily entries. The 4 helpers are deep-dive only. UID is the dashboard's real name; just paste it after /d/.</aside>
+</section>
+
+<section data-slide="7">
+  <h2>5-Step Universal Oncall Workflow</h2>
+  <p class="subtitle">Muscle memory: 1 → 1.5 → 2 → 3 → 4 → 5.</p>
+
+  <ol class="step-flow">
+    <li>
+      <span class="step-num">1</span>
+      <div class="step-body">
+        <h3>Read the alert (don't query yet)</h3>
+        <p>Grab severity / cluster / namespace / ts / client / metric + threshold. Stop if any field is missing. Compute window: ts ± 3min (widen 2× if rule eval interval &gt; 5min).</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-num">1.5</span>
+      <div class="step-body">
+        <h3>Click the alert's source URL <span class="accent-orange">(orange)</span></h3>
+        <p>Drops you straight into vmui with the current value; pull window to 24h to check if it's chronic noise.</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-num">2</span>
+      <div class="step-body">
+        <h3>Open the funnel-top dashboard</h3>
+        <p>Decided by alertname (see routing table on Slide 8).</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-num">3</span>
+      <div class="step-body">
+        <h3>Bisect on the SLA dashboard using the 4 quadrants</h3>
+        <p>Order: panel 192/359 → 371 → 373 → 194.</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-num">4</span>
+      <div class="step-body">
+        <h3>Drill into logs</h3>
+        <p>Window ±3min, use a time-pinned link.</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-num">5</span>
+      <div class="step-body">
+        <h3>Write one-sentence hypothesis → one query to verify → then act <span class="accent-teal">(teal)</span></h3>
+        <p>Any K8s mutating op must be prefixed with <code># INTENT:</code>.</p>
+      </div>
+    </li>
+  </ol>
+
+  <aside class="notes">These 5 steps are muscle memory. Step 1.5 is the easiest to skip but the biggest time-saver — vmalert's source URL drops you into vmui with the exact PromQL the alert was firing on.</aside>
+</section>
+
+<section data-slide="8">
+  <h2>Alert → Playbook Routing Table</h2>
+  <p class="subtitle">alertname pattern → playbook letter → first dashboard.</p>
+
+  <table>
+    <thead>
+      <tr><th>Alertname pattern</th><th>Playbook</th><th>First dashboard</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>RTIngress*</code> / <code>Apisix*</code> / <code>IngressNginx*</code> / <code>Aws(Alb|ApiGateway)*P9*</code></td>
+        <td>A</td>
+        <td><a href="https://grafana-mgt.dv-api.com/d/p1KqfRAMk" target="_blank"><code>p1KqfRAMk</code></a></td>
+      </tr>
+      <tr>
+        <td><code>*5xx*</code> / <code>*Non200*</code></td>
+        <td>B</td>
+        <td><a href="https://grafana-mgt.dv-api.com/d/HFAlVh2Nz" target="_blank"><code>HFAlVh2Nz</code></a></td>
+      </tr>
+      <tr>
+        <td><code>K8sPod*Killed</code> / <code>*Restarted*</code> / <code>OomKiller</code></td>
+        <td>C</td>
+        <td><a href="https://grafana-mgt.dv-api.com/d/b_XlLjRMz" target="_blank"><code>b_XlLjRMz</code></a></td>
+      </tr>
+      <tr>
+        <td><code>K8sNode*</code> / <code>Node*Disk*</code> / <code>Node*Memory*</code></td>
+        <td>D</td>
+        <td><a href="https://grafana-mgt.dv-api.com/d/sNt6IXzGk" target="_blank"><code>sNt6IXzGk</code></a></td>
+      </tr>
+      <tr>
+        <td><code>HighCpuUsageOfContainer*</code> / FP CPU spike</td>
+        <td>E</td>
+        <td><a href="https://grafana-mgt.dv-api.com/d/b_XlLjRMz" target="_blank"><code>b_XlLjRMz</code></a> + <a href="https://grafana-mgt.dv-api.com/d/EP_yHg7Gk" target="_blank"><code>EP_yHg7Gk</code></a></td>
+      </tr>
+      <tr>
+        <td><code>Yuga*</code> / <code>yugabytedb*</code></td>
+        <td>F</td>
+        <td><a href="https://grafana-mgt.dv-api.com/d/1IGjQaiMk" target="_blank"><code>1IGjQaiMk</code></a></td>
+      </tr>
+      <tr>
+        <td><code>Mysql*</code> / <code>MySQLReplication*</code> / <code>Hikari*</code></td>
+        <td>G</td>
+        <td><a href="https://grafana-mgt.dv-api.com/d/MQWgroiiz" target="_blank"><code>MQWgroiiz</code></a></td>
+      </tr>
+      <tr>
+        <td><code>K8sFP*Non200</code> / FP 504</td>
+        <td>H</td>
+        <td><a href="https://grafana-mgt.dv-api.com/d/HFAlVh2Nz" target="_blank"><code>HFAlVh2Nz</code></a> → <a href="https://grafana-mgt.dv-api.com/d/EP_yHg7Gk" target="_blank"><code>EP_yHg7Gk</code></a></td>
+      </tr>
+      <tr>
+        <td>Ingress → upstream waiting</td>
+        <td>I</td>
+        <td><a href="https://grafana-mgt.dv-api.com/d/p1KqfRAMk" target="_blank"><code>p1KqfRAMk</code></a> panel 373</td>
+      </tr>
+      <tr>
+        <td>Suspect false firing / unstable metric</td>
+        <td>J</td>
+        <td><a href="https://grafana-mgt.dv-api.com/d/LzldHAVnz" target="_blank"><code>LzldHAVnz</code></a></td>
+      </tr>
+      <tr>
+        <td><strong><code>FPTopicsOffsetIncreaseZero*</code></strong> etc. (67% of firings)</td>
+        <td><strong>K</strong> (noise check first)</td>
+        <td>vmui source URL</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card card-orange">
+    <p>Of the current 932 firing alerts, 469 (50%) are <code>FPTopicsOffsetIncreaseZero</code> + per-client variants. <strong>Judge whether it's chronic noise first</strong>: pull the vmui source URL window to 24h to see persistence, then decide whether to act.</p>
+  </div>
+
+  <aside class="notes">Slack shows real alertnames like RTIngressP99ResponseTime_Affirm — reverse-match by pattern to the playbook letter, then go to the first dashboard. Full playbook steps live in REPORT §5 and parts/06.</aside>
+</section>

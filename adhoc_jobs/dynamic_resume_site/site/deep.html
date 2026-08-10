@@ -1,0 +1,1814 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rui Shao · A Resume You Can Zoom Into</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23fff' stroke='%23ddd'/><text x='16' y='22' font-size='15' font-family='Helvetica,sans-serif' font-weight='bold' fill='%23555' text-anchor='middle'>RS</text></svg>">
+<style>
+  /* White paper by default — no auto dark switch: the timeline reads cleaner on white. */
+  :root{
+    --paper:#FFFFFF; --panel:#FAFAF8; --panel2:#F2F2EE;
+    --ink:#1A1A1A; --ink-soft:#454B4F; --muted:#767676;
+    --line:#E2E2E2; --line-soft:#EFEFEF;
+    --amber:#A35C00; --amber-soft:rgba(163,92,0,.10);
+    --petrol:#2F6B70; --petrol-soft:rgba(47,107,112,.10);
+    --focus:#A35C00;
+  }
+  :root[data-theme="dark"]{
+    --paper:#151E24; --panel:#1B2730; --panel2:#212E38;
+    --ink:#E3E6E0; --ink-soft:#B8C0BD; --muted:#7E8A8C;
+    --line:rgba(227,230,224,.18); --line-soft:rgba(227,230,224,.09);
+    --amber:#D19A3F; --amber-soft:rgba(209,154,63,.16);
+    --petrol:#63A3A8; --petrol-soft:rgba(99,163,168,.15);
+    --focus:#D19A3F;
+  }
+  :root[data-theme="light"]{
+    --paper:#FFFFFF; --panel:#FAFAF8; --panel2:#F2F2EE;
+    --ink:#1A1A1A; --ink-soft:#454B4F; --muted:#767676;
+    --line:#E2E2E2; --line-soft:#EFEFEF;
+    --amber:#A35C00; --amber-soft:rgba(163,92,0,.10);
+    --petrol:#2F6B70; --petrol-soft:rgba(47,107,112,.10);
+    --focus:#A35C00;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:-apple-system,"Helvetica Neue","Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",Roboto,ui-sans-serif,sans-serif;
+    font-size:16px; line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
+  a{color:var(--ink);text-decoration-color:var(--amber);text-underline-offset:3px}
+  a:hover{color:var(--amber)}
+  button{font:inherit;color:inherit}
+  :focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:3px}
+  .wrap{max-width:1080px;margin:0 auto;padding:clamp(24px,4.5vw,56px) clamp(18px,4vw,44px)}
+  .eyebrow{font-family:"SF Mono",ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
+  .rule{border:0;border-top:1px solid var(--line);margin:0}
+
+  header.site{border-bottom:1px solid var(--line);padding-bottom:30px;margin-bottom:36px}
+  .id-row{display:flex;flex-wrap:wrap;gap:8px 20px;margin-bottom:16px;align-items:baseline}
+  .lang-switch{margin-left:auto;font-size:12px}
+  .lang-switch a{text-decoration:none;color:var(--muted);padding:2px 6px}
+  .lang-switch a.on{color:var(--amber);font-weight:700}
+  h1.name{font-size:clamp(30px,4.6vw,50px);font-weight:650;letter-spacing:-.02em;line-height:1.05;margin:0}
+  h1.name .dot{color:var(--amber)}
+  p.thesis{font-size:clamp(18px,2.2vw,24px);font-weight:420;color:var(--ink-soft);line-height:1.4;max-width:36ch;margin:14px 0 0;text-wrap:balance}
+  p.subthesis{font-size:14.5px;color:var(--muted);max-width:64ch;margin:18px 0 0}
+  .contact{display:flex;gap:18px;flex-wrap:wrap;margin-top:16px;font-size:13px}
+
+  .radar-grid{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,1fr);gap:clamp(18px,4vw,46px);align-items:center;margin:34px 0 44px}
+  @media(max-width:760px){.radar-grid{grid-template-columns:1fr}}
+  .legend-row{display:flex;align-items:baseline;gap:10px;margin-bottom:10px;font-size:13.5px}
+  .legend-row svg{flex-shrink:0;transform:translateY(2px)}
+  .legend-row b{font-weight:600}
+  .legend-row span.t{color:var(--muted)}
+  .group-row{display:flex;align-items:baseline;gap:10px;margin-bottom:8px;font-size:13.5px;color:var(--ink-soft)}
+  .swatch{width:9px;height:9px;border-radius:2px;flex-shrink:0;transform:translateY(1px)}
+  .radar-note{font-size:12.5px;color:var(--muted);line-height:1.55;margin-top:14px;max-width:44ch}
+  .axisLabel{cursor:pointer}
+  .axisLabel text{fill:var(--ink-soft);font-size:11.5px;font-weight:520}
+  .axisLabel:hover text{fill:var(--amber);font-weight:700}
+  .axisLabel .val{fill:var(--muted);font-size:10px}
+
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:13px;margin:14px 0 52px}
+  .card{
+    text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:9px;
+    padding:15px 15px 13px;cursor:pointer;display:block;width:100%;
+    transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease;
+  }
+  .card:hover{transform:translateY(-2px);border-color:var(--amber);box-shadow:0 6px 18px rgba(0,0,0,.07)}
+  .card.cool:hover{border-color:var(--petrol)}
+  .card .top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+  .card .nm{font-size:15.5px;font-weight:620;line-height:1.18}
+  .card .dv{font-size:12px;flex-shrink:0}
+  .bar{height:4px;background:var(--line-soft);border-radius:2px;margin:11px 0 10px;position:relative;overflow:hidden}
+  .bar .tgt{position:absolute;inset:0;border-right:1.5px solid var(--muted)}
+  .bar .dep{height:100%;border-radius:2px}
+  .card p{font-size:12.6px;color:var(--muted);line-height:1.48;margin:0}
+
+  section.block{margin-bottom:52px}
+  .block-head{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--line);padding-bottom:9px;margin-bottom:18px;gap:12px;flex-wrap:wrap}
+  .block-head h2{font-size:13px;letter-spacing:.15em;text-transform:uppercase;font-weight:600;margin:0;font-family:"SF Mono",ui-monospace,Menlo,monospace}
+  .block-head .hint{font-size:12px;color:var(--muted)}
+
+
+  details.note{border-bottom:1px solid var(--line-soft)}
+  details.note summary{
+    cursor:pointer;padding:12px 6px;font-size:14.5px;font-weight:590;list-style:none;
+    display:flex;gap:12px;align-items:baseline;
+  }
+  details.note summary::-webkit-details-marker{display:none}
+  details.note summary .idx{font-size:10.5px;color:var(--amber)}
+  details.note summary:hover{color:var(--amber)}
+  details.note p{margin:0 6px 14px;padding-left:0;font-size:14px;color:var(--ink-soft);max-width:70ch}
+  details.note[open] summary{color:var(--amber)}
+
+  /* resume block — timeline form (period · monogram · content) */
+  .xp{
+    display:grid;grid-template-columns:8.7rem 44px minmax(0,1fr);gap:0 16px;
+    padding:18px 0;border-top:1px solid var(--line-soft);align-items:start;
+  }
+  .xp:first-of-type{border-top:0;padding-top:4px}
+  .xp .tl-when{font-size:12px;color:var(--muted);padding-top:4px;white-space:nowrap;font-family:"SF Mono",ui-monospace,Menlo,monospace}
+  .xp .tl-tile{
+    width:44px;height:44px;border-radius:8px;background:var(--panel2);border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+    font-size:15px;font-weight:680;color:var(--muted);
+  }
+  .xp .tl-tile.sm{font-size:11px;letter-spacing:.03em}
+  .xp .tl-tile.word{font-size:8.5px;letter-spacing:0;line-height:1.2;text-align:center;padding:0 3px}
+  .xp-head .co{font-size:17px;font-weight:680;line-height:1.25}
+  .xp-head .role{display:block;font-size:13.5px;color:var(--ink-soft);font-style:italic;margin-top:1px}
+  .xp-intro{margin:9px 0 2px;font-size:14px;line-height:1.6;color:var(--ink-soft);max-width:76ch}
+  @media(max-width:620px){
+    .xp{grid-template-columns:44px minmax(0,1fr);gap:0 14px}
+    .xp .tl-when{grid-column:1/-1;padding:0 0 9px}
+  }
+  .xs{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin:13px 0 4px}
+  .xs .xs-t{font-size:12.5px;font-weight:650;font-style:italic}
+  a.xs-t{color:var(--ink)}
+  a.xs-t:hover{color:var(--amber)}
+  .xs .xs-m{font-size:10.5px;color:var(--muted)}
+  .xp ul{margin:2px 0 0;padding-left:18px}
+  .xp li{font-size:14px;line-height:1.58;margin-bottom:5px}
+  .xp li b{font-weight:640}
+  .xp li a{text-decoration-style:dotted}
+  .btag{font-family:"SF Mono",ui-monospace,Menlo,monospace;font-size:11px;color:var(--amber);margin-right:5px;white-space:nowrap;font-weight:500;letter-spacing:.02em}
+  .btag::before{content:"["}
+  .btag::after{content:"]"}
+  .skills-line{font-size:14px;line-height:1.7;margin:0 0 6px}
+  .skills-line b{font-weight:640}
+  .edu-row{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:14px;padding:7px 0;border-bottom:1px solid var(--line-soft)}
+  .edu-row .when{font-size:11.5px;color:var(--muted)}
+  .zoom-divider{display:flex;align-items:center;gap:14px;margin:56px 0 30px}
+  .zoom-divider .zl{flex:1;border-top:1px solid var(--line)}
+  .zoom-divider .zt{font-family:"SF Mono",ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.16em;color:var(--amber);text-transform:uppercase;white-space:nowrap}
+  .track-line{font-family:"SF Mono",ui-monospace,Menlo,monospace;font-size:12.5px;color:var(--amber);margin:0 0 6px}
+  .track-note{font-size:12px;color:var(--muted);margin:0 0 4px;max-width:72ch}
+  /* markdown tables inside long-form articles */
+  .mdtable-wrap{overflow-x:auto;margin:16px 0;max-width:74ch}
+  .mdtable{width:100%;border-collapse:collapse;font-size:13.5px;line-height:1.5}
+  .mdtable th{text-align:left;font-family:"SF Mono",ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;padding:7px 14px 7px 0;border-bottom:1px solid var(--line);white-space:nowrap}
+  .mdtable td{padding:8px 14px 8px 0;border-bottom:1px solid var(--line-soft);vertical-align:top}
+  .mdtable td:first-child{font-weight:560}
+  .mdtable code{font-size:12.5px}
+  .itable{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+  .itable th{text-align:left;font-family:"SF Mono",ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;padding:6px 10px 6px 0;border-bottom:1px solid var(--line)}
+  .itable td{padding:7px 10px 7px 0;border-bottom:1px solid var(--line-soft);vertical-align:top;line-height:1.5}
+  .itable td.n{font-family:"SF Mono",ui-monospace,Menlo,monospace;color:var(--amber)}
+  .itable-wrap{overflow-x:auto}
+  details.deep{border:1px solid var(--line);border-radius:9px;background:var(--panel);padding:0 16px;margin-top:10px}
+  details.deep summary{cursor:pointer;padding:12px 0;font-size:13px;font-weight:600;list-style:none}
+  details.deep summary::-webkit-details-marker{display:none}
+  details.deep[open] summary{border-bottom:1px solid var(--line-soft)}
+  details.deep .inner{padding:10px 0 14px}
+  .mermaid{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;margin:16px 0;overflow-x:auto;display:flex;justify-content:center}
+  .mermaid svg{max-width:100%;height:auto}
+  pre.codeblock{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:12px 14px;overflow-x:auto;font-size:13px}
+  details.cse{border-bottom:1px solid var(--line-soft)}
+  details.cse summary{cursor:pointer;padding:10px 4px;font-size:14px;font-weight:590;list-style:none;display:flex;gap:10px;align-items:baseline}
+  details.cse summary::-webkit-details-marker{display:none}
+  details.cse summary:hover,details.cse[open] summary{color:var(--amber)}
+  details.cse .cse-body{padding:2px 4px 14px;max-width:72ch}
+  details.cse .cse-body p{font-size:13.5px;line-height:1.6;color:var(--ink-soft);margin:0 0 7px}
+  details.cse .cse-body b{font-weight:650;color:var(--ink)}
+  details.cse .cse-link{font-size:12.5px}
+
+  footer.site{border-top:1px solid var(--line);padding-top:20px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--muted)}
+  footer.site .mono{letter-spacing:.08em}
+
+  .crumb{margin-bottom:26px;font-size:12px}
+  .crumb a{text-decoration:none;color:var(--muted)}
+  .crumb a:hover{color:var(--amber)}
+  .dpage h1{font-size:clamp(26px,3.6vw,38px);font-weight:640;letter-spacing:-.015em;margin:8px 0 6px;line-height:1.12;text-wrap:balance}
+  .dmeta{font-size:12.5px;color:var(--muted)}
+  .dtag{font-size:15px;color:var(--ink-soft);margin:14px 0 0;max-width:62ch}
+  .thinkbox{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--amber);border-radius:10px;padding:18px 20px;margin:26px 0}
+  .thinkbox.cool{border-left-color:var(--petrol)}
+  .thinkbox .lb{margin-bottom:9px}
+  .thinkbox h3{font-size:17.5px;font-weight:590;line-height:1.32;margin:0 0 9px;text-wrap:balance}
+  .thinkbox p{font-size:14px;line-height:1.62;color:var(--ink-soft);margin:0}
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{font-family:"SF Mono",ui-monospace,Menlo,monospace;font-size:11.5px;padding:5px 10px;background:var(--panel);border:1px solid var(--line);border-radius:6px;color:var(--ink-soft)}
+  .sec-label{font-family:"SF Mono",ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.16em;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:7px;margin:26px 0 13px;text-transform:uppercase}
+  .ev{margin-bottom:15px}
+  .ev .en{font-size:14.5px;font-weight:620;margin-bottom:2px}
+  .ev .en a{text-decoration-style:dotted}
+  .ev p{font-size:13.5px;color:var(--muted);margin:0;line-height:1.55;max-width:72ch}
+
+  article{max-width:70ch}
+  article .kick{margin-bottom:10px}
+  article h1{font-size:clamp(24px,3.4vw,34px);font-weight:640;letter-spacing:-.015em;line-height:1.18;margin:6px 0 8px;text-wrap:balance}
+  article .standfirst{font-size:15.5px;color:var(--ink-soft);line-height:1.5;margin:0 0 8px}
+  article .tags{display:flex;gap:7px;flex-wrap:wrap;margin:14px 0 30px}
+  article h2{font-size:19px;font-weight:630;margin:34px 0 10px;letter-spacing:-.01em;text-wrap:balance}
+  article h3{font-size:16px;font-weight:620;margin:24px 0 8px}
+  article p{font-size:15px;line-height:1.7;margin:0 0 14px;color:var(--ink)}
+  article ul,article ol{padding-left:22px;margin:0 0 14px}
+  article li{font-size:15px;line-height:1.66;margin-bottom:7px}
+  article blockquote{border-left:3px solid var(--amber);margin:18px 0;padding:2px 0 2px 16px;color:var(--ink-soft);font-size:15px}
+  article code{font-family:"SF Mono",ui-monospace,Menlo,monospace;font-size:.86em;background:var(--panel2);padding:1.5px 5px;border-radius:4px}
+  article .fig{font-family:"SF Mono",ui-monospace,Menlo,monospace;color:var(--amber);font-variant-numeric:tabular-nums}
+  article .endnote{font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px;margin-top:30px}
+  article strong{font-weight:640}
+  .backline{margin-top:36px;font-size:13px}
+
+  @media (prefers-reduced-motion: reduce){
+    .card,.card:hover{transition:none;transform:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap"><div id="app" aria-live="polite"></div></div>
+
+<!-- ===================== L3 WRITINGS · EN ===================== -->
+
+<template id="w-cs-doris-en">
+<article>
+  <div class="kick eyebrow" style="color:var(--amber)">Case Study · Featured</div>
+  <h1>Rebuilding a 5-Billion-Row, 3,700-Column Fraud Event Store, Down to the Engine</h1>
+  <p class="standfirst">ClickHouse → Apache Doris compute-storage separation. Infra-side owner, end to end: engine selection, migration pipeline, engine-level query routing, elasticity, observability.</p>
+  <div class="tags"><span class="chip">data &amp; state</span><span class="chip">distributed systems</span><span class="chip">platform</span><span class="chip">incidents</span></div>
+
+  <h2>The one-paragraph version</h2>
+  <p>Our fraud-analytics event layer serves two increasingly conflicting workloads: millisecond point lookups on the serving path, and a growing stream of unpredictable ad-hoc analytics — increasingly generated by AI-agent-facing product features rather than human analysts. The old ClickHouse shared-nothing layer could neither isolate the second workload nor scale for it: one heavy query starves the shared pool, and we measured a <code>SELECT * LIMIT 10</code> that waited <span class="fig">61 s</span> of wall-clock on <span class="fig">60 ms</span> of CPU, queued behind a bulk insert. What I did was not a migration. I rebuilt this layer on compute-storage separation — Apache Doris shared-data mode with Iceberg on S3, on Kubernetes — and built query routing into the Doris frontend itself, so the system classifies every query heavy/light in <span class="fig">6–8 ms</span> before execution and drives a spot compute pool from zero to N and back. The move was certified <span class="fig">99.945%</span> row-complete over <span class="fig">~5.2B rows / ~4 TiB / up to ~3,700 columns</span>; point-lookup latency went from <span class="fig">~8 s to ~20 ms</span>, proven flat across 19× data growth; and along the way I root-caused a chain of engine-level failures, from a Parquet footer explosion that OOMed every backend on a bare <code>COUNT(*)</code> to a compaction death spiral driven by a 46× compression collapse.</p>
+
+  <h2>Why we left ClickHouse (it was still faster)</h2>
+  <p>ClickHouse was winning flat-table scans by <span class="fig">1.2–2.5×</span> on our own primary-source benchmarks when we decided to leave it. The migration case was structural, and it took discipline to keep it that way, because "the new engine is faster" is the story everyone wants to tell and the one that falls apart under cross-examination.</p>
+  <p>Four compromises drove the decision:</p>
+  <ol>
+    <li><strong>No workload isolation.</strong> One heavy query starves a shared node — the 61 s / 60 ms starvation case above was routine, not exceptional.</li>
+    <li><strong>Rigid, always-on compute.</strong> Shared-nothing couples compute to local disk. Idle periods and heavy-query bursts pay for the same resident hardware. Genuinely stateless elastic compute exists in the ClickHouse ecosystem only as a closed-source managed service; that is an architecture gap, not a configuration gap.</li>
+    <li><strong>Fragile wide-schema evolution.</strong> Per-tenant schemas evolve dynamically and land as thousands of sparse columns, maintained by brittle <code>ALTER ADD COLUMN</code>.</li>
+    <li><strong>Sampling as a correctness tax.</strong> Analytical queries defaulted to a 1M-row sample because full scans were too expensive — trading correct answers for latency.</li>
+  </ol>
+  <p>The load-bearing argument, and the one that survives even the newest ClickHouse releases, is <strong>hard memory isolation</strong>: Doris workload groups enforce cgroup-backed hard limits per query pool, where ClickHouse's equivalents remain best-effort. When an AI-agent-facing product layer started generating unpredictable query shapes at unpredictable rates, isolation and elasticity stopped being nice-to-haves.</p>
+
+  <h2>Target architecture</h2>
+  <p>Doris 4.0.5 in shared-data mode: tablet data lives in an S3 storage vault, metadata in MetaService backed by FoundationDB, and backends are stateless compute with local EBS acting only as file cache. Compute is physically partitioned into <strong>compute groups</strong> — a resident serving pool on on-demand nodes, and an elastic heavy pool on spot instances that rests at zero replicas. Within each pool, <strong>workload groups</strong> govern CPU, memory, and concurrency. Iceberg on the same S3 serves as the open lake tier.</p>
+  <p>The design insight worth stating explicitly: compute-storage separation does not remove state. It concentrates state into one layer (MetaService, FoundationDB, the S3 recycler) — and that layer is precisely where you can no longer cut corners. Three new stateful failure domains replaced "disks attached to every node," and the operational work below reflects that trade.</p>
+
+  <h2>The migration was a memory-engineering problem</h2>
+  <p>A ~3,700-column table breaks the naive "export to Parquet, bulk load" path in four places, none of them obvious, and adding hardware fixes none of them:</p>
+  <ul>
+    <li><strong>The footer bomb.</strong> A Parquet footer scales with <code>row_groups × columns</code>. Our early objects carried a <span class="fig">2.12 GB</span> footer; the reader OOMed all eight backends before touching a single row of data. The tell: even a bare <code>COUNT(*)</code> died — proof that metadata parsing, not data scanning, was exploding. Fix: restructure the objects, footer down ~9×.</li>
+    <li><strong>The untracked scanner.</strong> Doris's vectorized Parquet column reader allocates outside <code>exec_mem_limit</code>. Memory scales with <code>scanner_concurrency × columns</code>; at defaults that was <span class="fig">~78 GB</span> per backend. No query-level memory limit helps a buffer the engine does not track.</li>
+    <li><strong>The export buffer seesaw.</strong> Each export stream buffers <code>row_group_size × columns</code>. Small slices do nothing for export memory; small row groups blow up the footer. Only cutting both — small objects <em>and</em> small row groups — decouples the seesaw.</li>
+    <li><strong>Load memory grows with the table, not the batch.</strong> At <span class="fig">~1.7 B</span> rows loaded, identical load jobs began breaching the memory ceiling and livelocking: merge-on-write delete-bitmap maintenance and wide-table compaction scale with accumulated table size. A watchdog (soft-stop / hard-kill thresholds, atomic aborts, idempotent retries) held the line; dropping to single-stream concurrency resolved it with zero data loss — throughput was export-paced anyway.</li>
+  </ul>
+  <p>The pipeline that emerged is byte-budget-scheduled, checkpointed per object, safe to kill at any point, and moved <span class="fig">~19,500 rows/s</span> on four backends — about <span class="fig">50×</span> the small-batch alternative on a 3,700-column schema. One result I have not seen published anywhere: on schemas this wide, <strong>column count alone swings write throughput ~5×, while the full correctness stack (merge-on-write dedup, three inverted indexes, ZSTD) costs under 4–12%</strong>. The expensive-looking features are nearly free; the width is the cost.</p>
+
+  <h2>The workload was not what we thought</h2>
+  <p>The original serving-table plan was built on a curated 50-query benchmark. Before committing to an irreversible layout, I mined 14 days of production <code>system.query_log</code> — <span class="fig">74.7 M</span> log rows — and the picture inverted: <strong>the overwhelming majority of traffic (well over 90%) was point lookups</strong> keyed on one high-cardinality user identifier, and most of those were unbounded "latest value" reconstructions that no time filter could be retrofitted onto. A second serving table went from "maybe" to mandatory. Designing from the benchmark would have optimized the wrong workload.</p>
+  <p>Then the physics lesson. Point lookups on the Iceberg layout ran <span class="fig">7–13 s</span> against ClickHouse's 21 ms. The reflex fix — bloom filters — cut rows scanned by <span class="fig">73%</span> and moved wall-clock time not at all: one active user's rows were scattered across <span class="fig">2,044</span> partition files, and the floor was file-open count, not rows scanned. (We also proved, byte-level, that two common Iceberg writer paths silently ignore declared bloom-filter table properties.) <strong>Indexes cannot fix a layout problem.</strong> The fix was physical re-clustering: a Doris-native table distributed by hash on the user key. Because a distribution key is the one decision you cannot ALTER later, we ran a two-table A/B — same data, mirrored keys, four measurements — before committing. Result: <span class="fig">16–24 ms warm</span>, re-measured at three checkpoints during the live migration (15M → 107M → 286M rows) to prove the latency stays flat as the table grows 19×.</p>
+
+  <h2>Routing is admission control, not performance tuning</h2>
+  <p>With serving and analytics on one platform, the &lt;1% of heavy queries had to be caught <strong>before execution</strong> — autoscaling is a minutes-scale mechanism and OOM is a seconds-scale event, so elasticity alone can never be the safety guarantee.</p>
+  <p>Stock Doris <code>EXPLAIN</code> routed our production-shaped SQL suite at <span class="fig">45%</span> accuracy with a <span class="fig">27%</span> heavy-miss rate. The decisive observation: identical query templates with different parameters produced byte-identical EXPLAIN text while real memory differed <span class="fig">23×</span> — a signal problem, not a rule problem. The optimizer computes per-operator cardinality, selectivity, and state sizes internally; it just never prints them.</p>
+  <p>So I fixed it inside the engine, on an Apache Doris fork:</p>
+  <ul>
+    <li><strong><code>EXPLAIN ESTIMATE PLAN</code></strong> — a read-only visitor over the finalized physical plan that emits the CBO's existing per-operator estimates as JSON. Purely additive (zero deletions); the mechanism was prepared as an upstream PR.</li>
+    <li><strong><code>EXPLAIN ROUTE PLAN</code></strong> — the estimate plus a 15-rule classifier returning a routing verdict in <span class="fig">6–8 ms</span>, independent of data volume. The classifier was ported from a Python reference implementation treated as an executable oracle: <span class="fig">189/189</span> golden-corpus parity before any cluster was involved. All ~21 thresholds are hot-reloadable, so tuning never requires a rebuild.</li>
+  </ul>
+  <p>One judgment call mattered as much as the code: leadership initially wanted the classifier upstreamed too. I argued the opposite, using the first PR's own principle — the engine should emit data; callers decide policy. The classifier carries our calibrated thresholds and recall-first bias; that is policy, and it stays internal. Knowing what <em>not</em> to contribute changed the plan.</p>
+  <p>Heavy recall went <span class="fig">7% → 100%</span> on the canonical suite, and the residual is covered by design: misrouted heavy queries hit a fixed-slot memory hard limit (<span class="fig">~404 MB</span>/query, no overcommit) in the light pool, die within ~3 s, and auto-escalate to the heavy pool. The classifier is <em>allowed</em> to be imperfect because the safety guarantee never depended on it.</p>
+
+  <h2>Two compaction incidents most operators never see</h2>
+  <p><strong>The death spiral.</strong> Post-migration, the wide table froze at <span class="fig">~2,500</span> segments per tablet; manual compaction failed silently; cold point queries took 40–68 s. Root cause was three factors multiplied: auto-compaction had been disabled during bulk load, letting debt accumulate until a single task had to merge ~2,506 segments × 3,727 columns (aborted by the memory guard at 43 GB — a task-level abort, not a crash); cloud mode has no peer cache, so every segment was a ~7 s cold S3 read; and the segments were tiny in the first place because a sparse wide schema suffers a <span class="fig">46×</span> compression collapse between the in-memory write buffer and the on-disk segment. We also proved that adding backends was useless before anyone spent money on it: a single tablet's compaction cannot be split across nodes — the logs showed <span class="fig">632</span> no-op wakeups against <span class="fig">9</span> real merges. Concentration-bound, not resource-bound. The verified recipe (auto-compaction always on, 4× larger write buffer, per-month bucket counts to hold tablets at ~10 GB, wider column groups to cut S3 re-scans ~40×) took cold point queries from 40 s to <span class="fig">&lt;100 ms</span> server-side.</p>
+  <p><strong>The stuck gauge.</strong> A second incident: compaction score pinned at <span class="fig">~4,500</span>, unmoved by scaling or restarts. Three independent read-only investigation tracks — log enumeration, tablet-meta HTTP endpoints, catalog recycle-bin — converged on the same orphaned tablet from an already-dropped table, structurally excluded from scheduling. One chain of reasoning can be led astray; three independent evidence chains pointing at the same tablet is a verdict. That investigation was executed as parallel AI agents fanned out over the diagnostic surfaces, which is how I run forensics generally now.</p>
+
+  <h2>Elasticity that earns the word</h2>
+  <p>The heavy pool rests at zero replicas. The scaler (an internal controller I rebuilt) does exactly one thing: JSON-patch the replica count on the Doris operator's custom resource — an HPA role, nothing more. Its first version deployed backends itself and registered them via SQL; I killed that design before implementation because in cloud mode, anything not declared in the operator's CR gets erased on the next reconcile. When the platform primitive matures, bespoke tooling should shrink.</p>
+  <p>The full loop runs live: verdict says heavy → controller patches 0→N → spot node up in <span class="fig">~66 s</span>, backend registered in ~2 min, layered readiness checks (a <code>SELECT 1</code> probe is constant-folded by the frontend and never touches a backend — it will happily report an empty pool as healthy) → query executes → pool reaps to zero. Scaling the serving pool 2→4 backends live moved <strong>zero data</strong> — tablets live in S3, ownership just rebalances. That is the operational dividend of shared-data, captured on a real cluster.</p>
+
+  <h2>What makes the numbers trustworthy</h2>
+  <p>Every claim above was measured, and several were retracted on the way. An early benchmark showed Doris beating ClickHouse 3–5× on aggregations; I red-teamed my own result, found the confound (a loaded 8-core production node versus an isolated 14-core benchmark node), and withdrew the multiplier. Public "Doris beats ClickHouse 6–40×" claims all traced back to the vendor; primary-source ClickBench data says ClickHouse still leads flat scans. Migration completeness was certified at <span class="fig">99.945%</span> — 5,170,688,484 of 5,173,508,562 rows — with the 0.055% gap attributed line-by-line to deduplication semantics, and the verification method itself had to be engineered for safety after a naive <code>COUNT(*)</code> audit took down all eight backends.</p>
+  <p>The habit underneath all of it: when a number gets less flattering every time you re-measure it, that is usually the sign you are converging on the truth.</p>
+
+  <p class="endnote">Engine-level work referenced here lives on an Apache Doris fork; the mechanism (<code>EXPLAIN ESTIMATE PLAN</code>) was prepared for upstream contribution, the policy layer deliberately kept internal. Names, tenants, and exact identifiers are anonymized; scale figures are rounded.</p>
+</article>
+</template>
+
+<template id="w-inc-p100-en">
+<article>
+  <div class="kick eyebrow" style="color:var(--amber)">Incident · Root Cause</div>
+  <h1>The P100 That Was Exactly 1.00 Seconds</h1>
+  <p class="standfirst">A tail-latency spike that repeated every few minutes, landed on a suspiciously round number, and was invisible in every percentile below P99.</p>
+  <div class="tags"><span class="chip">incident response</span><span class="chip">observability</span></div>
+
+  <h2>Symptom</h2>
+  <p>One tenant's detection API showed P100 pinned at exactly <span class="fig">1.00 s</span>, spiking every 5–10 minutes. P50 through P95 stayed at a healthy 1–2 ms. Several tenants sharing the same ingress layer were affected in the same windows. Nothing was down; something was periodically stealing exactly one second from the slowest request.</p>
+
+  <h2>Investigation</h2>
+  <p>Three lines ran in parallel: access-log/error-log cross-correlation, a full configuration audit of the ingress layer (global config → rendered server config → per-route annotations), and pod-level metrics.</p>
+  <p>The first turn: <code>upstream_response_time</code> was normal (20–30 ms) on the slow requests. That exonerated both the upstream service and the client — the wait was happening <em>inside</em> the proxy layer itself.</p>
+  <p>The second turn killed the intuitive hypothesis. The config audit found exactly one "1s" anywhere in the rendered configuration, and it was a rate-limiter's sliding-window parameter, not a proxy timeout. The obvious suspect did not exist.</p>
+  <p>The decisive evidence came from the error log: the rate-limiting plugin's in-line cache lookups — against a single-replica memcached — were timing out, and every timeout aligned with a slow request's timestamp and client IP. The plugin's client library carries a default read timeout of <span class="fig">1,000 ms</span>. A request that hit a stalled cache lookup waited out the full timeout, then proceeded. Exactly one second, by definition. Supporting signals: the cache was one replica with 10 worker threads, and its file-descriptor count stepped from 24 to 54 as the timeouts began.</p>
+
+  <h2>Fix and what the loop learned</h2>
+  <p>The delivered fix plan: scale the cache out of single-replica life, raise its thread pool, and — most importantly — cut the plugin's read timeout from 1,000 ms to 100–200 ms so the worst case degrades to a fast, bounded miss instead of a one-second stall. An exporter went in for the component that had been a monitoring blind spot.</p>
+  <blockquote>An integer tail latency is a human constant, not physics. When P100 lands on a round number, search the configs before the graphs.</blockquote>
+  <p>That heuristic is now a standing rule in my triage playbook, and the cache layer that hid for years inside a plugin is on a dashboard.</p>
+</article>
+</template>
+
+<template id="w-inc-qps-en">
+<article>
+  <div class="kick eyebrow" style="color:var(--amber)">Incident · Load Shedding</div>
+  <h1>Order of Operations Under Fire</h1>
+  <p class="standfirst">A single tenant's traffic surge threatened the shared serving path, the message queue, and the database at once. The fix was less about what to do than about the order in which to do it.</p>
+  <div class="tags"><span class="chip">incident response</span><span class="chip">capacity</span></div>
+
+  <h2>Symptom</h2>
+  <p>One tenant's query rate spiked far above baseline. Serving latency rose, error rates climbed on the dependency chain, and asynchronous recomputation began competing with the message queue and the database for the same headroom.</p>
+
+  <h2>The sequence, and why it cannot be reordered</h2>
+  <ol>
+    <li><strong>Stop the bleeding first.</strong> Split traffic 50/50 to a second cluster. Reversible in seconds, buys headroom everywhere downstream, changes no behavior.</li>
+    <li><strong>Shed non-critical load second.</strong> Dynamically degrade the non-critical async recomputation — rate-limit it to zero through runtime configuration, no restarts. The system keeps serving its primary contract while background work yields.</li>
+    <li><strong>Scale third, with caps.</strong> Serving and async pools scale out under explicit ceilings; the message queue's partitions double; the database scales vertically 2×.</li>
+  </ol>
+  <p>Scaling first is the intuitive move and the wrong one: adding consumers under uncontrolled inflow feeds the surge directly into the slowest stateful component. The database gets pushed over the cliff by the very capacity that was meant to save it, and capacity added under pressure arrives minutes late to a seconds-scale problem. Shedding before scaling is what makes the scaling safe.</p>
+
+  <h2>Validation discipline</h2>
+  <p>Each step had to prove itself before the next: error rate, P95/P99, consumer-lag slope reversal (lag must be <em>falling</em>, flat is not recovery), and database headroom — each with a stability window of at least 10–15 minutes. Rollback criteria were staged in advance, so de-escalation was a checklist, not a judgment call at 2 a.m.</p>
+  <blockquote>Under overload, the order of operations is the decision. Everything on the list was correct; done in the wrong order, the same list takes the system down.</blockquote>
+</article>
+</template>
+
+<template id="w-inc-refused-en">
+<article>
+  <div class="kick eyebrow" style="color:var(--amber)">Incident · Network Path</div>
+  <h1>Refused Is Not Timeout</h1>
+  <p class="standfirst">Two words that look like synonyms in an error message cut the diagnostic search space in half before you open a single tool.</p>
+  <div class="tags"><span class="chip">incident response</span><span class="chip">kubernetes</span></div>
+
+  <h2>Symptom</h2>
+  <p>External connections to a database service failed instantly with <code>connection refused</code>. Instantly is the clue: <em>refused</em> means the packet arrived and nothing was listening — fast and deterministic. <em>Timeout</em> means a listener exists but is not answering. The two words point at different halves of the stack, and conflating them wastes the first hour.</p>
+
+  <h2>Walk the hops, stop at the first failure</h2>
+  <p>The path had eight hops: client → DNS → load balancer → NodePort → ingress → Service → Endpoints → pod. The method is unglamorous: verify each hop actually listens or resolves, in order, and stop at the first one that fails. On this class of incident it has produced two different root causes:</p>
+  <ul>
+    <li><strong>The listener that looked configured.</strong> The ingress controller's TCP-services ConfigMap existed with the right entries — but the controller had never loaded it. Configuration present, listener absent. Everything upstream of the ingress was innocent by inspection.</li>
+    <li><strong>The label that went stale.</strong> Subtler: after an abnormal pod restart, the database operator failed to refresh the pod's readiness label. The Service selector required that label, so the Endpoints list was empty — the Service existed, the pod was actually serving, and no traffic could ever arrive. Control-plane truth had diverged from data-plane truth, and only the Endpoints hop showed it.</li>
+  </ul>
+
+  <h2>Fix and verify</h2>
+  <p>Reload the controller in the first case; restart the workload so the operator re-evaluates its labels in the second. Verification mirrors the diagnosis: confirm the port is actually in a listening state and the Endpoints list is non-empty — the two exact things that were broken, not a generic health check.</p>
+  <blockquote>Symptom classification before tooling: refused vs. timeout, then hop by hop. The method is boring, which is why it works at 3 a.m.</blockquote>
+</article>
+</template>
+
+<template id="w-dr-restore-en">
+<article>
+  <div class="kick eyebrow" style="color:var(--petrol)">Recovery · Data</div>
+  <h1>Restoring 5.2 Billion Rows Without Touching Production</h1>
+  <p class="standfirst">A full-scale restore drill that began by proving the original plan was impossible — and ended with a recovery architecture that was provably zero-risk to every live system.</p>
+  <div class="tags"><span class="chip">data &amp; state</span><span class="chip">disaster recovery</span></div>
+
+  <h2>Correcting the premise</h2>
+  <p>The initial plan assumed rows expired by the database's TTL could be recovered from the live volume. That assumption was wrong, and proving it wrong was the first deliverable: this engine's TTL delete physically unlinks the data parts, and no S3 tiering existed to catch them. Nothing recoverable remained on the live system — and experimenting on a live disk to confirm that would have been risk without payoff.</p>
+
+  <h2>The recovery architecture</h2>
+  <p>What did exist was an immutable daily EBS snapshot series of the production volumes. The restore path: materialize a snapshot to a <strong>brand-new, independent volume</strong>, attach it to a <strong>separate database instance</strong>, and verify there. No attach/detach on any live disk, no connection to any production system at any point. The blast radius was not "managed" — it was structurally zero, provable from the design before execution.</p>
+
+  <h2>Verified, with numbers</h2>
+  <p>The restored dataset came up live and queryable: <span class="fig">5.198 billion rows / 4.07 TiB</span>. A full <code>count(*)</code> completed in <span class="fig">50 s</span>; a full-table cold aggregation in <span class="fig">83 s</span>. A restore is not a restore until you have queried it — a mounted volume proves storage, not data.</p>
+
+  <h2>Honest boundaries</h2>
+  <p>Two limits, named on purpose. The implied RPO is roughly 24 hours — that is what a daily snapshot series gives you, and nobody had written it down as an SLA before this drill made it visible. And this was a one-off drill proving the path works at full scale, not yet a scheduled DR program. Both gaps are now explicit, which is the difference between a gap and a surprise.</p>
+  <blockquote>The most useful output of a restore drill is rarely the data. It is the corrected assumptions and the numbers (RPO, restore time) that nobody had been forced to state before.</blockquote>
+</article>
+</template>
+
+<!-- ===================== L3 WRITINGS · CN ===================== -->
+
+<template id="w-cs-doris-cn">
+<article>
+  <div class="kick eyebrow" style="color:var(--amber)">案例研究 · 精选</div>
+  <h1>重构一个 50 亿行、3,700 列的反欺诈事件存储：一路做到引擎里</h1>
+  <p class="standfirst">ClickHouse → Apache Doris 存算分离。Infra 侧端到端 owner：引擎选型、迁移流水线、引擎级查询路由、弹性、可观测性。</p>
+  <div class="tags"><span class="chip">数据与状态</span><span class="chip">分布式系统</span><span class="chip">平台</span><span class="chip">事故</span></div>
+
+  <h2>一段话版本</h2>
+  <p>我们的反欺诈事件层要同时服务两种日益冲突的负载：serving 路径上的毫秒级点查，和越来越多由面向 AI agent 的产品功能（而不是人类分析师）产生的不可预测 ad-hoc 分析。旧的 ClickHouse shared-nothing 层对第二种负载既不能隔离也不能弹性扩容：一条重查询能饿死共享池，我们实测过一条 <code>SELECT * LIMIT 10</code> 排在 bulk insert 后面，墙钟等了 <span class="fig">61 秒</span>、CPU 只用了 <span class="fig">60 毫秒</span>。我做的不是一次迁移。我把这一层重建在存算分离上（Apache Doris shared-data 模式 + Iceberg-on-S3，运行在 Kubernetes 上），并把查询路由做进了 Doris 前端本身：系统在执行前 <span class="fig">6–8 毫秒</span>内给每条查询判轻重，驱动一个 0→N、用完归零的 spot 计算池。迁移对约 <span class="fig">52 亿行 / 4 TiB / 最宽约 3,700 列</span>做了 <span class="fig">99.945%</span> 行级对账认证；点查延迟从<span class="fig">约 8 秒降到约 20 毫秒</span>，并证明在数据增长 19 倍后保持平坦；过程中我根因了一串引擎级故障，从让所有后端在一句 <code>COUNT(*)</code> 上集体 OOM 的 Parquet footer 爆炸，到由 46 倍压缩衰减驱动的 compaction 死亡螺旋。</p>
+
+  <h2>为什么离开 ClickHouse（它当时还更快）</h2>
+  <p>在我们决定离开时，ClickHouse 在我们自己的一手 benchmark 上仍以 <span class="fig">1.2–2.5 倍</span>领先平表扫描。迁移的理由是结构性的，而保持这一点需要纪律，因为「新引擎更快」是所有人都想讲、也最经不起盘问的故事。</p>
+  <p>四个结构性折中驱动了这个决定：</p>
+  <ol>
+    <li><strong>没有负载隔离。</strong>一条重查询能饿死共享节点：上面那个 61 秒 / 60 毫秒的饥饿案例是日常，不是特例。</li>
+    <li><strong>刚性的常驻计算。</strong>shared-nothing 把计算绑在本地盘上，空闲期和重查询高峰付同一份常驻硬件的钱。ClickHouse 生态里真正无状态的弹性计算只存在于闭源托管服务中；这是架构缺口，不是配置差异。</li>
+    <li><strong>脆弱的宽 schema 演进。</strong>每租户 schema 动态演化，落地成数千个稀疏列，靠脆弱的 <code>ALTER ADD COLUMN</code> 维护。</li>
+    <li><strong>用采样交正确性税。</strong>分析查询默认只扫 100 万行采样，因为全量太贵：用正确答案换延迟。</li>
+  </ol>
+  <p>承重论点，也是对最新版 ClickHouse 依然成立的一个，是<strong>硬内存隔离</strong>：Doris 的 workload group 对每个查询池施加 cgroup 级硬限，而 ClickHouse 的对应机制仍是 best-effort。当一个面向 AI agent 的产品层开始以不可预测的频率生成不可预测的查询形状时，隔离与弹性就再也不是可选项。</p>
+
+  <h2>目标架构</h2>
+  <p>Doris 4.0.5 shared-data 模式：tablet 数据住在 S3 storage vault，元数据在 FoundationDB 背书的 MetaService，后端是无状态计算，本地 EBS 只当 file cache。计算按 <strong>compute group</strong> 物理分池：常驻 serving 池在 on-demand 节点，弹性重查询池在 spot 上、静息 0 副本。每个池内再用 <strong>workload group</strong> 治理 CPU、内存与并发。同一个 S3 上的 Iceberg 充当开放湖层。</p>
+  <p>值得明说的设计洞察：存算分离没有消灭状态，它把状态收拢进一层（MetaService、FoundationDB、S3 recycler），而那一层恰恰是你最不能偷工减料的地方。三个新的有状态故障域取代了「每个节点挂着盘」，下面的运维工作反映的正是这笔交换。</p>
+
+  <h2>迁移是一个内存工程问题</h2>
+  <p>约 3,700 列的表会在四个地方打断朴素的「导出 Parquet、批量灌入」路径，没有一个是显然的，而且加硬件一个都治不了：</p>
+  <ul>
+    <li><strong>Footer 炸弹。</strong>Parquet footer 随 <code>row_groups × columns</code> 增长。早期对象带着 <span class="fig">2.12 GB</span> 的 footer；reader 在碰到任何一行数据之前就 OOM 了全部八台后端。标志性证据：连一句 <code>COUNT(*)</code> 都死了，证明爆炸的是元数据解析而不是数据扫描。重构对象后 footer 降约 9 倍。</li>
+    <li><strong>不被追踪的 scanner。</strong>Doris 向量化 Parquet column reader 的内存分配在 <code>exec_mem_limit</code> 之外，规模是 scanner 并发 × 列数；默认配置下约每台后端 <span class="fig">78 GB</span>。任何查询级内存限制都管不住一块引擎不追踪的缓冲。</li>
+    <li><strong>导出缓冲的跷跷板。</strong>每条导出流缓冲 <code>row_group_size × columns</code>。切小片救不了导出内存；调小 row group 又会引爆 footer。只有同时切小对象和 row group，跷跷板才解耦。</li>
+    <li><strong>导入内存随表增长，而不是随批次。</strong>灌到约 <span class="fig">17 亿行</span>时，完全相同的 load 任务开始冲破内存上限并 livelock：merge-on-write 的 delete-bitmap 维护和宽表 compaction 随累计表大小增长。一个 watchdog（软停/硬杀阈值、原子中止、幂等重试）稳住了局面；降到单流并发后零数据丢失地解决，吞吐本来就受导出节奏限制。</li>
+  </ul>
+  <p>最终成型的流水线按字节预算调度、逐对象 checkpoint、任何时刻可安全 kill，在四台后端上跑出约 <span class="fig">19,500 rows/s</span>：在 3,700 列 schema 上约为小批方案的 <span class="fig">50 倍</span>。还有一个我没在任何地方见人发表过的结果：在这种宽度的 schema 上，<strong>列宽单独就能让写吞吐摆动约 5 倍，而完整的正确性栈（merge-on-write 去重、三个倒排索引、ZSTD）代价不到 4–12%</strong>。看起来昂贵的特性几乎免费，宽度本身才是成本。</p>
+
+  <h2>负载不是我们以为的样子</h2>
+  <p>原本的 serving 表方案建立在一套手挑的 50 条查询 benchmark 上。在承诺一个不可逆的布局之前，我挖了 14 天的生产 <code>system.query_log</code>（<span class="fig">7,470 万</span>行日志），图景整个翻转：<strong>流量的绝大多数（远超九成）是点查</strong>，按一个高基数用户标识键入，其中大多是无界的「最新值」重建，补不上任何时间过滤。第二张 serving 表从「也许」变成硬需求。照着 benchmark 设计，优化的会是错误的负载。</p>
+  <p>然后是物理课。Iceberg 布局上的点查跑 <span class="fig">7–13 秒</span>，ClickHouse 是 21 毫秒。反射式的修法（bloom filter）砍掉了 <span class="fig">73%</span> 的扫描行数，墙钟一动不动：一个活跃用户的行散落在 <span class="fig">2,044</span> 个分区文件里，地板是打开文件的数量，不是扫描的行数。（我们还字节级证明了两条常见 Iceberg writer 路径会静默忽略声明的 bloom-filter 表属性。）<strong>索引修不了布局问题。</strong>修法是物理重聚簇：一张按用户键 hash 分布的 Doris 原生表。分布键是唯一日后不能 ALTER 的决策，所以先做了双表 A/B（同一份数据、镜像的两个键、四组测量）再定案。结果：暖读 <span class="fig">16–24 毫秒</span>，并在迁移的三个检查点（1,500 万、1.07 亿、2.86 亿行）重测，证明延迟在表增长 19 倍后保持平坦。</p>
+
+  <h2>路由是准入控制，不是性能调优</h2>
+  <p>serving 和分析同平台后，那不到 1% 的重查询必须<strong>在执行前</strong>被拦住：扩容是分钟级机制，OOM 是秒级事件，弹性本身永远当不了安全保证。</p>
+  <p>原生 Doris <code>EXPLAIN</code> 在我们生产形状的 SQL 套件上只有 <span class="fig">45%</span> 路由准确率，重查询漏判率 <span class="fig">27%</span>。决定性的观察：同一模板换参数后 EXPLAIN 文本逐字节相同，真实内存却差 <span class="fig">23 倍</span>。这是信号问题，不是规则问题：优化器内部本来就算好了每个算子的基数、选择率和状态大小，只是从不打印。</p>
+  <p>于是我在一个 Apache Doris fork 上把它修进引擎：</p>
+  <ul>
+    <li><strong><code>EXPLAIN ESTIMATE PLAN</code></strong>：一个只读 visitor 遍历定稿的物理计划，把 CBO 已有的算子级估算吐成 JSON。纯加法（零删除），机制部分已准备为 upstream PR。</li>
+    <li><strong><code>EXPLAIN ROUTE PLAN</code></strong>：估算加一个 15 规则分类器，<span class="fig">6–8 毫秒</span>返回路由裁决，与数据量无关。分类器从一个被当作可执行 oracle 的 Python 参考实现移植：任何集群介入之前先过 <span class="fig">189/189</span> golden corpus parity。全部约 21 个阈值可热更，调参永不需要重新构建。</li>
+  </ul>
+  <p>有一个判断和代码同样重要：leadership 起初想把分类器也贡献上游。我用第一个 PR 自己的原则反着论证：引擎应该吐数据，调用方决定策略。分类器携带我们校准的阈值和 recall 优先的偏置，那是策略，应该留在内部。知道什么<em>不该</em>贡献，改变了计划。</p>
+  <p>Heavy recall 在标准套件上从 <span class="fig">7% 到 100%</span>，剩余的漏网由设计兜住：误判的重查询在轻池撞上固定槽位内存硬限（约每查询 <span class="fig">404 MB</span>、禁止超卖），约 3 秒内被杀并自动升级到重池。分类器被<em>允许</em>不完美，因为安全保证从不依赖它。</p>
+
+  <h2>两次多数运维者从未见过的 compaction 事故</h2>
+  <p><strong>死亡螺旋。</strong>迁移完成后，宽表冻结在每 tablet 约 <span class="fig">2,500</span> 个 segment；手动 compaction 静默失败；冷点查 40–68 秒。根因是三个因素连乘：bulk load 期间关了 auto-compaction，债务堆到单个任务要合并约 2,506 段 × 3,727 列（被内存守卫在 43 GB 处中止，任务级中止而非进程崩溃）；cloud 模式没有 peer cache，每个 segment 都是约 7 秒的 S3 冷读；segment 之所以小，是因为稀疏宽 schema 在内存写缓冲和磁盘 segment 之间有 <span class="fig">46 倍</span>的压缩衰减。我们还在任何人花钱之前证明了加后端无用：单个 tablet 的 compaction 无法跨节点拆分，日志里数出 <span class="fig">632</span> 次空转唤醒对 <span class="fig">9</span> 次真实合并。是集中度受限，不是资源受限。验证过的配方（auto-compaction 常开、写缓冲扩大 4 倍、按月分桶把 tablet 钉在约 10 GB、加宽列组把 S3 重扫削约 40 倍）把冷点查从 40 秒压到服务端 <span class="fig">100 毫秒以内</span>。</p>
+  <p><strong>卡死的仪表。</strong>第二次事故：compaction score 钉死在约 <span class="fig">4,500</span>，扩容和重启都无动于衷。三条独立的只读调查线（日志枚举、tablet 元数据 HTTP 端点、catalog 回收站）收敛到同一个孤儿 tablet：来自一张早已 DROP 的表，被结构性排除在调度之外。一条推理链会被带偏；三条独立证据链指向同一个 tablet 就是裁决。那次取证由并行 AI agent 分头扫过各个诊断面执行，这也是我现在跑取证的默认方式。</p>
+
+  <h2>配得上「弹性」这个词的弹性</h2>
+  <p>重池静息在零副本。scaler（一个我重建的内部 controller）只做一件事：对 Doris operator 的自定义资源 JSON-patch 副本数，纯 HPA 角色。它的第一版自己部署后端、用 SQL 注册；我在实现前就否掉了那个设计，因为 cloud 模式下任何没在 operator CR 里声明的东西都会被下一次 reconcile 抹掉。平台原语成熟时，自研工具就该收缩。</p>
+  <p>全链路真实跑通：裁决判重 → controller patch 0→N → spot 节点约 <span class="fig">66 秒</span>起来、后端约 2 分钟注册、分层就绪检查（<code>SELECT 1</code> 探针会被前端常量折叠、从不触达后端，它会把一个空池报告成健康）→ 查询执行 → 池回收归零。serving 池 live 从 2 台扩到 4 台，<strong>零数据搬迁</strong>：tablet 住在 S3，归属自动再平衡。这就是 shared-data 的运维红利，在真实集群上拍到的。</p>
+
+  <h2>数字凭什么可信</h2>
+  <p>上面每个论断都经过测量，其中几个在路上被撤回。早期 benchmark 显示 Doris 聚合赢 ClickHouse 3–5 倍；我 red-team 了自己的结果，找到混淆项（负载中的 8 核生产节点对隔离的 14 核 benchmark 节点），撤回了倍数。公开的「Doris 快 6–40 倍」全部溯源到厂商；一手 ClickBench 数据说 ClickHouse 仍领先平表扫描。迁移完整性认证为 <span class="fig">99.945%</span>（5,170,688,484 / 5,173,508,562 行），0.055% 的差额逐条归因到去重语义，而验证方法本身也得为安全重新设计：一次朴素的 <code>COUNT(*)</code> 对账曾打崩全部八台后端。</p>
+  <p>这一切之下的习惯：当一个数字每次重测都变得更不讨喜时，那通常说明你正在逼近真相。</p>
+
+  <p class="endnote">文中的引擎级工作在一个 Apache Doris fork 上；机制（<code>EXPLAIN ESTIMATE PLAN</code>）已准备贡献上游，策略层刻意留在内部。名称、租户与精确标识已匿名化，规模数字取整。</p>
+</article>
+</template>
+
+<template id="w-inc-p100-cn">
+<article>
+  <div class="kick eyebrow" style="color:var(--amber)">事故 · 根因分析</div>
+  <h1>恰好 1.00 秒的 P100</h1>
+  <p class="standfirst">一个每隔几分钟重复、落在一个可疑整数上、且在 P99 以下所有分位完全隐形的尾延迟尖刺。</p>
+  <div class="tags"><span class="chip">事件响应</span><span class="chip">可观测性</span></div>
+
+  <h2>症状</h2>
+  <p>某租户的检测 API 的 P100 钉在恰好 <span class="fig">1.00 秒</span>，每 5–10 分钟尖一次。P50 到 P95 保持健康的 1–2 毫秒。共享同一 ingress 层的几个租户在相同窗口受影响。没有任何东西宕机；某个东西在周期性地从最慢的请求身上偷走恰好一秒。</p>
+
+  <h2>调查</h2>
+  <p>三条线并行：访问日志与错误日志交叉比对、ingress 层配置全量审计（全局配置 → 渲染后的服务配置 → 每路由注解）、pod 级指标。</p>
+  <p>第一个转折：慢请求的 <code>upstream_response_time</code> 完全正常（20–30 毫秒）。这同时排除了上游服务和客户端：等待发生在代理层<em>内部</em>。</p>
+  <p>第二个转折杀死了直觉假设。配置审计在整个渲染配置里只找到一处「1s」，而它是限流器的滑动窗口参数，不是代理超时。最显然的嫌疑人不存在。</p>
+  <p>决定性证据来自错误日志：限流插件的内联缓存查询（对着一个单副本 memcached）在超时，且每次超时都与慢请求的时间戳和客户端 IP 对齐。插件的客户端库默认读超时 <span class="fig">1,000 毫秒</span>。撞上缓存卡顿的请求等完整个超时再继续。恰好一秒，由定义决定。佐证信号：缓存只有一个副本、10 个工作线程，超时开始时它的文件描述符数从 24 跳到 54。</p>
+
+  <h2>修复与回路学到的</h2>
+  <p>交付的修复方案：缓存扩出单副本状态、提高线程池，以及最重要的一条，把插件读超时从 1,000 毫秒砍到 100–200 毫秒，让最坏情况退化成快速有界的 miss 而不是一秒的卡顿。为这个监控盲区上了 exporter。</p>
+  <blockquote>整数尾延迟是人为常量，不是物理规律。当 P100 落在整数上，先查配置再看图。</blockquote>
+  <p>这条启发式现在是我 triage playbook 里的常设规则，那个在插件里躲了多年的缓存层上了 dashboard。</p>
+</article>
+</template>
+
+<template id="w-inc-qps-cn">
+<article>
+  <div class="kick eyebrow" style="color:var(--amber)">事故 · 负载卸除</div>
+  <h1>火线上的操作顺序</h1>
+  <p class="standfirst">单租户流量激增，同时威胁共享 serving 路径、消息队列和数据库。修复的关键与其说是做什么，不如说是按什么顺序做。</p>
+  <div class="tags"><span class="chip">事件响应</span><span class="chip">容量</span></div>
+
+  <h2>症状</h2>
+  <p>一个租户的查询量冲到基线之上很远。serving 延迟上升，依赖链错误率攀升，异步重算开始和消息队列、数据库争夺同一份余量。</p>
+
+  <h2>顺序，以及为什么不能重排</h2>
+  <ol>
+    <li><strong>先止血。</strong>把流量 50/50 切到第二个集群。秒级可逆，为下游所有环节买到余量，不改变任何行为。</li>
+    <li><strong>再卸载非关键负载。</strong>动态降级非关键的异步重算：运行时配置把它限流到零，不用重启。系统继续履行主契约，后台工作让路。</li>
+    <li><strong>最后带上限扩容。</strong>serving 与异步池在显式上限下扩容；消息队列分区翻倍；数据库垂直扩 2 倍。</li>
+  </ol>
+  <p>先扩容是直觉动作，也是错误动作：在失控的流入下增加消费者，等于把激增直接喂给最慢的有状态组件。数据库会被本该拯救它的容量推下悬崖，而压力之下追加的容量对秒级问题来说总是晚几分钟。先卸载，扩容才安全。</p>
+
+  <h2>验证纪律</h2>
+  <p>每一步都要自证之后才有下一步：错误率、P95/P99、消费积压斜率反转（积压必须在下降，持平不算恢复）、数据库余量，每项至少 10–15 分钟稳定窗口。回滚判据提前分级，降级操作是一张清单，不是凌晨两点的临场判断。</p>
+  <blockquote>过载之下，操作顺序就是决策本身。清单上每一项都是对的；顺序错了，同一张清单会把系统放倒。</blockquote>
+</article>
+</template>
+
+<template id="w-inc-refused-cn">
+<article>
+  <div class="kick eyebrow" style="color:var(--amber)">事故 · 网络链路</div>
+  <h1>refused 不是 timeout</h1>
+  <p class="standfirst">错误信息里两个看似同义的词，在你打开任何工具之前就把诊断空间砍掉一半。</p>
+  <div class="tags"><span class="chip">事件响应</span><span class="chip">kubernetes</span></div>
+
+  <h2>症状</h2>
+  <p>外部连接数据库服务瞬间失败，报 <code>connection refused</code>。「瞬间」就是线索：<em>refused</em> 意味着包到了、没人在听，快速且确定。<em>timeout</em> 意味着有监听者但不应答。两个词指向栈的不同半边，混为一谈会浪费掉第一个小时。</p>
+
+  <h2>逐跳走，停在第一个失败处</h2>
+  <p>链路有八跳：client → DNS → 负载均衡 → NodePort → ingress → Service → Endpoints → pod。方法毫无花哨：按序核实每一跳确实在监听或解析，停在第一个失败的跳。在这类事故上，它找到过两个不同的根因：</p>
+  <ul>
+    <li><strong>看起来配置了的监听者。</strong>ingress controller 的 TCP services ConfigMap 存在且条目正确，但 controller 从未加载它。配置在，监听者不在。ingress 上游的一切当场无罪。</li>
+    <li><strong>变陈旧的标签。</strong>更隐蔽：一次异常重启后，数据库 operator 没有刷新 pod 的就绪标签。Service 选择器要求那个标签，于是 Endpoints 是空的：Service 存在、pod 实际在服务，而流量永远到不了。控制面真相偏离了数据面真相，只有 Endpoints 这一跳暴露它。</li>
+  </ul>
+
+  <h2>修复与验证</h2>
+  <p>第一种情况 reload controller；第二种重启工作负载，让 operator 重新评估标签。验证与诊断互为镜像：确认端口真的处于监听状态、Endpoints 非空。就是坏掉的那两件事，不是一个泛泛的健康检查。</p>
+  <blockquote>先分类症状再上工具：refused 还是 timeout，然后逐跳。方法很无聊，所以它在凌晨三点也管用。</blockquote>
+</article>
+</template>
+
+<template id="w-dr-restore-cn">
+<article>
+  <div class="kick eyebrow" style="color:var(--petrol)">恢复 · 数据</div>
+  <h1>不接触生产，恢复 52 亿行</h1>
+  <p class="standfirst">一场从证明原方案不可能开始的全量恢复演练，最终得到一个对所有在线系统可证明零风险的恢复架构。</p>
+  <div class="tags"><span class="chip">数据与状态</span><span class="chip">灾备恢复</span></div>
+
+  <h2>纠正前提</h2>
+  <p>最初的方案假设被数据库 TTL 过期的行能从在线卷上找回。这个假设是错的，而证明它错就是第一份交付物：这个引擎的 TTL 删除会物理 unlink 数据 part，也不存在能接住它们的 S3 分层。在线系统上没有任何可恢复的东西，而在在线磁盘上做实验来确认这一点，是只有风险没有收益。</p>
+
+  <h2>恢复架构</h2>
+  <p>真实存在的是生产卷的不可变每日 EBS 快照序列。恢复路径：把快照物化成一块<strong>全新的独立卷</strong>，挂到一个<strong>独立的数据库实例</strong>上，在那里验证。全程不对任何在线磁盘做 attach/detach，任何时刻不连接任何生产系统。爆炸半径不是「被管理」，而是结构性为零，执行前即可从设计证明。</p>
+
+  <h2>用数字验证</h2>
+  <p>恢复出的数据集在线可查：<span class="fig">51.98 亿行 / 4.07 TiB</span>。全量 <code>count(*)</code> 用时 <span class="fig">50 秒</span>；全表冷聚合 <span class="fig">83 秒</span>。没被查询过的恢复不算恢复：挂上的卷证明的是存储，不是数据。</p>
+
+  <h2>诚实的边界</h2>
+  <p>两条边界，刻意点名。隐含 RPO 约 24 小时：每日快照序列就给你这么多，而在这次演练之前没人把它写成 SLA。这是一次证明路径可行的一次性演练，还不是有日程的 DR 制度。两个缺口现在都是显式的，这正是「缺口」与「意外」的区别。</p>
+  <blockquote>恢复演练最有用的产出很少是数据本身，而是被纠正的假设，和那些此前没人被迫写下的数字（RPO、恢复时长）。</blockquote>
+</article>
+</template>
+
+<!-- GEN:TEMPLATES START -->
+<!-- article bodies live on the blog; see export_to_blog.py -->
+<!-- GEN:TEMPLATES END -->
+
+<!-- ===================== APP ===================== -->
+<script>
+"use strict";
+
+var LANG = "en";
+
+function T(o){ return (o && typeof o === "object") ? (o[LANG] || o.en) : o; }
+
+var UI = {
+  role:        {en:"Site Reliability → AI Infrastructure", cn:"站点可靠性 → AI 基础设施"},
+  loc:         {en:"Tokyo, Japan", cn:"东京 · 日本"},
+  thesis:      {en:"Site Reliability Engineer for data infrastructure: fleet-scale Kubernetes, observability platforms, OLAP storage engines, and reliability engineering for AI systems.",
+                cn:"SRE，方向是数据基础设施：多 region Kubernetes 集群、监控告警体系、OLAP 存储引擎，以及 AI 系统的可靠性工程。"},
+  subthesis:   {en:"A resume you can zoom into. Scores are derived from evidence density; weak axes are shown as they are. Open any axis for the skills, projects, and write-ups behind it.",
+                cn:"一份可以逐层展开的简历。分数按证据密度给出，短板如实显示。点开任意一个轴，查看它背后的技能、项目和文章。"},
+  radarEyebrow:{en:"Competency map · depth vs target", cn:"能力地图 · 深度 vs 目标"},
+  legendDepth: {en:["Depth.","Where I actually go deep — the load-bearing skills."], cn:["深度。","真正深入的承重技能。"]},
+  legendTarget:{en:["Target.","Where I want to be. The gap is deliberate, not hidden."], cn:["目标。","想要到达的位置。差距是有意展示的，不是藏起来的。"]},
+  radarNote:   {en:"Nine axes. Depth scores come from evidence density — each axis links to concrete projects and write-ups. The two weakest axes are labeled as growth areas rather than hidden.",
+                cn:"九个轴。深度分数由证据密度推导：每个轴链接到具体项目和文章。较弱的两个轴标注为成长方向，不做掩饰。"},
+  axesHead:    {en:"Nine axes · open any", cn:"九个轴 · 任意点开"},
+  notesHead:   {en:"Field Notes", cn:"现场笔记"},
+  notesHint:   {en:"operational heuristics, each from a real incident or experiment", cn:"运维经验规则，每条来自一次真实事故或实验"},
+  expHead:     {en:"Experience", cn:"工作经历"},
+  skillsBlock: {en:"Skills", cn:"技能"},
+  eduHead:     {en:"Education", cn:"教育经历"},
+  zoomLabel:   {en:"Zoom in · competency map", cn:"深入 · 能力地图"},
+  trackHead:   {en:"On-call track record", cn:"Oncall 战绩"},
+  trackNote:   {en:"Each entry is a real production incident I was on call for, distilled into symptom → localization → fix → lesson, with the causal evidence chain preserved and all customer, cluster, and internal-service identifiers stripped.",
+                cn:"每条记录都是 on-call 处理过的真实生产事故，蒸馏成症状 → 定位 → 修复 → 教训四段，保留因果证据链，去除全部客户、集群与内部服务标识。"},
+  footerL:     {en:"A LIVING RESUME · CONTENT IS DATA · EVERY CLAIM LINKS TO AN ARTIFACT", cn:"一份活的简历 · 内容即数据 · 每个声明都链接到实物"},
+  footerR:     {en:"RUI SHAO · TOKYO", cn:"RUI SHAO · 东京"},
+  crumbMap:    {en:"← map", cn:"← 地图"},
+  backMap:     {en:"← back to the map", cn:"← 回到地图"},
+  think:       {en:"Approach", cn:"方法论"},
+  skillsHead:  {en:"Skills & Tech", cn:"技能与技术"},
+  workHead:    {en:"Selected Work", cn:"代表工作"},
+  citedBy:     {en:"Cited by", cn:"引用它的域"},
+  depth:       {en:"depth", cn:"深度"},
+  target:      {en:"target", cn:"目标"},
+  title:       {en:"Rui Shao · A Resume You Can Zoom Into", cn:"Rui Shao · 一份可以逐层放大的简历"}
+};
+
+var GROUPS = {
+  foundation: { label:{en:"Foundations", cn:"基础能力"},     tone:"amber" },
+  operate:    { label:{en:"Operations",  cn:"稳态运行"},     tone:"amber" },
+  deliver:    { label:{en:"Delivery & change", cn:"交付与变更"}, tone:"amber" },
+  frontier:   { label:{en:"Growth areas", cn:"在建方向"},    tone:"cool"  }
+};
+
+var DOMAINS = [
+  {
+    id:"data", group:"foundation", depth:82, target:90,
+    name:{en:"Data & State", cn:"数据与状态"},
+    axis:{en:["Data &","State"], cn:["数据与状态"]},
+    tagline:{en:"Large-scale data migration, backup/restore, and operating stateful services: ClickHouse, Doris, Kafka, MySQL.",
+             cn:"大规模数据迁移、备份与恢复、有状态服务运维：ClickHouse · Doris · Kafka · MySQL。"},
+    thinking:{
+      title:{en:"Stateful operations are treated as irreversible until a tested path back exists.",
+             cn:"有状态操作默认按不可逆处理，除非存在验证过的回退路径。"},
+      body:{en:"Irreversible decisions (such as a distribution key) are settled by A/B measurement before commitment; a restore counts only after query-level verification; and load memory scales with accumulated table size rather than batch size, so capacity is sized for the recovery path, not the steady state.",
+            cn:"不可逆决策（如 distribution key）先用 A/B 实测再定案；恢复以查询级验证为准；导入内存随表的累计体积增长而不是批次大小，因此容量按恢复路径定，不按稳态定。"}
+    },
+    skills:{en:["Billion-row / thousand-column migration","Backup & verified restore (RPO·RTO)","Merge-on-Write & dedup semantics","Faithful schema migration","Stateful services on K8s: ClickHouse · Doris · Kafka · MySQL"],
+            cn:["数十亿行 × 数千列迁移","备份与验证过的恢复（RPO·RTO）","Merge-on-Write 与去重语义","Faithful schema 迁移","K8s 上的有状态服务：ClickHouse · Doris · Kafka · MySQL"]},
+    evidence:[
+      {w:"w-cs-doris",
+       name:{en:"ClickHouse → Doris migration, certified 99.945% row-complete", cn:"ClickHouse → Doris 迁移，99.945% 行级对账认证"},
+       note:{en:"~5.2B rows / ~4 TiB / ~3,700 columns to compute-storage-separated Doris + Iceberg. Four non-obvious OOM classes, a livelock at 1.7B rows, and a write-throughput result nobody has published: schema width swings throughput 5×, the correctness stack costs <12%.",
+             cn:"约 52 亿行 / 约 4 TiB / 约 3,700 列迁到存算分离的 Doris + Iceberg。四类非直觉 OOM、17 亿行处的 livelock，以及一个没人发表过的写吞吐结论：列宽单独摆动吞吐 5 倍，正确性栈的代价不到 12%。"}},
+      {w:"w-p-fanout",
+       name:{en:"Two engine-level optimizations chosen by a selection rule", cn:"用一条选择判据挑出来的两个引擎级优化"},
+       note:{en:"When query text, workload and shape are all uncontrollable inputs, the only lever is making shapes cheap — and the rule for picking which is \"attack avoidable fan-out, never necessary cost\". A cross-tablet point-query index and a wide-read prefetch qualified; both ship fail-open.",
+             cn:"当 SQL 文本、负载、形态全部是控制不了的输入时，唯一杠杆是让形态变便宜 —— 而挑选判据是「打可避免的扇出，不打必要成本」。跨 tablet 点查索引与宽读预取符合判据，两者都 fail-open 上线。"}},
+      {w:"w-dr-restore",
+       name:{en:"Full-scale restore drill: 5.2B rows from snapshot, zero prod contact", cn:"全量恢复演练：5.2B 行从快照恢复，零接触生产"},
+       note:{en:"Corrected a wrong recovery premise, then restored from immutable daily snapshots to an independent volume and verified by query. RPO made explicit for the first time.",
+             cn:"先纠正了一个错误的恢复前提，然后从不可变的每日快照恢复到独立卷，用查询完成验证。RPO 第一次被显式写下来。"}},
+      {w:"w-inc-oom",
+       name:{en:"The OOM a monitoring blind spot hid: zombie system-log tables", cn:"被监控盲区藏住的 OOM：升级残留的僵尸系统日志表"},
+       note:{en:"Engine upgrades silently left renamed-but-never-dropped internal log tables (>1.2 TiB of dead data); a background merge allocated 2→21.6 GiB within one second, invisible to 30-second scraping. Diagnosed from the engine's own 1-second internal metrics; a fleet-wide audit then flushed out the same hazard elsewhere.",
+             cn:"引擎升级静默留下改名却从未删除的内部日志表（超过 1.2 TiB 死数据）；一次后台 merge 在一秒内把内存从 2 GiB 拉到 21.6 GiB，30 秒粒度的采集完全看不见。靠引擎自带的 1 秒粒度内部指标定案，随后全舰队审计扫出同类隐患。"}},
+      {name:{en:"CPU at 92%: queries were the culprit, merges were the alibi", cn:"CPU 92%：查询是真凶，merge 只是在场证明"},
+       note:{en:"First look at system.merges said merge debt; cross-checking system.processes against per-thread top -H reversed the verdict — three concurrent full-table scans took ~67% of CPU, merges ~10%. Codified as a rule: never attribute CPU from one signal source.",
+             cn:"先看 system.merges 的初判是 merge 欠债；用 system.processes 与线程级 top -H 交叉验证后结论反转：三条并发全表扫描占约 67% CPU，merge 只占约 10%。沉淀为规则：CPU 归因不许只看单一信号源。"}}
+    ],
+    track:{en:"8 investigations · 15 fast-triage cards · 4 root-cause patterns", cn:"8 次调查 · 15 张快速分诊卡 · 4 个根因模式"}
+  },
+  {
+    id:"obs", group:"operate", depth:80, target:85,
+    name:{en:"Observability", cn:"可观测性"},
+    axis:{en:["Observability"], cn:["可观测性"]},
+    tagline:{en:"Multi-tenant monitoring platforms at fleet scale, plus metric/log forensics for architecture decisions.",
+             cn:"平台级多租户监控告警体系建设，以及服务于架构决策的 metrics / log 取证分析。"},
+    thinking:{
+      title:{en:"Alert on symptoms, debug on causes; a metric that cannot change a decision is noise.",
+             cn:"对症状告警，对原因排障；不能影响决策的指标是噪音。"},
+      body:{en:"SLI/SLO and per-tenant SLA form the paging layer; resource metrics are for debugging. Telemetry also settles design questions: mining 74.7M rows of production query_log corrected the assumed workload profile and changed the serving-table design.",
+            cn:"SLI/SLO 与分租户 SLA 构成告警层，资源指标用于排障。遥测同时服务于设计决策：挖掘 7,470 万行生产 query_log 修正了负载画像假设，直接改变了 serving 表设计。"}
+    },
+    skills:{en:["SLI/SLO design & per-tenant SLA","VictoriaMetrics / Prometheus at scale","Loki & log forensics","Latency chain decomposition","Alert-noise governance","Dashboard engineering (400+ metrics)"],
+            cn:["SLI/SLO 设计与分租户 SLA","大规模 VictoriaMetrics / Prometheus","Loki 与日志取证","Latency 分段归因","告警降噪治理","Dashboard 工程（400+ 指标）"]},
+    evidence:[
+      {w:"w-p-vm",
+       name:{en:"Multi-tenant monitoring platform: 50 clusters, 1.2M active series", cn:"多租户监控平台：50 集群、120 万活跃序列"},
+       note:{en:"VictoriaMetrics + Grafana + Loki at ~80K samples/s. Replaced federation that OOMed weekly; data lag 45s → <5s. Three-tier alerting with per-tenant SLI recording rules for tenant-level fault isolation.",
+             cn:"VictoriaMetrics + Grafana + Loki，约 8 万 samples/s。替换掉每周 OOM 的 federation，数据延迟从 45 秒降到 5 秒以内。三层告警加分租户 SLI recording rules，实现租户级故障隔离。"}},
+      {w:"w-cs-doris",
+       name:{en:"Workload forensics that reversed a design decision", cn:"一次逆转设计决策的负载取证"},
+       note:{en:"14 days of production query_log (74.7M rows): well over 90% of traffic was point lookups, most unbounded — the curated benchmark had been optimizing the wrong workload.",
+             cn:"14 天生产 query_log（7,470 万行）：九成以上流量是点查，且大多无界。手挑的 benchmark 一直在优化错误的负载。"}},
+      {name:{en:"Latency decomposition that proved a layer innocent", cn:"证明某一层无罪的延迟分解"},
+       note:{en:"Segment-by-segment attribution (waiting / connect / response) across an A/B cluster pair showed the suspected network path was flat at 1 ms while the real variance sat in the application tier — and shipped as a reusable debug dashboard.",
+             cn:"在 A/B 集群对上做 waiting / connect / response 分段归因：被怀疑的网络路径恒定在 1 毫秒，真正的方差在应用层。产出一块可复用的 debug dashboard。"}},
+      {w:"w-p-alertgov",
+       name:{en:"Alert governance: treating the pager itself as a system that decays", cn:"告警治理：把 pager 本身当作一个会腐化的系统"},
+       note:{en:"Decision-tree review of the alert inventory, config-level noise reduction, and an anti-entropy loop — admission rules, ownership, periodic review — because an alert system accumulates decay by default unless work is continuously applied.",
+             cn:"对告警清单做决策树式评审、配置层降噪，并建立反熵回路：准入规则、ownership、周期 review。告警系统默认走向腐化，除非持续对它做功。"}},
+      {w:"w-g-slo",
+       name:{en:"From labeling CPU to designing SLOs (the growth line)", cn:"从标 CPU 到设计 SLO（那条成长线）"},
+       note:{en:"The junior→senior turn on monitoring: stop splitting metrics horizontally (system vs app) and design top-down — different stakeholders, different SLOs, different dashboards, each dashboard existing to answer one question. CPU belongs to the capacity stakeholder, not the customer's first screen.",
+             cn:"监控上的 junior→senior 转向：不再横切指标（system vs app），而是从上往下设计，不同主体、不同 SLO、不同 dashboard，每块板只为回答一个问题而存在。CPU 属于容量主体，不是客户的第一屏。"}},
+      {name:{en:"Proving a latency alert false before touching anything", cn:"先证明告警是假的，再解释它"},
+       note:{en:"A P99 alert fired while logs and APM showed zero slow requests. First move: disprove real user impact, then explain the metric — scrape-time misalignment plus histogram bucket aggregation skew had inflated the computed P99. Closed as false with the evidence chain attached, and the rule hardened so the same skew cannot page again.",
+             cn:"P99 告警触发，但日志与 APM 显示没有任何慢请求。第一步先证伪真实用户影响，再解释指标：采集时间错位叠加 histogram 分桶聚合偏差把 P99 虚高。以假告警结案并附证据链，随后加固规则让同一偏差模式无法再呼叫值班。"}}
+    ],
+    track:{en:"6 investigations · 7 debug-trees · 4 root-cause patterns", cn:"6 次调查 · 7 棵 debug-tree · 4 个根因模式"}
+  },
+  {
+    id:"dist", group:"foundation", depth:78, target:88,
+    name:{en:"Distributed Systems", cn:"分布式系统"},
+    axis:{en:["Distributed","Systems"], cn:["分布式系统"]},
+    tagline:{en:"Partial failure, resource isolation, admission control, and the trade-offs of compute-storage separation.",
+             cn:"Partial failure、资源隔离、admission control，以及存算分离架构的取舍。"},
+    thinking:{
+      title:{en:"Admission control before elasticity: OOM is a seconds-scale event, autoscaling is a minutes-scale mechanism.",
+             cn:"Admission control 先于弹性：OOM 是秒级事件，扩容是分钟级机制。"},
+      body:{en:"Idempotency, retries, timeout budgets and backpressure are baseline requirements under partial failure. Overload safety comes from plan-time admission control plus hard memory limits; autoscaling provides capacity, not protection. Compute-storage separation concentrates state into the metadata layer, which then requires the strictest HA treatment.",
+            cn:"幂等、重试、超时预算、背压是 partial failure 下的基线要求。过载保护来自执行前的 admission control 加内存硬限，弹性扩容解决容量、不承担保护。存算分离把状态集中到元数据层，该层需要最严格的 HA 处理。"}
+    },
+    skills:{en:["Compute-storage separation trade-offs","Admission control & overload design","Idempotency & retry semantics","Consensus-backed metadata layers (FoundationDB)","Timeout budgets & cascading failure"],
+            cn:["存算分离权衡","准入控制与过载设计","幂等与重试语义","共识元数据层（FoundationDB）","超时预算与级联失败"]},
+    evidence:[
+      {w:"w-p-routing",
+       name:{en:"Two-tier overload control designed around an imperfect classifier", cn:"围绕不完美分类器设计的两层过载控制"},
+       note:{en:"L1 plan-time routing (heavy recall 7%→100%) + L2 fixed-slot hard memory limits that kill misrouted queries in ~3 s and auto-escalate. The safety guarantee never depends on the classifier being right.",
+             cn:"L1 计划期路由（heavy recall 7%→100%）加 L2 固定槽位内存硬限，约 3 秒杀掉误判的重查询并自动升级。安全保证从不依赖分类器正确。"}},
+      {w:"w-p-fanout",
+       name:{en:"Fan-out attacked on both axes: pruned on one, overlapped on the other", cn:"两个轴上分别打扇出：一个剪掉，一个重叠"},
+       note:{en:"A cross-tablet point-query index probed at plan time (566 tablets to ~1) and a wide-read prefetch that removes serialization rather than IO. Both fail open; the cache budget they compete for is the cost we actually paid, and it caused a silent residency incident.",
+             cn:"plan 期探测的跨 tablet 点查索引（566 个 tablet 剪到约 1 个），以及一个消掉串行化而不是消掉 IO 的宽读预取。两者都 fail-open；它们争的那块缓存预算才是我们真正付出的代价，并且造成了一次静默的常驻性事故。"}},
+      {w:"w-cs-doris",
+       name:{en:"Point-lookup physics: file-open-bound, not scan-bound", cn:"点查的物理规律：瓶颈是打开文件数，不是扫描行数"},
+       note:{en:"Bloom filters cut rows scanned 73% and moved wall-clock zero — one user's rows lived in 2,044 files. Physical re-clustering took 8 s to 20 ms, proven scale-invariant across 19× data growth.",
+             cn:"bloom filter 砍掉 73% 扫描行数，墙钟纹丝不动：一个用户的行散在 2,044 个文件里。物理重聚簇把 8 秒压到 20 毫秒，并证明在 19 倍数据增长下保持不变。"}},
+      {name:{en:"CrashLoop with empty logs: metadata pinned to a dead pod IP", cn:"日志为空的 CrashLoop：元数据钉死在已消失的 Pod IP"},
+       note:{en:"Another OLAP engine's frontend restarted 285 times with kubectl logs empty (it logs to file, not stdout). The metadata store had registered the node by pod IP; after restart the IP changed, its role stuck at UNKNOWN, and the liveness probe killed it every cycle (exit 143). Fix: headless Service + FQDN registration so identity survives IP churn.",
+             cn:"另一款 OLAP 引擎的 frontend 重启 285 次而 kubectl logs 为空（日志写文件不写 stdout）。元数据库用 Pod IP 注册节点；重启后 IP 变化，角色停留在 UNKNOWN，liveness probe 每轮杀一次（exit 143）。修复：headless Service 加 FQDN 注册，让身份不随 IP 漂移。"}}
+    ],
+    track:{en:"5 investigations · 15 fast-triage cards · 7 debug-trees", cn:"5 次调查 · 15 张快速分诊卡 · 7 棵 debug-tree"}
+  },
+  {
+    id:"platform", group:"deliver", depth:76, target:85,
+    name:{en:"Platform & Automation", cn:"平台与自动化"},
+    axis:{en:["Platform &","Automation"], cn:["平台与自动化"]},
+    tagline:{en:"Kubernetes controllers, automation tooling, and harness engineering for AI agents in production operations.",
+             cn:"Kubernetes controller、自动化工具建设，以及生产运维场景的 AI agent harness 工程。"},
+    thinking:{
+      title:{en:"Prefer reconcile loops over one-off scripts; shrink bespoke tooling when the platform primitive matures.",
+             cn:"用 reconcile 循环替代一次性脚本；平台原语成熟时收缩自研工具。"},
+      body:{en:"A controller converges toward declared state continuously; a script fixes one instance. The standard applies in reverse as well: once the operator covered the job, I replaced my own scaler design with a single CR-field patch. The same pattern extends to AI agents — the agent runs the investigation, a human approves every mutation.",
+            cn:"Controller 持续向声明状态收敛，脚本只修一次。这条标准反向同样成立：operator 能力覆盖后，我把自研 scaler 收缩成对 CR 单字段的 patch。同一模式延伸到 AI agent：agent 负责调查取证，人审批每一次 mutation。"}
+    },
+    skills:{en:["Kubernetes operators & controllers","Declarative interfaces & reconcile loops","AI-agent harness engineering","Evidence-mining pipelines","Go · Python · Java (engine-level)"],
+            cn:["Kubernetes operator 与 controller","声明式接口与 reconcile 循环","AI agent harness 工程","证据挖掘流水线","Go · Python · Java（引擎级）"]},
+    evidence:[
+      {w:"w-p-elastic",
+       name:{en:"Elasticity controller rebuilt as a pure HPA role", cn:"重建为纯 HPA 角色的弹性 controller"},
+       note:{en:"Bespoke deployment logic collapsed into one JSON-patch on the operator CR; spot pool 0→N in ~3 min, reaps to zero, live scale-out with zero data movement.",
+             cn:"自研部署逻辑收缩成对 operator CR 的一次 JSON-patch；spot 池约 3 分钟内 0→N，用完归零，live 扩容零数据搬迁。"}},
+      {w:"w-p-agentops",
+       name:{en:"SRE on-call triage harness (AI-agent-for-ops flagship)", cn:"SRE oncall triage harness（AI-agent-for-ops 旗舰）"},
+       note:{en:"An agent system that investigates alerts autonomously — phase-locked investigation, evidence-quoted findings, zero auto-execution of mutations. Built on four control primitives (Spec / Loop / Hook / Fork); the human approves every state change, deterministic shell hooks hard-block irreversible ops. The K8s control plane, applied to an agent.",
+             cn:"一套自主调查告警的 agent 系统：阶段锁定的调查流程、必须引用证据的结论、mutation 零自动执行。建立在四控制原语 Spec/Loop/Hook/Fork 上；人批准每一次状态变更，确定性 shell hook 硬阻断不可逆操作。把 K8s 控制平面用在 agent 上。"}},
+      {name:{en:"Agent control plane", cn:"Agent 控制面"},
+       note:{en:"K8s-style governance for AI agents: deny-by-default sealed tools, gateway write attestation, autonomy budgets earned from outcomes. Single-process core with a cross-model judge.",
+             cn:"给 AI agent 的 K8s 式治理：默认拒绝的封装工具、网关写入见证、由结果挣得的自主性预算。单进程内核加跨模型评审。"}},
+      {w:"w-p-jenkins",
+       name:{en:"Jenkins-on-Kubernetes build platform: migration and idempotency", cn:"Jenkins-on-Kubernetes 构建平台：迁移与幂等"},
+       note:{en:"Top contributor to a shared Jenkins pipeline library. Authored an 859-line nightly production-build orchestrator (downstream result collection, failure attribution, force-build idempotency gates propagated through every layer); stabilized the platform through a cross-cluster migration and modernized the dynamic agent images.",
+             cn:"团队共享 Jenkins pipeline 库第一贡献者。编写 859 行 nightly production-build 编排器（下游结果收集、失败归因、force-build 幂等门逐层透传）；在跨集群迁移中稳定平台，并现代化动态 agent 镜像。"}},
+      {name:{en:"Jenkins aggregation dashboard (personal tooling)", cn:"Jenkins 聚合面板（个人工具）"},
+       note:{en:"Flask app rendering chained pipelines as a single ordered view across two Jenkins environments, with one-click parameter replay; ThreadPoolExecutor concurrent fetching cut page load 8.3 s → 5.8 s. Built to remove a workflow friction the native UI (one job at a time) created.",
+             cn:"Flask 应用，把链式 pipeline 按执行顺序聚合成跨两套 Jenkins 环境的单页视图，支持上次参数一键 replay；ThreadPoolExecutor 并发抓取把页面加载从 8.3 秒降到 5.8 秒。为消除原生 UI（一次只看一个 job）造成的工作流摩擦而做。"}},
+      {name:{en:"This site's own supply chain", cn:"这个站点自己的供应链"},
+       note:{en:"The evidence behind these pages is distilled by a re-runnable mining pipeline: 82 working sessions → structured, source-quoted highlights → dossier. The resume is a build artifact.",
+             cn:"这些页面背后的证据由一条可重跑的挖掘流水线蒸馏：82 个工作 session、结构化且带出处的 highlight、再到 dossier。这份简历是一个构建产物。"}}
+    ],
+    track:{en:"2 investigations · 16 runbooks", cn:"2 次调查 · 16 份 runbook"}
+  },
+  {
+    id:"incident", group:"operate", depth:72, target:82,
+    name:{en:"Incident & Reliability", cn:"事件响应与可靠性"},
+    axis:{en:["Incident &","Reliability"], cn:["事件响应"]},
+    tagline:{en:"Primary on-call for 50 production clusters: 20+ P1/P2 incidents handled, MTTR ~30 minutes.",
+             cn:"50 个生产集群 primary oncall：20+ P1/P2 故障处置，MTTR 约 30 分钟。"},
+    thinking:{
+      title:{en:"Mitigate with reversible actions first; then convert the incident into monitoring, runbook, or design changes.",
+             cn:"先用可逆动作止损，再把故障转化为监控、runbook 或设计上的修改。"},
+      body:{en:"During response: symptom classification before tooling, and no stateless reflexes on stateful systems. Afterward: every incident ends with a concrete change — an alert added, a heuristic promoted to a standing rule, a design corrected. Each write-up below includes that second half.",
+            cn:"响应期间：先做症状分类再动工具，不对有状态系统做无状态式操作。事后：每次故障以一项具体修改收尾，可能是新增告警、启发式升格为规则、或修正设计。下面每篇文章都包含这后一半。"}
+    },
+    skills:{en:["Incident command & triage discipline","Root-cause analysis (evidence-quoted)","Runbooks-as-code","Parallel-agent forensics","Load shedding & recovery validation"],
+            cn:["事故指挥与 triage 纪律","根因分析（证据引用制）","Runbook 代码化","并行 agent 取证","负载卸除与恢复验证"]},
+    evidence:[
+      {w:"w-inc-p100",
+       name:{en:"The P100 that was exactly 1.00 s", cn:"恰好 1.00 秒的 P100"},
+       note:{en:"A periodic tail spike traced through three parallel evidence lines to a single-replica cache behind a rate-limiter plugin — and a timeout constant masquerading as physics.",
+             cn:"一个周期性尾延迟尖刺，经三条并行证据线追到限流插件背后的单副本缓存，以及一个伪装成物理规律的超时常量。"}},
+      {w:"w-inc-qps",
+       name:{en:"Order of operations under fire", cn:"火线上的操作顺序"},
+       note:{en:"Tenant traffic surge: split, shed, then scale — with proof at each step and why the intuitive order (scale first) takes the database down.",
+             cn:"租户流量激增：先分流、再卸载、后扩容。每一步都要自证，以及为什么直觉顺序（先扩容）会把数据库打下悬崖。"}},
+      {w:"w-inc-refused",
+       name:{en:"Refused is not timeout", cn:"refused 不是 timeout"},
+       note:{en:"Hop-by-hop isolation on an eight-hop path; two different root causes found with the same boring, reliable method.",
+             cn:"八跳链路上的逐跳隔离；同一个朴素可靠的方法找到两个不同的根因。"}},
+      {w:"w-cs-doris",
+       name:{en:"Two compaction incidents, root-caused to the engine", cn:"两次 compaction 事故，根因到引擎层"},
+       note:{en:"A death spiral (three multiplied causes, 46× compression collapse, proof that adding nodes was useless) and a stuck gauge (three independent evidence chains converging on one orphaned tablet).",
+             cn:"一次死亡螺旋（三因连乘、46 倍压缩衰减、证明加节点无用）和一次卡死的仪表（三条独立证据链收敛到同一个孤儿 tablet）。"}},
+      {w:"w-inc-oom",
+       name:{en:"The OOM a monitoring blind spot hid", cn:"被监控盲区藏住的 OOM"},
+       note:{en:"A sub-second memory spike (2→21.6 GiB) invisible to 30-second scraping, three systems away from the alert that fired. Diagnosed from 1-second engine-internal metrics; the upgrade runbook gained an audit step and a fleet-wide scan followed.",
+             cn:"一次亚秒级内存尖刺（2→21.6 GiB），30 秒粒度采集完全看不见，离触发的告警隔着三个系统。靠引擎 1 秒粒度内部指标定案；升级 runbook 加了审计步骤，随后做了全舰队扫描。"}},
+      {name:{en:"When the health check is the outage: liveness false-kills on a quorum system", cn:"当健康检查本身就是故障：quorum 系统上的 liveness 误杀"},
+       note:{en:"Kafka brokers in KRaft mode restarted in rotation, each restart aligned with a probe failure rather than any crash; every false kill forced another controller re-election. Rule inverted the instinct: on quorum-based stateful systems, liveness must be conservative while readiness stays sensitive.",
+             cn:"KRaft 模式的 broker 轮流重启，每次重启都对齐 probe 失败而非自身崩溃；每次误杀又强制一轮 controller 重选举。规则与直觉相反：quorum 型有状态系统的 liveness 必须保守，readiness 保持敏感用于摘流量。"}},
+      {w:"w-p-agentops",
+       name:{en:"Turning triage into an AI-agent-for-ops harness", cn:"把 triage 做成 AI-agent-for-ops harness"},
+       note:{en:"The 21-investigation library became the substrate for an agent that runs the investigation itself: phase-locked so it cannot hallucinate a root cause from deploy history, data-fetching isolated to subagents, and every irreversible operation hard-blocked by a deterministic shell hook. The human keeps mutation sovereignty.",
+             cn:"21 份调查记录成了一个 agent 的底料，让它自己跑调查：阶段锁定使它无法从 deploy history 脑补根因、数据获取隔离给 subagent、每个不可逆操作被确定性 shell hook 硬阻断。人保留 mutation 主权。"}}
+    ],
+    track:{en:"14 investigations · 16 runbooks · 7 debug-trees", cn:"14 次调查 · 16 份 runbook · 7 棵 debug-tree"},
+    itable:{
+      title:{en:"Incident index · 7 failure domains (self-built taxonomy)", cn:"事故索引 · 7 个失败域（自建分类法）"},
+      head:{en:["Failure domain","Core problem","Cases","Representative signals"],
+            cn:["失败域","核心问题","case 数","代表性信号"]},
+      rows:{en:[
+        ["Routing / DNS / ingress edge path","Which hop along the path is the request dying at","2","connection refused, timeout, 502/503, LB health-check failures"],
+        ["Scheduling / capacity / node pressure","Why the workload cannot be placed, or the node is unfit to carry it","4","Pending, FailedScheduling, DiskPressure, Evicted, OOMKilled"],
+        ["Stateful systems under pressure","Alive, but no longer serving stably","6","consumer lag, merge CPU high, connect failures with a healthy process"],
+        ["Observability / false signals","Whether what the alert sees equals what users experience","3","P99 high but logs clean, alert firing after impact is gone"],
+        ["Identity / access control","Whose identity is the request under, and which layer rejects it (runbooks only, no distilled case yet)","0","AccessDenied, 403, works in dev but not prod"],
+        ["Change management / post-change regression","How to make large changes without breaking production","3","post-upgrade regression, version skew, schema change"],
+        ["Overload / large-tenant QPS spike","Demand saturating one layer's rated capacity","3","single-tenant QPS spike, per-partition ceiling, queue saturation"]
+      ],
+      cn:[
+        ["路由 / DNS / 入口链路","请求到底死在哪一跳","2","connection refused、timeout、502/503、LB 健康检查失败"],
+        ["调度 / 容量 / 节点压力","workload 为什么放不上去，或节点为什么不再适合承载","4","Pending、FailedScheduling、DiskPressure、Evicted、OOMKilled"],
+        ["有状态系统承压","还活着，但不再稳定服务","6","consumer lag、merge CPU 高、进程健康但连接失败"],
+        ["可观测性 / 假信号","告警看到的是否等于用户体验到的","3","P99 高但日志干净、影响消失后告警仍在触发"],
+        ["身份 / 权限 / 访问控制","请求以谁的身份发起，在哪一层被拒（目前仅有 runbook，尚无蒸馏 case）","0","AccessDenied、403、dev 可用 prod 不可用"],
+        ["变更管理 / 变更后回归","如何在不打穿生产的前提下做大变更","3","升级后回归、版本偏差、schema 变更"],
+        ["过载 / 大租户 QPS 尖峰","需求打满了某一层的额定容量","3","单租户 QPS 尖峰、每分区吞吐天花板、队列饱和"]
+      ]}
+    }
+  },
+  {
+    id:"infra", group:"deliver", depth:70, target:80,
+    name:{en:"Infra & Capacity", cn:"基础设施与容量"},
+    axis:{en:["Infra &","Capacity"], cn:["基础设施","与容量"]},
+    tagline:{en:"IaC-built Kubernetes fleets on AWS (6 regions, 600+ nodes); capacity planning and cost optimization from measured data.",
+             cn:"IaC 构建的 AWS Kubernetes 舰队（6 region、600+ 节点）；基于实测数据的容量规划与成本优化。"},
+    thinking:{
+      title:{en:"Capacity decisions come from measurement, including proving when adding hardware will not help.",
+             cn:"容量决策基于测量，包括证明加机器无效的情形。"},
+      body:{en:"Per-core write throughput, tablet sizing, and cache working sets are measured, not assumed. The counter-case matters equally: log analysis showed a compaction backlog was concentration-bound, so scaling out backends was rejected before money was spent.",
+            cn:"单核写吞吐、tablet 大小、cache 热工作集全部来自实测而不是假设。反向结论同样重要：日志分析证明 compaction 积压是集中度受限，在花钱之前否掉了加节点方案。"}
+    },
+    skills:{en:["IaC: Packer · Ansible · kubeadm layered builds","AWS at 6-region / 600+ node scale","Capacity modeling from measurement","Spot economics & scale-to-zero","Cost hygiene / FinOps"],
+            cn:["IaC：Packer · Ansible · kubeadm 分层构建","6 region / 600+ 节点规模的 AWS","测量驱动的容量建模","Spot 经济学与 scale-to-zero","成本卫生（FinOps）"]},
+    evidence:[
+      {w:"w-p-bkc",
+       name:{en:"Reconcile pushed down to the hardware layer (Intel 5G vRAN)", cn:"把 reconcile 下沉到硬件层（Intel 5G vRAN）"},
+       note:{en:"A self-authored machine-level daemon that compiled Intel's Best Known Configuration (BIOS/kernel/driver/firmware/tuning) from a document into a continuously-enforced GitOps control loop across ~30 bare-metal nodes carrying real-time radio traffic. The K8s reconcile philosophy, below the layer K8s can see.",
+             cn:"自研 machine-level daemon，把 Intel 的 Best Known Configuration（BIOS/kernel/driver/firmware/tuning）从文档编译成持续 enforce 的 GitOps control loop，覆盖 ~30 台承载实时无线流量的裸机节点。K8s 的 reconcile 哲学，用在 K8s 看不到的那一层之下。"}},
+      {name:{en:"Cluster build as a four-layer IaC pipeline", cn:"四层 IaC 流水线构建集群"},
+       note:{en:"Image baking (AMI), orchestration, configuration, and control-plane bootstrap as separate declared layers — production K8s clusters built and rebuilt from code, not snowflakes.",
+             cn:"镜像烘焙（AMI）、编排、配置、控制面引导，四层各自声明。生产 K8s 集群从代码构建和重建，没有雪花机器。"}},
+      {w:"w-g-infravalue",
+       name:{en:"What a good infra engineer is: a philosophy of deliberate sacrifice", cn:"什么是好的 infra engineer：一门主动放弃的哲学"},
+       note:{en:"Reconcile, IaC, redundancy, degradation, rate-limiting — five methodologies, one kernel: acknowledge the constraint, then deliberately give up something otherwise correct to keep the whole alive. The value is defensible trade-off judgment, not craft.",
+             cn:"reconcile、IaC、冗余、降级、限流，五条方法论一个内核：承认约束，然后主动放弃一个本来正确的东西来保住整体。价值是可辩护的取舍判断力，不是手艺。"}},
+      {w:"w-cs-doris",
+       name:{en:"Capacity numbers derived, not guessed", cn:"推导出来的容量数字，不是拍出来的"},
+       note:{en:"Write throughput ~2,450 rows/s/core, near-linear across node shapes; tablets held at ~10 GB via per-month bucket counts; file cache sized to the measured hot working set.",
+             cn:"写吞吐约 2,450 rows/s/核，跨节点规格近线性；tablet 用按月分桶数钉在约 10 GB；file cache 按实测热工作集定容。"}},
+      {name:{en:"Fleet scale", cn:"舰队规模"},
+       note:{en:"50 Kubernetes clusters, 600+ nodes, 6 AWS regions operated as primary on-call, with cost work that cut spend without touching throughput or reliability.",
+             cn:"作为 primary oncall 运维 50 个 K8s 集群、600+ 节点、6 个 AWS region，成本优化不以吞吐或可靠性为代价。"}},
+      {name:{en:"Replication lag with a per-partition throughput ceiling", cn:"重启修不好的复制积压：每分区吞吐天花板"},
+       note:{en:"Cross-cluster mirror lag stayed high with the mirroring service perfectly healthy — restarting it would have fixed nothing. The binding constraint was capacity: a large tenant's QPS outgrew what the topic's 3 partitions could replicate. Durable fix: a partition-expansion review, flagged as irreversible and gated on key-distribution analysis.",
+             cn:"跨集群 mirror 积压持续高位而复制服务完全健康：重启不解决任何问题。真正的约束是容量：某大租户 QPS 增长超过了 topic 仅有 3 个分区的复制吞吐。长期修复是分区扩容评审，标注为不可逆操作，先评估 key 分布。"}},
+      {name:{en:"Scale-out nodes that never joined: layered isolation, then roll back", cn:"扩容节点始终不入集群：分层隔离后先回滚"},
+       note:{en:"Autoscaled instances died on boot or never joined the cluster. Strict layer isolation (ASG activity → launch template → cloud-init → kubeadm join → kubelet) because launch failure and join failure have different owners; operational rule: restore capacity first by rolling back to a known-good template, then pursue root cause.",
+             cn:"自动扩容的实例要么启动即终止，要么始终不加入集群。严格分层隔离（ASG 活动 → launch template → cloud-init → kubeadm join → kubelet），因为启动失败与加入失败归属不同；操作规则：先回滚到已知良好模板恢复容量，再追根因。"}}
+    ],
+    track:{en:"6 investigations · 16 runbooks · 3 checklists", cn:"6 次调查 · 16 份 runbook · 3 份 checklist"}
+  },
+  {
+    id:"release", group:"deliver", depth:68, target:78,
+    name:{en:"Release & Change", cn:"发布与变更"},
+    axis:{en:["Release &","Change"], cn:["发布与变更"]},
+    tagline:{en:"Production Kubernetes upgrade engineering, staged execution, and change control against config drift.",
+             cn:"生产 Kubernetes 升级工程、分级执行，以及针对配置漂移的变更管控。"},
+    thinking:{
+      title:{en:"Slice the disturbance, keep rollback cheap, and diff the rendered change against live state before applying.",
+             cn:"变更扰动切片、保持回滚低成本、应用前将渲染结果与 live 状态做字段级 diff。"},
+      body:{en:"Releases are managed as the highest-risk routine operation: canary slices, pre-staged rollback criteria, image lineages for fast reversal. Config drift makes the change as written unequal to the change as shipped, so a render-diff against the live resource is a mandatory gate.",
+            cn:"发布按风险最高的常规操作管理：金丝雀切片、预先分级的回滚判据、支持快速回退的镜像谱系。配置漂移使「写下的变更」不等于「实际生效的变更」，对 live 资源的 render-diff 是强制闸门。"}
+    },
+    skills:{en:["Production K8s upgrade engineering","Staged execution (green/yellow/red)","Dry-run render-diff discipline","Rollback lineage design","CI/CD as a production system"],
+            cn:["生产 K8s 升级工程","分级执行（green/yellow/red）","Dry-run render-diff 纪律","回滚谱系设计","把 CI/CD 当生产系统"]},
+    evidence:[
+      {w:"w-p-upgrade",
+       name:{en:"Production Kubernetes upgrades, 1.24 → 1.29, 50 clusters, zero incidents", cn:"生产 Kubernetes 升级，1.24 → 1.29，50 集群，零事故"},
+       note:{en:"Multi-region fleet upgraded with a purpose-built automation tool: per-cluster time cut from 18–21 hours with two people to 6–8 with one operator plus the system. Control-plane ordering, etcd backup gates, and rollback criteria staged in advance.",
+             cn:"用自建自动化工具升级多 region 舰队：单集群耗时从 18–21 小时压到 3–4 小时。控制面顺序、etcd 备份闸门与回滚判据全部预先分级。"}},
+      {w:"w-p-jenkins",
+       name:{en:"Idempotency in an imperative CI: the nightly image pipeline", cn:"在命令式 CI 里补幂等：nightly 镜像流水线"},
+       note:{en:"A declarative reconcile loop is idempotent by design; a Jenkins pipeline is not. Built the idempotency in: image-exists checks that skip completed builds, a force-build flag propagated through every layer, and cron parameters persisted so scheduled runs do not fall back to defaults.",
+             cn:"声明式 reconcile 天生幂等，Jenkins pipeline 天生不是。把幂等补进去：镜像存在性检查跳过已完成的构建、force-build 开关逐层透传、cron 参数持久化让定时触发不回落到 default。"}},
+      {w:"w-cs-doris",
+       name:{en:"The config-drift landmine a dry-run diff caught", cn:"一次 dry-run diff 拦下的配置漂移地雷"},
+       note:{en:"A routine chart upgrade would have silently reset the serving pool from 4 replicas to 1 and stripped its scheduling constraints. Field-level diff against the live resource caught it; the fix was surgical patching plus values realignment.",
+             cn:"一次常规 chart 升级会把 serving 池从 4 副本静默重置为 1，并剥掉调度约束。对 live 资源做字段级 diff 拦下了它；修复是外科式 patch 加 values 对齐。"}},
+      {name:{en:"One upgrade blocked all deployments cluster-wide", cn:"一次升级阻断全集群部署"},
+       note:{en:"An ingress-controller chart upgrade rebuilt the validating webhook without its caBundle; every deploy carrying an Ingress failed with x509 errors. The routing insight: multiple tenants failing in the same minute through the same mechanism is a cluster-level signal — investigation skipped the application layer entirely.",
+             cn:"一次 ingress controller chart 升级重建了 validating webhook 却丢了 caBundle，所有涉及 Ingress 的部署全部报 x509 失败。定位关键：多个租户同一分钟以同一机制失败是集群级信号，调查直接跳过应用层。"}},
+      {name:{en:"An upstream table change broke data landing three hops away", cn:"上游三跳之外的表结构变更打断数据落地"},
+       note:{en:"A release changed a source table's columns; the CDC connector's cached schema no longer matched the binlog, crashed into a full snapshot whose events were rejected downstream. A companion failure was closed by a network-layer argument: a connection dying after 431 s of idle cannot be the database's 8-hour timeout.",
+             cn:"一次 release 改了源表列数；CDC connector 缓存的旧 schema 与 binlog 不再匹配，崩溃后触发全量 snapshot，产出的事件被下游拒写。同窗口另一故障靠网络层论证收案：空闲 431 秒被杀的连接不可能是数据库的 8 小时超时。"}}
+    ],
+    track:{en:"5 investigations · 16 runbooks · 3 checklists", cn:"5 次调查 · 16 份 runbook · 3 份 checklist"}
+  },
+  {
+    id:"influence", group:"frontier", depth:52, target:75,
+    name:{en:"Influence & Communication", cn:"影响力与沟通"},
+    axis:{en:["Influence &","Comms"], cn:["影响力","与沟通"]},
+    tagline:{en:"Cross-team communication: internal training, technical writing (EN/中/日), and evidence-based decision documents.",
+             cn:"跨团队协作与沟通：内部培训、技术写作（EN/中/日）、证据驱动的技术决策文档。"},
+    thinking:{
+      title:{en:"Technical debt gets funded when it is stated in the organization's own terms, with evidence.",
+             cn:"技术债要用组织自己的语言和证据来陈述，才能拿到投入。"},
+      body:{en:"Root-cause and prevention work is structurally under-visible, so making it visible is part of the job: quantified incident narratives, training that transfers operational knowledge, and decision documents argued from source code and measurements. One such audit reversed a leadership decision on open-source scope.",
+            cn:"根因与预防类工作在组织里天然低可见，让它可见是工作的一部分：带量化数据的故障叙述、传递运维知识的内训、从源码和实测出发的决策文档。其中一份审计改变了 leadership 的开源范围决策。"}
+    },
+    skills:{en:["Evidence-first persuasion","Technical writing (EN · 中 · 日)","Internal training & onboarding","Cross-team incident narratives"],
+            cn:["证据先行的说服","技术写作（EN · 中 · 日）","内部培训与 onboarding","跨团队事故叙事"]},
+    evidence:[
+      {w:"w-p-routing",
+       name:{en:"Knowing what not to upstream", cn:"知道什么不该 upstream"},
+       note:{en:"Leadership wanted the routing policy layer contributed upstream. A line-by-line audit of seven business couplings — argued with the first PR's own principle — changed the decision. Judgment about what stays internal counts as much as the code.",
+             cn:"leadership 想把路由的 policy 层也贡献到上游。一份七处业务耦合的逐行审计，用第一个 PR 自己的原则来论证，改变了这个决定。判断什么该留在内部，与写代码同等重要。"}},
+      {name:{en:"Monitoring & on-call onboarding, taught", cn:"把监控与 oncall 教出去"},
+       note:{en:"Distilled the team's monitoring stack and on-call practice into an internal training deck and guided walkthrough for new engineers — the knowledge transfer version of the platform work.",
+             cn:"把团队的监控栈和 oncall 实践蒸馏成内部培训 deck 和引导式演练，给新工程师。平台工作的知识传递形态。"}},
+      {w:"w-p-alertgov",
+       name:{en:"Alert governance as an organizational loop", cn:"作为组织回路的告警治理"},
+       note:{en:"Proposed and drove a periodic alert review (every alert has an owner and a severity that means something) so the pager stays a signal, not a cost — and turned it into a standing governance mechanism rather than a one-off cleanup.",
+             cn:"提议并推动周期性告警评审（每条告警有 owner，severity 有真实含义），让 pager 保持是信号而不是成本，并把它做成常设治理机制而不是一次性清理。"}}
+    ]
+  },
+  {
+    id:"security", group:"frontier", depth:40, target:65,
+    name:{en:"Security & Compliance", cn:"安全与合规"},
+    axis:{en:["Security &","Compliance"], cn:["安全与合规"]},
+    tagline:{en:"Security for AI-agent operations (real, current work); traditional compliance depth is a stated growth area.",
+             cn:"AI agent 运维安全（有实际工作）；传统合规深度是明确标注的成长方向。"},
+    thinking:{
+      title:{en:"Availability is one contract; not-breached is another. This axis is scored low on purpose.",
+             cn:"可用性是一条契约，「不被攻破」是另一条。这个轴的低分是如实标注。"},
+      body:{en:"Existing work is on the agent side: deny-by-default tool gateways, write attestation, blast-radius-tiered execution gates, and a standing no-direct-production rule for automated agents. IAM design and audit frameworks (SOC 2 class) are the named gap.",
+            cn:"已有工作在 agent 一侧：默认拒绝的工具网关、写入 attestation、按爆炸半径分级的执行闸门、自动化 agent 永久禁连生产。IAM 设计与审计框架（SOC 2 类）是点名的缺口。"}
+    },
+    skills:{en:["Least-privilege tool design for agents","Audit trails & write attestation","Blast-radius-tiered execution gates","Secrets hygiene in automation"],
+            cn:["Agent 的最小权限工具设计","审计轨迹与写入见证","按爆炸半径分级的执行闸门","自动化中的密钥卫生"]},
+    evidence:[
+      {w:"w-p-agentops",
+       name:{en:"Deterministic shell hooks as the safety floor for an ops agent", cn:"用确定性 shell hook 给运维 agent 兜底"},
+       note:{en:"In the oncall triage harness, the security guarantee never rests on the model behaving: irreversible operations (delete, scale, drain, IAM) are hard-blocked by a shell hook that returns exit 2 no matter how the model hallucinates. Judgment goes to the model; the veto stays deterministic.",
+             cn:"在 oncall triage harness 里，安全保证从不建立在「模型自觉」上：不可逆操作（删除、scale、drain、IAM）由 shell hook 硬阻断，模型再怎么幻觉也绕不过一个 exit 2。判断交给模型，否决权留给确定性。"}},
+      {name:{en:"Sealed tools and attested writes for AI agents", cn:"给 AI agent 的封装工具与见证写入"},
+       note:{en:"The agent control plane's security layer: a single deny-by-default gateway, write attestation, and autonomy budgets that expand only with demonstrated outcomes.",
+             cn:"agent 控制面的安全层：单一默认拒绝网关、写入见证、只随已证明的结果扩大的自主性预算。"}},
+      {name:{en:"Handbrakes for AI-assisted operations", cn:"给 AI 辅助运维装手刹"},
+       note:{en:"Command gating tiered by blast radius (green/yellow/red), mandatory intent annotations on mutating operations, and a standing no-direct-production rule for automated agents — the discipline that makes agent-assisted ops safe to adopt.",
+             cn:"按爆炸半径分级的命令闸门（green/yellow/red）、mutating 操作强制附带意图注释、自动 agent 的永久禁连生产规则。让 agent 辅助运维安全到可以被采纳的纪律。"}}
+    ]
+  }
+];
+
+var WRITINGS = [];   /* all articles are generated from content/*.md into GEN_WRITINGS */
+
+/* GEN:CASES START */
+var CASES = [{"slug": "apisix-chain-waiting-latency", "domains": ["obs", "platform", "incident"], "title": {"en": "P99 5.9s Spike: The Gateway Metric That Pointed the Wrong Way", "cn": "P99 5.9 秒尖刺：网关指标指错了方向"}, "symptom": {"en": "External API gateway P99 on a large tenant's detection endpoint spiked to 5960ms; the gateway access log showed upstream_response_time=5.022s, which looked like a slow backend.", "cn": "某大租户 detection 接口的外层 API gateway P99 冲到 5960ms，gateway access log 显示 upstream_response_time=5.022s，看上去像后端变慢。"}, "localization": {"en": "Drilled one layer down to the nginx ingress log: request_time=5.016s but true upstream_response_time was only 0.015s, so waiting_duration was 5.001s on a single ingress pod; the serving backend answered in 15ms with 0% errors throughout.", "cn": "下钻到 nginx ingress 层日志：request_time=5.016s 而真实 upstream_response_time 只有 0.015s，即单个 ingress pod 上 waiting_duration 达 5.001s；serving 后端全程 15ms 响应，错误率 0%。"}, "fix": {"en": "Ruled out memcached/Lua timeouts with a clean 90-minute error-log sweep, concluded a transient worker stall on one ingress pod; it self-healed, with a recurrence watch and restart plan left in place.", "cn": "扫了 90 分钟窗口的 error log 排除 memcached/Lua 超时假设，判定为单个 ingress pod 的瞬时 worker 卡顿；已自愈，留下复发监控和重启预案。"}, "lesson": {"en": "An outer gateway's upstream_response_time includes the entire downstream chain, not just the app; always decompose latency layer by layer before blaming the backend.", "cn": "外层网关的 upstream_response_time 包含整条下游链路而不只是应用本身；下结论前必须逐层拆解延迟，不能直接甩锅后端。"}}, {"slug": "asg-node-join-failure", "domains": ["infra", "platform"], "title": {"en": "ASG Scale-Out Nodes That Never Joined the Cluster", "cn": "ASG 扩容节点迟迟进不了集群"}, "symptom": {"en": "Auto Scaling Group scale-out instances either got terminated right after launch, or booted fine but never showed up as Ready Kubernetes nodes, blocking capacity recovery.", "cn": "ASG 扩容出来的实例要么刚启动就被终止，要么能开机但始终没有以 Ready 状态加入 Kubernetes 集群，容量一直恢复不了。"}, "localization": {"en": "Split the problem into two distinct stages with separate evidence paths: instance launch (ASG Activity history, EC2 status checks, Launch Template/AMI) versus cluster join (cloud-init results, journalctl -u kubelet, kubeadm join logs).", "cn": "把问题切成两个证据链完全不同的阶段：实例启动失败（ASG Activity、EC2 状态检查、Launch Template/AMI）和集群加入失败（cloud-init 结果、journalctl -u kubelet、kubeadm join 日志）。"}, "fix": {"en": "Rolled back to a known-good Launch Template/AMI to restore schedulable capacity first, then fixed the join path; user-data encoding mismatch (plaintext vs base64) is the classic pitfall here.", "cn": "先回滚到已知可用的 Launch Template/AMI 恢复可调度容量，再修加入链路；user-data 编码不匹配（明文 vs base64）是这里的经典坑。"}, "lesson": {"en": "Restore capacity before root-causing; \"cannot launch\" and \"cannot join\" are completely different failure paths and must be separated as the first triage decision.", "cn": "先恢复容量再查根因；「起不来」和「加不进」是完全不同的失败路径，triage 第一步就要把两者分开。"}}, {"slug": "clickhouse-connection-refused", "domains": ["platform", "data", "incident"], "link": "w-inc-refused", "title": {"en": "Connection Refused: Eight Hops to Find Where Nobody Was Listening", "cn": "Connection refused：八跳链路上找出没人监听的那一环"}, "symptom": {"en": "External clients got connection refused on ClickHouse's exposed port while the pods themselves looked Running.", "cn": "外部客户端连 ClickHouse 对外端口时报 connection refused，但 pod 本身看起来一切 Running。"}, "localization": {"en": "Walked Client, DNS, NLB, NodePort, ingress-nginx, Service, Endpoints, Process hop by hop; kubectl get endpoints returned <none>: after an abnormal pod restart the operator had left the readiness label at \"no\", so the Service selector matched zero pods.", "cn": "沿 Client、DNS、NLB、NodePort、ingress-nginx、Service、Endpoints、进程逐跳排查；kubectl get endpoints 返回 <none>：pod 异常重启后 operator 没有刷新 readiness label（停在 no），Service selector 匹配不到任何 pod。"}, "fix": {"en": "Rollout-restarted the ClickHouse StatefulSet so the operator re-evaluated and reset the ready label; endpoints repopulated and external connections succeeded again.", "cn": "对 ClickHouse StatefulSet 做 rollout restart，让 operator 重新评估并写回 ready label；endpoints 重新填充，外部连接恢复。"}, "lesson": {"en": "Refused means nothing is listening at some hop, so stop at the first failing hop; operator-managed label gating is a classic way for a Service to silently lose every endpoint.", "cn": "refused 意味着链路上某一跳没人监听，排查应停在第一个失败的跳上；operator 用 label 做 endpoints 门控，是 Service 悄悄失去全部后端的经典方式。"}}, {"slug": "dr-restore-false-failure", "domains": ["data", "platform", "incident"], "link": "w-dr-restore", "title": {"en": "A Cross-Cluster Restore Marked Failed Too Early", "cn": "被过早判死刑的跨集群数据恢复"}, "symptom": {"en": "The cross-cluster ClickHouse recovery workflow (EBS snapshot, PV/PVC swap, restart, validate) was marked failed by the data-copy service, putting a destructive rerun on the table.", "cn": "跨集群 ClickHouse 恢复流程（EBS snapshot、PV/PVC 置换、重启、校验）被数据拷贝服务标记为失败，眼看要触发破坏性重跑。"}, "localization": {"en": "Status API timestamps plus logs showed every stage had completed; probing ClickHouse directly (TCP 9000 open, select 1 succeeds) proved the database had actually recovered, and the automation's pod-ready gate had simply validated before ClickHouse was truly up.", "cn": "status API 时间戳加日志显示各阶段其实都已完成；直接探测 ClickHouse（TCP 9000 可连、select 1 成功）证明数据库已恢复，是自动化用 pod-ready 当就绪门槛，校验跑得太早误判失败。"}, "fix": {"en": "Avoided any destructive rollback or rerun; scaled back up and re-validated after true readiness, then changed the workflow's verification to wait for TCP 9000 plus a real SQL probe before declaring failure.", "cn": "没有执行任何破坏性回滚或重跑；扩容回来等真正就绪后重新校验，并把流程的失败判定改为必须等 TCP 9000 加真实 SQL 探测。"}, "lesson": {"en": "A control-plane \"task failed\" is not a data-plane fact; independently verify the database before acting on any recovery failure, especially when the next step is destructive.", "cn": "控制面的「任务失败」不等于数据面的事实；对恢复类失败必须先独立验证数据库本身，尤其当下一步操作是破坏性的时候。"}}, {"slug": "clickhouse-pod-pending", "domains": ["platform", "infra", "data"], "title": {"en": "The Resource Bump That Could Not Be Scheduled", "cn": "资源翻倍之后，Pod 卡死在 Pending"}, "symptom": {"en": "After raising ClickHouse resources from 2 CPU / 18Gi to 8 CPU / 64Gi, the pod stayed Pending; scheduler events showed Insufficient cpu/memory plus node affinity/selector mismatches.", "cn": "把 ClickHouse 资源从 2 CPU / 18Gi 提到 8 CPU / 64Gi 之后 pod 一直 Pending；调度事件同时报 Insufficient cpu/memory 和 node affinity/selector 不匹配。"}, "localization": {"en": "The dedicated node group (r7i.2xlarge, nominally 8 vCPU / 64GB) only offered about 7.5 CPU / 60Gi allocatable, below the new requests; a larger r7i.4xlarge pool existed but lacked the dedicated-node label required by the strict nodeSelector, so it was never a candidate.", "cn": "专用节点组（r7i.2xlarge，标称 8 vCPU / 64GB）的 allocatable 只有约 7.5 CPU / 60Gi，低于新的 requests；集群里有更大的 r7i.4xlarge 池，但缺少 nodeSelector 要求的专用 label，根本不在候选之列。"}, "fix": {"en": "Created a new dedicated node group on r7i.4xlarge with the dedicated node label preserved in the bootstrap args; the pod scheduled and ran stably.", "cn": "新建了一个 r7i.4xlarge 的专用节点组，并在启动参数里保留原有的专用 label；pod 顺利调度并稳定运行。"}, "lesson": {"en": "The scheduler compares requests against allocatable, which is always below the instance spec, and a strict nodeSelector silently excludes otherwise-fit nodes; a resource bump must be coupled with a node group review.", "cn": "调度器比较的是 requests 和 allocatable，后者永远小于实例标称规格；严格的 nodeSelector 会静默排除本来放得下的节点，加资源必须连带评审节点组。"}}, {"slug": "zombie-tables-oom", "domains": ["data", "incident", "obs"], "link": "w-inc-oom", "title": {"en": "1.21 TiB of Zombie Tables Behind a One-Second OOM", "cn": "1.21 TiB 僵尸表引爆的一秒 OOM"}, "symptom": {"en": "Kafka consumer lag alerts on velocity topics across multiple tenants; ClickHouse inserts were dying with Code 241 \"memory limit exceeded: would use 21.60 GiB\", and failed batches looped through a 30s sleep plus rebalance retry.", "cn": "多个租户的 velocity topic 同时报 Kafka consumer lag；ClickHouse 写入被 Code 241「memory limit exceeded: would use 21.60 GiB」杀掉，失败批次陷入 30 秒 sleep 加 rebalance 的重试循环。"}, "localization": {"en": "system.metric_log's 1-second series showed memory jumping from a ~2 GiB baseline to 21.60 GiB within one second, invisible to 30s Prometheus scrapes; system.tables exposed upgrade-residue zombies, trace_log_2 at 1.21 TiB and processors_profile_log_0 at 308 GiB, whose background merges triggered the spike.", "cn": "system.metric_log 的 1 秒粒度序列显示内存在一秒内从约 2 GiB 基线飙到 21.60 GiB，30 秒的 Prometheus 抓取完全看不见；system.tables 揪出升级残留的僵尸表，trace_log_2 高达 1.21 TiB、processors_profile_log_0 308 GiB，它们的后台 merge 正是尖峰来源。"}, "fix": {"en": "Truncated the active system logs, dropped every _N zombie table (bypassing the 50 GB drop guard), then added TTLs and disabled trace_log in config; a fleet-wide audit found a sibling cluster carrying another 1.65 TiB of the same debt.", "cn": "TRUNCATE 活跃系统日志表，逐个 DROP 所有 _N 僵尸表（绕过 50 GB 删除保护），随后在配置里加 TTL 并禁用 trace_log；全 fleet 巡检又在兄弟集群发现 1.65 TiB 的同类欠账。"}, "lesson": {"en": "ClickHouse upgrades rename old system log tables instead of dropping them; the visible alert (Kafka lag) can be two hops downstream from the real cause, and sub-second memory spikes need 1s-granularity evidence, not scrape-interval dashboards.", "cn": "ClickHouse 升级只重命名旧系统日志表而不删除；看得见的告警（Kafka lag）可能离真凶隔着两跳，而亚秒级内存尖峰必须靠 1 秒粒度证据，抓取间隔级的看板抓不住。"}}, {"slug": "clickhouse-cpu-superposition", "domains": ["data", "obs", "incident"], "title": {"en": "92% CPU: Merges Took the Blame, Full Scans Did the Damage", "cn": "92% CPU：merge 背了锅，真凶是全表扫描"}, "symptom": {"en": "One ClickHouse container pinned at 27.6 of 30 cores (92%) with load average 75.64, while memory sat at 54% and restarts stayed at zero; every other cluster was under 20%.", "cn": "单个 ClickHouse 容器 CPU 钉在 27.6/30 核（92%），load average 高达 75.64，内存只用 54% 且零重启；其他集群全部低于 20%。"}, "localization": {"en": "system.merges alone suggested merge debt, but pairing system.processes with top -H told the real split: 3 concurrent SELECT * full scans reading ~700M rows each consumed 20+ cores (~67%), while TTL/rewrite merges took only ~3 cores (~10%).", "cn": "只看 system.merges 会得出 merge 欠账的结论，但 system.processes 配合 top -H 给出真实占比：3 条并发 SELECT * 全表扫描各读约 7 亿行，吃掉 20+ 核（约 67%），TTL/重写 merge 只占约 3 核（约 10%）。"}, "fix": {"en": "Identified the client issuing the eventId lookup queries; short-term cap max_threads and replace SELECT * with needed columns, long-term add a projection or bloom-filter skip index so eventId lookups stop scanning 700M rows.", "cn": "定位到发起 eventId 查询的调用方；短期压低 max_threads 并把 SELECT * 改成按需列，长期给 eventId 加 projection 或 bloom filter skip index，让点查不再扫 7 亿行。"}, "lesson": {"en": "Never conclude a CPU root cause from system.merges alone; always run both system.processes and the top -H thread breakdown to separate query load from merge load before acting.", "cn": "绝不能只凭 system.merges 给 CPU 定根因；必须同时跑 system.processes 和 top -H 线程分解，把查询负载和 merge 负载拆开再下结论。"}}, {"slug": "cdc-schema-snapshot-sign-null", "domains": ["data", "release", "incident"], "title": {"en": "One DDL Change, Three Cascading CDC Failures", "cn": "一次 DDL 变更引发的 CDC 三连崩"}, "symptom": {"en": "After a release shrank a MySQL table from 4 columns to 2, the CDC connector crashed with \"internal schema size 4, but row size 2\"; post-restart, writes flooded with \"Cannot set null to non-nullable column _sign Int8\".", "cn": "一次发布把 MySQL 表从 4 列改成 2 列后，CDC connector 以「internal schema size 4, but row size 2」崩溃；重启后写入端刷屏「Cannot set null to non-nullable column _sign Int8」。"}, "localization": {"en": "The crash forced a full snapshot in schema-recovery mode; snapshot events carry op_type=r, which the connector never mapped to a _sign value, so ClickHouse's NOT NULL column rejected 23 minutes of writes; a third failure hit the idle standby side, where a network middlebox killed the TCP connection after ~431s, far below MySQL's 8h wait_timeout.", "cn": "崩溃触发 schema recovery 模式下的全量 snapshot；snapshot 事件的 op_type 是 r，connector 从未为它映射 _sign 值，ClickHouse 的 NOT NULL 列拒收了 23 分钟的写入；第三个故障出在空闲的备用侧，网络中间层约 431 秒就掐断 TCP 连接，远小于 MySQL 8 小时的 wait_timeout。"}, "fix": {"en": "The connector self-recovered once the snapshot finished, with the 23-minute rejection window flagged for a data-gap check; prevention: default _sign=1 for snapshot events, plus 30s heartbeats and TCP keepalive to outlive the ~431s idle cutoff.", "cn": "snapshot 完成后 connector 自动恢复，23 分钟被拒窗口列入补数核查；防复发措施：给 snapshot 事件配 _sign 默认值 1，并用 30 秒 heartbeat 加 TCP keepalive 扛过约 431 秒的空闲切断。"}, "lesson": {"en": "DDL changes must be coordinated with CDC connectors, and \"connector recovered\" never means the data is complete; a ~431s timeout signature points at network middleboxes, not the database.", "cn": "DDL 变更必须和 CDC connector 协同，「connector 恢复了」绝不等于数据完整；431 秒量级的超时特征指向网络中间层，而不是数据库本身。"}}, {"slug": "waiting-latency-qps-spike", "domains": ["incident", "platform", "obs"], "title": {"en": "Ingress Queueing Under a Single-Tenant QPS Spike", "cn": "单租户 QPS 尖峰打爆 ingress 排队"}, "symptom": {"en": "Production serving API p95/p99 stayed high for over 10 minutes; ingress request_time was elevated while upstream_response_time held at baseline, and the traffic surge was dominated by one large tenant.", "cn": "生产 serving API 的 p95/p99 持续高位超过 10 分钟；ingress request_time 升高但 upstream_response_time 稳在基线，流量激增由某大租户主导。"}, "localization": {"en": "Latency decomposition (request_time minus upstream_response_time) classified it as waiting_latency dominance, i.e. ingress connection/queue saturation rather than application slowness; per-tenant QPS confirmed single-tenant dominance and ingress saturation signals (connections, CPU, retries) all matched.", "cn": "用 request_time 减 upstream_response_time 做延迟分解，确认 waiting_latency 占主导，即 ingress 连接/队列饱和而非应用变慢；分租户 QPS 证实单租户主导，ingress 饱和信号（连接数、CPU、重试）全部吻合。"}, "fix": {"en": "Applied tenant-aware rate limiting/degradation and distributed traffic to cut the peak, then scaled ingress controller capacity; verified waiting_latency converged back toward upstream_response_time and p95/p99 held at baseline.", "cn": "对该租户做定向限流/降级并分流削峰，再扩 ingress controller 容量；验证 waiting_latency 重新贴近 upstream_response_time，p95/p99 稳定回基线。"}, "lesson": {"en": "Prove waiting_latency dominance before touching the application layer; tenant-dominant spikes need tenant-scoped mitigation, not blanket scaling.", "cn": "动应用层之前先证明是 waiting_latency 主导；单租户主导的尖峰要用租户级手段处置，而不是无差别扩容。"}}, {"slug": "admission-webhook-cabundle", "domains": ["release", "platform", "incident"], "title": {"en": "One Empty caBundle Blocked Every Helm Install in the Cluster", "cn": "一个空 caBundle 卡死全集群 helm install"}, "symptom": {"en": "Multiple tenants' Flink batch jobs failed within the same minute; every helm install carrying an Ingress resource died with \"x509: certificate signed by unknown authority\" from the ingress-nginx admission webhook.", "cn": "多个租户的 Flink batch job 在同一分钟内批量失败；所有含 Ingress 资源的 helm install 都被 ingress-nginx admission webhook 以「x509: certificate signed by unknown authority」拒绝。"}, "localization": {"en": "Diffed the ValidatingWebhookConfiguration's caBundle against the CA in the admission Secret: a recent ingress-nginx helm upgrade had recreated the webhook config without patching the caBundle back, so the apiserver could not verify the webhook's TLS certificate.", "cn": "把 ValidatingWebhookConfiguration 的 caBundle 与 admission Secret 里的 CA 做 diff：近期一次 ingress-nginx helm upgrade 重建了 webhook 配置但没把 caBundle patch 回去，apiserver 因此无法验证 webhook 的 TLS 证书。"}, "fix": {"en": "Patched the CA from the Secret back into the webhook config with a single JSON patch and verified via a server-side dry-run ingress create; long-term, migrate webhook certificates from one-shot helm hooks to cert-manager with rotation.", "cn": "用一条 JSON patch 把 Secret 里的 CA 写回 webhook 配置，并用 server-side dry-run 创建 ingress 验证通过；长期方案是把 webhook 证书从一次性 helm hook 迁到可轮换的 cert-manager。"}, "lesson": {"en": "Many tenants failing through the same mechanism at the same time is a cluster-wide infrastructure signal, not an application bug; \"recent helm upgrade plus webhook failure\" should route straight to change-management triage.", "cn": "多租户同时以同一机制失败，是 cluster 级基础设施信号而非应用 bug；「近期 helm upgrade 加 webhook 失败」应直接路由到变更管理类 triage。"}}, {"slug": "diskpressure-eviction", "domains": ["platform", "infra", "incident"], "title": {"en": "Mass Evictions: Replace the Node Instead of Fighting Image GC", "cn": "批量 Evicted：换节点，别跟镜像 GC 较劲"}, "symptom": {"en": "Large numbers of pods showed Evicted with \"The node had condition: [DiskPressure]\"; node events reported EvictionThresholdMet and ImageGCFailed with 0 bytes eligible to free.", "cn": "大量 pod 变成 Evicted，消息带「The node had condition: [DiskPressure]」；节点事件报 EvictionThresholdMet，且 ImageGCFailed 显示可回收空间为 0 字节。"}, "localization": {"en": "Classified it as kubelet ephemeral-storage eviction rather than app crashes; node checks (df -h / df -i, containerd/kubelet/log directories) confirmed the node could not self-heal because image GC had nothing reclaimable, on a small ~50G root disk hosting large-image workloads.", "cn": "判定为 kubelet 的 ephemeral-storage 驱逐而非应用崩溃；节点级检查（df -h / df -i、containerd/kubelet/日志目录）确认镜像 GC 已无可回收内容，约 50G 的小根盘上还跑着多个大镜像负载，无法自愈。"}, "fix": {"en": "Cordoned and drained the node and let the ASG replace it with a clean instance; prevention: larger root volumes, ephemeral-storage requests/limits, log rotation, and alerts on DiskPressure/ImageGCFailed signals.", "cn": "cordon 加 drain 后交给 ASG 换一台干净的新节点；预防措施包括加大根盘、为写盘负载设 ephemeral-storage requests/limits、日志轮转，以及对 DiskPressure/ImageGCFailed 建告警。"}, "lesson": {"en": "When ImageGCFailed keeps recurring on ASG-managed workers, node replacement beats repeated cleanup; also redact env vars before pasting kubectl describe output into tickets, since it can contain plaintext secrets.", "cn": "ASG 管理的 worker 反复出现 ImageGCFailed 时，换节点优于反复清理；另外 kubectl describe 输出可能含明文密钥，贴进 ticket 前必须脱敏。"}}, {"slug": "kraft-liveness-restart-loop", "domains": ["dist", "platform"], "title": {"en": "The Liveness Probe That Kept Killing Healthy Kafka Brokers", "cn": "反复杀掉健康 Kafka broker 的 liveness probe"}, "symptom": {"en": "Kafka KRaft brokers restarted in rotation with frequent controller re-elections; each restart lined up with \"Liveness probe failed\" events rather than OOMKilled or JVM crashes.", "cn": "Kafka KRaft broker 轮流重启，controller 频繁重新选举；每次重启都与「Liveness probe failed」事件对齐，而非 OOMKilled 或 JVM 崩溃。"}, "localization": {"en": "Ruled out self-crash signals first, then matched restart timestamps to probe failures; the combination of false kills plus controller role flapping identified an over-aggressive livenessProbe killing brokers that were slow but healthy.", "cn": "先排除自身崩溃信号，再把重启时间点和 probe 失败对齐；误杀加 controller 角色反复漂移，指向过于激进的 livenessProbe 在杀慢但健康的 broker。"}, "fix": {"en": "Made liveness conservative (failureThreshold 99, periodSeconds 50, initialDelay 50s) while keeping readiness sensitive for traffic shedding; restarts stopped climbing and the controller stayed stable through the 60-minute observation window.", "cn": "把 liveness 调保守（failureThreshold 99、periodSeconds 50、initialDelay 50s），readiness 保持灵敏用于摘流量；重启计数不再上涨，controller 在 60 分钟观察窗内保持稳定。"}, "lesson": {"en": "For quorum-based stateful systems, liveness probes must be forgiving: readiness sheds traffic but liveness kills, and confusing the two turns slowness into an outage.", "cn": "对基于 quorum 的有状态系统，liveness probe 必须宽容：readiness 只摘流量而 liveness 会直接杀进程，两者混用会把「慢」放大成「挂」。"}}, {"slug": "kafka-lag-parts-explosion", "domains": ["dist", "data", "incident"], "title": {"en": "Kafka Lag That Was Really a ClickHouse Problem", "cn": "看着是 Kafka lag，其实病在 ClickHouse"}, "symptom": {"en": "Consumer group lag ran high across multiple topics simultaneously; ClickHouse logs in the same window showed \"Delaying inserting block by 10 ms because there are 1015 parts\", climbing past 1058 parts.", "cn": "一个 consumer group 在多个 topic 上同时报高 lag；同窗口的 ClickHouse 日志刷「Delaying inserting block by 10 ms because there are 1015 parts」，parts 数一路涨过 1058。"}, "localization": {"en": "Time-correlated the lag spike with ClickHouse insert backpressure; the consumer pods themselves had no OOM, restarts, or throttling, so classified it as a downstream sink bottleneck: a parts explosion throttling inserts and dragging consumer throughput down.", "cn": "把 lag 尖峰与 ClickHouse 写入 backpressure 做时间对齐；消费端 pod 本身无 OOM、无重启、无限流，判定为下游 sink 瓶颈：parts 爆炸导致写入被延迟，拖垮消费吞吐。"}, "fix": {"en": "Restarted the async consumer pods to unstick the pipeline and lag drained back to baseline; follow-ups on parts governance (merge/partition strategy, batch sizing) plus alerts on parts count and insert delay.", "cn": "重启异步消费服务的 pod 解开卡点，lag 回落到基线；后续跟进 parts 治理（merge/分区策略、batch 尺寸）并给 parts 数和写入延迟建告警。"}, "lesson": {"en": "Kafka lag is usually a symptom rather than the disease; the pairing of lag plus \"Delaying inserting block\" should be read as a downstream write bottleneck first, before tuning the consumer.", "cn": "Kafka lag 通常是症状而非病灶；lag 加「Delaying inserting block」这组信号应先按下游写入瓶颈处理，而不是先调消费者。"}}, {"slug": "mirrormaker-partition-ceiling", "domains": ["dist", "data", "incident"], "title": {"en": "Three Partitions Against a Growing Tenant", "cn": "3 个 partition 扛不住持续增长的大租户"}, "symptom": {"en": "Lag alerts fired on a large tenant's velocity topics; dashboards showed cross-cluster replication lag sitting high and draining only slowly, with no errors anywhere.", "cn": "某大租户的 velocity 相关 topic 报 lag 告警；面板显示跨集群复制 lag 高位缓慢消化，全程无任何报错。"}, "localization": {"en": "First split consumer lag from MirrorMaker replication lag via the dedicated mirror-lag dashboard; MirrorMaker pods were healthy (no OOM or restarts), but the tenant's QPS had grown while the topic still had only 3 partitions, capping per-partition mirror throughput.", "cn": "先用 mirror lag 专用面板把消费者 lag 和 MirrorMaker 复制 lag 分开；MirrorMaker pod 资源健康（无 OOM 无重启），但该租户 QPS 上涨而 topic 只有 3 个 partition，单 partition 复制吞吐触顶。"}, "fix": {"en": "No restart needed short-term since lag converged after the traffic peak; long-term: expand topic partitions (irreversible, needs key-distribution and rebalance review), add a dedicated mirror-lag alert, and tie capacity reviews to tenant QPS growth.", "cn": "短期无需重启，波峰过后 lag 自然收敛；长期：扩 topic partition（不可逆，需评估 key 分布与 rebalance 影响）、给 mirror lag 配独立告警、把容量评审与租户 QPS 增长挂钩。"}, "lesson": {"en": "Partition count is a hard ceiling on replication throughput; distinguishing which lag it is, consumer versus mirror, is the mandatory first branch of any Kafka lag triage.", "cn": "partition 数是复制吞吐的硬天花板；分清到底是消费者 lag 还是 mirror lag，是所有 Kafka lag triage 的必答第一题。"}}, {"slug": "tenant-qps-joint-mitigation", "domains": ["incident", "platform", "dist", "data"], "link": "w-inc-qps", "title": {"en": "Degrade First, Scale With Caps: Surviving a Large-Tenant Spike", "cn": "先降级再限额扩容：扛住大租户流量洪峰"}, "symptom": {"en": "A single large tenant's QPS spike degraded the real-time serving path end to end: error rate and p95/p99 climbing, Kafka backlog building, and the database approaching saturation.", "cn": "某大租户的 QPS 尖峰把实时 serving 链路整体拖垮：错误率与 p95/p99 上升，Kafka 积压增长，数据库逼近饱和。"}, "localization": {"en": "Traced the spike's entry path (client, traffic switch, gateway, serving) and confirmed the bottleneck spanned serving pods, async consumers, tenant-scoped Kafka topics, and the database at once, so no single-layer fix would hold.", "cn": "沿入口路径（客户端、流量切换层、网关、serving）追踪尖峰，确认瓶颈同时压在 serving、异步消费、租户专属 Kafka topic 和数据库上，单层修复兜不住。"}, "fix": {"en": "Split traffic 50/50 across paths, zeroed non-critical recompute/backfill rate limits via tenant config with no restart, scaled serving/async HPA within explicit caps (consumer thread pool 40 core / 80 max), doubled the tenant topics' Kafka partitions and temporarily doubled the DB instance size; then stepped the limits back up gradually (0 to 2 to 5 to 10).", "cn": "流量 50/50 分流；通过租户配置在线把非关键的 recompute/backfill 限速清零（无需重启）；在明确上限内扩 serving/异步 HPA（消费线程池 40 核心 / 80 上限）；把该租户 topic 的 Kafka partition 翻倍并临时把 DB 实例规格翻倍；稳定后按 0 到 2 到 5 到 10 逐级恢复限速。"}, "lesson": {"en": "Degrade before you scale: adding serving capacity while the database has no headroom pushes the incident over the edge, and every emergency knob needs an explicit cap plus a written rollback plan.", "cn": "先降级再扩容：数据库没有余量时加 serving 容量只会把事故推下悬崖；每个应急旋钮都要有明确上限和成文的回滚方案。"}}, {"slug": "histogram-skew-false-p99", "domains": ["obs", "incident"], "title": {"en": "The P99 Alert With No Slow Request Behind It", "cn": "背后没有一条慢请求的 P99 告警"}, "symptom": {"en": "A latency alert fired on P99 and the graph looked convincing, but the error rate stayed completely flat in the same window.", "cn": "P99 延迟告警触发，曲线看起来煞有介事，但同窗口错误率完全没有抬头。"}, "localization": {"en": "Checked application logs and APM in the same time window first: zero real slow requests; comparing per-instance histogram buckets and scrape timestamps showed scrape misalignment plus bucket aggregation skew inflating the aggregated P99.", "cn": "先查同时间窗的应用日志与 APM：一条真实慢请求都没有；对比各实例的 histogram bucket 和抓取时间戳，发现抓取时间错位叠加 bucket 聚合偏差，把聚合后的 P99 抬高了。"}, "fix": {"en": "Closed it as a false alert with logs/APM evidence attached, then hardened the rule: added a for: duration, moved percentiles onto recording rules, and aligned scrape timing so the pattern would not re-fire.", "cn": "附上日志/APM 证据按误告警结案，随后加固规则：加 for: 持续时间、把分位数改用 recording rule、对齐抓取时间，杜绝同模式复发。"}, "lesson": {"en": "Before trusting any percentile, disprove it against logs/APM; aggregated histogram quantiles can lie when scrapes misalign across instances, and alert state belongs to the rule engine, not to Slack history.", "cn": "相信任何分位数之前先用日志/APM 证伪；实例间抓取错位时聚合的 histogram 分位数会说谎，而告警状态以规则引擎为准，不以 Slack 消息记录为准。"}}, {"slug": "mysql-timeout-node-dns", "domains": ["platform", "infra", "incident"], "title": {"en": "MySQL Timeouts That Followed One Worker Node Around", "cn": "跟着某个 worker 节点走的 MySQL 超时"}, "symptom": {"en": "Serving pods logged MySQL \"connect timed out\" while MySQL itself was perfectly healthy; the failures clustered on pods scheduled to one specific worker node.", "cn": "serving 服务的 pod 日志报 MySQL「connect timed out」，但 MySQL 自身完全健康；失败集中在调度到某个特定 worker 节点上的 pod。"}, "localization": {"en": "First separated timeout from refused/auth errors, verified Service/Endpoints and the actual destination (Service DNS versus a NodePort-style path), then compared DNS and TCP probes from failing versus healthy pods: only pods on the one node failed, indicating node-level DNS/egress breakage.", "cn": "先把 timeout 与 refused/认证类错误分开，核对 Service/Endpoints 和实际目标地址（Service DNS 还是 NodePort 类路径），再在故障 pod 与健康 pod 内对比 DNS 与 TCP 探测：只有那台节点上的 pod 失败，指向节点级 DNS/出网故障。"}, "fix": {"en": "Restarted the serving deployment so pods rescheduled off the suspect node and the timeouts stopped without touching MySQL at all; cordoned the node and handed it to the network owner for root cause.", "cn": "重启 serving deployment 让 pod 调度离开可疑节点，完全没动 MySQL 超时就消失；随后 cordon 该节点并移交网络负责人查根因。"}, "lesson": {"en": "When connection failures are concentrated on one node, treat it as node-level DNS/egress breakage: move the workload first to stop the bleeding, then chase the node.", "cn": "连接失败集中在单节点时，按节点级 DNS/出网故障处理：先迁走负载止血，再回头追那台节点的根因。"}}, {"slug": "memcached-p100-1s", "domains": ["incident", "platform", "obs"], "link": "w-inc-p100", "title": {"en": "Why P100 Landed on Exactly 1.00s Every Few Minutes", "cn": "P100 为什么每隔几分钟正好停在 1.00 秒"}, "symptom": {"en": "Ingress waiting-latency P100 spiked to exactly 1.00s every 5-10 minutes while P50-P95 stayed at 1-2ms and upstream_response_time never moved from ~20-30ms; the top client accounted for 47.5% of affected requests.", "cn": "ingress waiting latency 的 P100 每 5 到 10 分钟精准冲到 1.00 秒，P50 到 P95 稳在 1 至 2ms，upstream_response_time 始终在约 20 至 30ms；受影响请求中头部客户占 47.5%。"}, "localization": {"en": "Cross-correlated slow access-log entries with error-log lines on second plus client IP: the rate-limit Lua plugin's synchronous memcached call was timing out; memcached ran as a single replica with 10 threads, file descriptors jumping 24 to 54 at spike time, and the 1.00s ceiling was exactly the Lua read timeout (1000ms, connect timeout 50ms).", "cn": "按秒级时间戳加客户端 IP 把慢请求 access log 与 error log 交叉对齐：限流 Lua 插件对 memcached 的同步调用在超时；memcached 单副本仅 10 线程，尖峰时刻文件描述符从 24 跳到 54，而 1.00 秒的天花板正是 Lua 读超时常量（1000ms，连接超时 50ms）。"}, "fix": {"en": "Mitigation plan: scale memcached replicas and raise threads from 10 to 32+, lower the Lua read timeout to 100-200ms to bound worst-case waiting, add a memcached exporter for connection visibility, and retire the deprecated image.", "cn": "缓解方案：memcached 扩副本并把线程从 10 提到 32+，Lua 读超时降到 100 至 200ms 以封顶最坏等待，加 memcached exporter 补上连接数可见性，并替换已弃用的镜像。"}, "lesson": {"en": "A suspiciously exact latency plateau is a timeout constant, not randomness; hunting down which config owns that number leads straight to the root cause.", "cn": "延迟精确卡在某个整数上不是巧合而是某个超时常量；追问「这个数字写在哪个配置里」就能直达根因。"}}, {"slug": "qa-disk-cleanup-failure", "domains": ["platform", "data", "incident"], "title": {"en": "The Deployment That Would Not Recover After a Disk Cleanup", "cn": "磁盘清理之后再也起不来的部署"}, "symptom": {"en": "A QA/Dev deployment failed with pods in CrashLoopBackOff and dependencies unavailable, shortly after a disk cleanup/reclaim cycle had run in the environment.", "cn": "QA/Dev 环境的部署失败，pod 反复 CrashLoopBackOff、依赖不可用，时间点紧跟一轮磁盘清理/回收任务之后。"}, "localization": {"en": "Proved the cleanup window overlapped the failure first, then used events and logs to find the first broken dependency in the chain: the storage/DB layer, not the upper-layer services that were visibly failing.", "cn": "先证明清理窗口与故障窗口重叠，再顺着 events 和日志找链条上第一个断掉的依赖：是底层存储/数据库，而不是表面上在报错的上层服务。"}, "fix": {"en": "Restored the database dependency first, then rebuilt the upper-layer services (BI/analytics UI) in strict dependency order and verified readiness; filed follow-ups to add retention guardrails to the cleanup job.", "cn": "先恢复数据库依赖，再按依赖顺序重建上层服务（BI/分析 UI）并验证就绪；跟进给清理任务加保留策略护栏防复发。"}, "lesson": {"en": "Fix in dependency order from the bottom up; the loudest failing component is rarely the first one that broke.", "cn": "按依赖顺序自底向上修复；叫得最响的组件，往往不是最先坏掉的那个。"}}, {"slug": "spark-job-stuck-pending", "domains": ["data", "platform", "incident"], "title": {"en": "Spark Jobs That Never Reached Running", "cn": "永远到不了 Running 的 Spark 任务"}, "symptom": {"en": "Spark/Luigi jobs sat in Pending, Init, or Terminating without ever reaching Running, holding cluster resources hostage and blocking the next scheduled runs.", "cn": "Spark/Luigi 任务卡在 Pending、Init 或 Terminating，始终到不了 Running，占着集群资源并堵住后续排程。"}, "localization": {"en": "Extracted the job_id from the alert (often the namespace suffix), confirmed the stuck pods in Kubernetes, then judged blast radius: one or two stuck jobs versus broadly unhealthy scheduling, which decides whether the worker pool itself needs recycling.", "cn": "从告警里提取 job_id（通常是 namespace 后缀），在 Kubernetes 里确认卡住的 pod，再判断爆炸半径：是个别任务卡住，还是调度整体不健康，这决定要不要动 worker 池。"}, "fix": {"en": "Terminated the stuck jobs through the cluster-manager API to release resources; when scheduling was broadly unhealthy, recycled the shared worker pool (scale to 0 then back to 50 replicas), but only after confirming no healthy jobs were in flight, and verified cleanup after every step.", "cn": "通过集群管理 API 终止卡住的任务释放资源；调度整体不健康时再回收共享 worker 池（缩到 0 再扩回 50 副本），且必须先确认没有健康任务在跑，每一步操作后都做清理验证。"}, "lesson": {"en": "Verify after every mutating step, and never recycle a shared worker pool without first proving nothing healthy is running in it.", "cn": "每个写操作之后必须验证；没有先证明池里没有健康任务在跑，绝不回收共享 worker 池。"}}, {"slug": "olap-fe-crashloop-ip-binding", "domains": ["data", "platform", "dist"], "title": {"en": "285 Restarts and an Empty kubectl logs", "cn": "285 次重启，kubectl logs 却一片空白"}, "symptom": {"en": "Another OLAP engine's frontend StatefulSet pod racked up 285 restarts in CrashLoopBackOff with exit code 143, while kubectl logs returned nothing at all.", "cn": "另一款 OLAP 引擎的 frontend StatefulSet pod 累计重启 285 次，CrashLoopBackOff，退出码 143，而 kubectl logs 输出完全为空。"}, "localization": {"en": "Exec'd into the container to read the file-only frontend log: BerkeleyDB metadata persisted on the PVC had recorded the old pod IP; after restart the pod got a new IP, so the node stayed in UNKNOWN role, never opened port 9030, and the liveness probe killed it every 60 seconds in a loop.", "cn": "exec 进容器读只写文件的 frontend 日志：PVC 上持久化的 BerkeleyDB 元数据记着旧 pod IP，重启后 pod 拿到新 IP，节点角色停在 UNKNOWN，9030 端口始终不开，liveness probe 每 60 秒杀一次，循环往复。"}, "fix": {"en": "Short-term: scale down, delete the PVC to wipe the stale metadata, scale up to reinitialize; permanent: switch to a headless Service plus FQDN host type so metadata records stable DNS names instead of ephemeral pod IPs.", "cn": "短期：缩容、删 PVC 清掉过期元数据、再扩容重新初始化；永久：改用 headless Service 并以 FQDN 作为节点标识，让元数据记录稳定的 DNS 名而非易变的 pod IP。"}, "lesson": {"en": "An empty kubectl logs does not mean no logs exist, some engines only write to files inside the container; and registering cluster members by IP inside Kubernetes is a design bug, because pod IPs are ephemeral.", "cn": "kubectl logs 为空不代表没有日志，有些引擎只往容器内文件写；而在 Kubernetes 里用 IP 注册集群成员本身就是设计缺陷，因为 pod IP 天生易变。"}}];
+/* GEN:CASES END */
+
+/* GEN:WRITINGS START */
+var GEN_WRITINGS = [
+ {
+  "id": "w-cs-doris",
+  "group": "case",
+  "kicker": {
+   "en": "CASE STUDY",
+   "cn": "案例研究"
+  },
+  "title": {
+   "en": "Rebuilding a 5-billion-row event store, down to the engine",
+   "cn": "重构一个 50 亿行的事件存储：一路做到引擎里"
+  },
+  "sub": {
+   "en": "ClickHouse → Doris compute-storage separation: memory engineering, engine-level routing, two compaction incidents, and numbers that survived re-measurement.",
+   "cn": "ClickHouse → Doris 存算分离：内存工程、引擎级路由、两次 compaction 事故，以及经受住重测的数字。"
+  },
+  "url": {
+   "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_rebuilding-a-5b-row-event-store_en/",
+   "cn": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_rebuilding-a-5b-row-event-store_zh/"
+  }
+ },
+ {
+  "id": "w-inc-p100",
+  "group": "incident",
+  "kicker": {
+   "en": "INCIDENT",
+   "cn": "事故"
+  },
+  "title": {
+   "en": "The P100 that was exactly 1.00 seconds",
+   "cn": "恰好 1.00 秒的 P100"
+  },
+  "sub": {
+   "en": "Integer tail latencies are human constants: a periodic spike traced to a cache timeout hiding inside a rate-limiter plugin.",
+   "cn": "整数尾延迟是人为常量：一个周期性尖刺，追到藏在限流插件里的缓存超时。"
+  },
+  "url": {
+   "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_the-p100-that-was-exactly-one-second_en/",
+   "cn": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_the-p100-that-was-exactly-one-second_zh/"
+  }
+ },
+ {
+  "id": "w-inc-qps",
+  "group": "incident",
+  "kicker": {
+   "en": "INCIDENT",
+   "cn": "事故"
+  },
+  "title": {
+   "en": "Order of operations under fire",
+   "cn": "火线上的操作顺序"
+  },
+  "sub": {
+   "en": "Split, shed, then scale — and why the intuitive order takes the database down.",
+   "cn": "先分流、再卸载、后扩容，以及为什么直觉顺序会把数据库放倒。"
+  },
+  "url": {
+   "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_order-of-operations-under-fire_en/",
+   "cn": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_order-of-operations-under-fire_zh/"
+  }
+ },
+ {
+  "id": "w-inc-refused",
+  "group": "incident",
+  "kicker": {
+   "en": "INCIDENT",
+   "cn": "事故"
+  },
+  "title": {
+   "en": "Refused is not timeout",
+   "cn": "refused 不是 timeout"
+  },
+  "sub": {
+   "en": "Two words that halve the search space, and two root causes found by walking eight hops.",
+   "cn": "两个词把搜索空间砍半；走完八跳找到两个根因。"
+  },
+  "url": {
+   "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_refused-is-not-timeout_en/",
+   "cn": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_refused-is-not-timeout_zh/"
+  }
+ },
+ {
+  "id": "w-dr-restore",
+  "group": "incident",
+  "kicker": {
+   "en": "RECOVERY",
+   "cn": "恢复"
+  },
+  "title": {
+   "en": "Restoring 5.2 billion rows without touching prod",
+   "cn": "不接触生产，恢复 52 亿行"
+  },
+  "sub": {
+   "en": "A restore drill that corrected its own premise and made RPO explicit for the first time.",
+   "cn": "一场纠正了自身前提的恢复演练，第一次把 RPO 写成显式数字。"
+  },
+  "url": {
+   "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_restoring-5b-rows-without-touching-prod_en/",
+   "cn": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_restoring-5b-rows-without-touching-prod_zh/"
+  }
+ },
+ {
+  "id": "w-p-vm",
+  "group": "project",
+  "kicker": {
+   "en": "PROJECT",
+   "cn": "项目"
+  },
+  "title": {
+   "en": "Replacing Prometheus Federation: Rebuilding a Multi-Tenant Monitoring Platform",
+   "cn": "替换 Prometheus Federation：一个多租户监控平台的重建"
+  },
+  "sub": {
+   "en": "Moved 50 Kubernetes clusters off a weekly-OOMing federation topology onto a VictoriaMetrics platform — 1.2M active series, data lag 45s → <5s, zero alert gaps through the cutover.",
+   "cn": "把 50 个 Kubernetes 集群从每周 OOM 的 Federation 拓扑迁到 VictoriaMetrics 平台：1.2M active series，数据延迟 45s 降到 5s 以内，切换全程告警不断流。"
+  },
+  "url": {
+   "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_replacing-prometheus-federation_en/",
+   "cn": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_replacing-prometheus-federation_zh/"
+  }
+ },
+ {
+  "id": "w-p-upgrade",
+  "group": "project",
+  "kicker": {
+   "en": "PROJECT",
+   "cn": "项目"
+  },
+  "title": {
+   "en": "Production Kubernetes Upgrade Engineering: 50 Clusters, 1.24 → 1.29, Zero Incidents",
+   "cn": "生产 Kubernetes 升级工程：50 集群，1.24 → 1.29，零事故"
+  },
+  "sub": {
+   "en": "An Upgrade Safety System (check → plan → apply + evidence) turned an 18–21 hour, two-person manual ritual into a 6–8 hour single-operator procedure, executed across two production fleets with zero customer-impacting downtime.",
+   "cn": "用 Upgrade Safety System（check → plan → apply + evidence）把 18-21 小时、需要两人结对的手工升级压缩为 6-8 小时单人操作，并在两套生产集群上以零客户可感知停机完成执行。"
+  },
+  "url": {
+   "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_kubernetes-upgrade-engineering_en/",
+   "cn": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_kubernetes-upgrade-engineering_zh/"
+  }
+ },
+ {
+  "id": "w-p-routing",
+  "group": "project",
+  "kicker": {
+   "en": "PROJECT",
+   "cn": "项目"
+  },
+  "title": {
+   "en": "Engine-Level Query Routing: EXPLAIN ROUTE PLAN",
+   "cn": "引擎级查询路由：EXPLAIN ROUTE PLAN"
+  },
+  "sub": {
+   "en": "A new SQL statement inside the Apache Doris frontend that classifies every query heavy or light in 6–8 ms before execution — built on a fork, mechanism prepared for upstream, policy deliberately kept internal.",
+   "cn": "在 Apache Doris FE 内新增一条 SQL 语句，每条查询执行前 6-8ms 判定 heavy/light。工作在 fork 上完成，mechanism 准备 upstream，policy 刻意留在内部。"
+  },
+  "url": {
+   "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_engine-level-query-routing_en/",
+   "cn": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_engine-level-query-routing_zh/"
+  }
+ },
+ {
+  "id": "w-p-fanout",
+  "group": "project",
+  "kicker": {
+   "en": "PROJECT",
+   "cn": "项目"
+  },
+  "title": {
+   "en": "Fan-Out Is the Floor: Two Targeted Optimizations for Query Shapes Nobody Controls",
+   "cn": "扇出是地板：两个针对「没人能控制的查询形态」的定向优化"
+  },
+  "sub": {
+   "en": "A cross-tablet point-query index that prunes 566 tablets to about one before any tablet is opened, and a wide-read prefetch that removes serialization rather than IO — chosen because the cost of each was mostly avoidable fan-out, and shipped fail-open because neither may ever change a result. Includes the tradeoff that actually cost us, and the silent incident it caused.",
+   "cn": "一个在打开任何 tablet 之前把 566 个 tablet 剪到约 1 个的跨 tablet 点查索引，以及一个消掉串行化而不是消掉 IO 的宽读预取 —— 选这两个是因为它们的成本里大部分是可避免的扇出，做成 fail-open 是因为它们永远不许改变结果。包含我们真正付出的那个代价，以及它造成的一次静默事故。"
+  },
+  "url": {
+   "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_fan-out-is-the-floor_en/",
+   "cn": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_fan-out-is-the-floor_zh/"
+  }
+ },
+ {
+  "id": "w-p-elastic",
+  "group": "project",
+  "kicker": {
+   "en": "PROJECT",
+   "cn": "项目"
+  },
+  "title": {
+   "en": "Designing the Elastic Compute Tier: Discrete Capacity, One Write Primitive, Readiness That Cannot Lie",
+   "cn": "弹性计算层是怎么设计的：离散容量、一个写原语、不会骗人的 readiness"
+  },
+  "sub": {
+   "en": "Five design decisions behind a heavy-query compute pool that rests at zero: physical isolation instead of a workload class, discrete capacity instead of per-query autoscaling, sizing by bottleneck instead of by size, a controller reduced to patching one field, and a readiness path built on the assumption that every health signal eventually lies. Spot pricing is a per-pool consequence, not the point.",
+   "cn": "一个平时 0 副本的重查询计算池背后的五个设计决策：用物理隔离而不是负载分级、用离散容量而不是逐查询伸缩、按瓶颈类型而不是按数据量定容、把 controller 收敛成对一个字段的 patch，以及一条假设「每个健康信号最终都会骗人」而设计的 readiness 路径。spot 只是分池决策的结果，不是重点。"
+  },
+  "url": {
+   "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_designing-the-elastic-compute-tier_en/",
+   "cn": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_designing-the-elastic-compute-tier_zh/"
+  }
+ },
+ {
+  "id": "w-p-alertgov",
+  "group": "project",
+  "kicker": {
+   "en": "PROJECT",
+   "cn": "项目"
+  },
+  "title": {
+   "en": "Alert Governance: Turning the Pager from Noise Back into Decision Signal",
+   "cn": "告警治理：把 pager 从噪声源治回决策信号"
+  },
+  "sub": {
+   "en": "Audited a pager emitting ~960 OpsGenie alerts a day, ~85% of them default-P3, from 367 paging rules — traced four structural root causes, and rebuilt admission, dedup, and ownership so decay has to fight back against the system.",
+   "cn": "审计了一个每天产出约 960 条 OpsGenie 告警、约 85% 是默认 P3、背后有 367 条 paging 规则的 pager：定位四个结构性根因，重建准入、去重和 ownership，让腐化从默认结局变成需要对抗系统的例外。"
+  },
+  "url": {
+   "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_alert-governance_en/",
+   "cn": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_alert-governance_zh/"
+  }
+ },
+ {
+  "id": "w-p-jenkins",
+  "group": "project",
+  "kicker": {
+   "en": "PROJECT",
+   "cn": "项目"
+  },
+  "title": {
+   "en": "\"Knows Jenkins\": What That Line Actually Tests in an SRE",
+   "cn": "「SRE 熟悉 Jenkins」到底是什么能力"
+  },
+  "sub": {
+   "en": "\"Familiar with Jenkins\" is in every SRE job description, but writing pipeline scripts is not the skill. The skill is treating the delivery pipeline as a production system: idempotent procedures, observable job state, configuration in code — and knowing when automation itself becomes the new source of entropy. Grounded in a real Jenkins migration and its diagnose/fix script pairs.",
+   "cn": "「熟悉 Jenkins」写在无数 JD 里，但会写 pipeline 脚本不是那个能力。真正的能力是把交付流水线当生产系统对待：流程幂等、job 状态可观测、配置进代码，并且知道自动化本身什么时候会变成新的熵源。落地素材来自一次真实的 Jenkins 迁移，和其中 diagnose 与 fix 脚本的配对。"
+  },
+  "url": {
+   "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_what-knows-jenkins-actually-tests_en/",
+   "cn": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_what-knows-jenkins-actually-tests_zh/"
+  }
+ },
+ {
+  "id": "w-p-agentops",
+  "group": "project",
+  "kicker": {
+   "en": "PROJECT",
+   "cn": "项目"
+  },
+  "title": {
+   "en": "An SRE Oncall Triage Harness — Autonomous Investigation, Human-Owned Mutation",
+   "cn": "一个 SRE Oncall Triage Harness：agent 自主调查，mutation 主权归人"
+  },
+  "sub": {
+   "en": "A working harness that refactors SRE oncall triage from a human-executed procedure into an agent that investigates on its own while every irreversible action stays behind a deterministic gate. Built on four control primitives — Spec / Loop / Hook / Fork — with the reliability discipline of a Kubernetes control plane wrapped around a non-deterministic reasoning core.",
+   "cn": "一个把 SRE oncall triage 从人肉执行重构为「agent 自主调查 + 人保留 mutation 主权」的 harness：所有不可逆操作都挡在确定性门禁之后。它建立在 Spec / Loop / Hook / Fork 四个控制原语之上，用 Kubernetes 控制平面的可靠性范式去约束一个不确定的推理内核。"
+  },
+  "url": {
+   "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_sre-oncall-triage-harness_en/",
+   "cn": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_sre-oncall-triage-harness_zh/"
+  }
+ },
+ {
+  "id": "w-p-bkc",
+  "group": "project",
+  "kicker": {
+   "en": "PROJECT",
+   "cn": "项目"
+  },
+  "title": {
+   "en": "Compiling a Document into a Control Loop: A Machine-Level Configuration Reconciler for 5G vRAN Bare Metal",
+   "cn": "把一份文档编译成 control loop：面向 5G vRAN 裸金属的 machine-level 配置收敛控制器"
+  },
+  "sub": {
+   "en": "A self-authored, continuously running systemd-level daemon that turned Intel's Best Known Configuration from prose-and-shell documentation into a git-declared, continuously audited desired state across ~30 bare-metal servers spanning multiple clusters.",
+   "cn": "一个自研、持续运行的 systemd 层 daemon，把 Intel 的 Best Known Configuration 从一份 prose 加 shell 的文档，变成 git 里声明式、被持续审计的 desired state，覆盖分布在多个 cluster 的约 30 台裸金属服务器。"
+  },
+  "url": {
+   "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_compiling-a-document-into-a-control-loop_en/",
+   "cn": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_compiling-a-document-into-a-control-loop_zh/"
+  }
+ },
+ {
+  "id": "w-inc-oom",
+  "group": "incident",
+  "kicker": {
+   "en": "INCIDENT",
+   "cn": "事故"
+  },
+  "title": {
+   "en": "Zombie System Tables: the Sub-Second OOM That 30-Second Monitoring Could Not See",
+   "cn": "僵尸系统表：30 秒采集看不见的亚秒级 OOM"
+  },
+  "sub": {
+   "en": "A Kafka consumer-lag alert that was really a terabyte of upgrade residue inside ClickHouse, detonated by a one-second background merge",
+   "cn": "一条 Kafka 消费积压告警，真因是 ClickHouse 里超过 1 TiB 的升级残留，被一次一秒内完成的后台 merge 引爆"
+  },
+  "url": {
+   "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_zombie-system-tables-subsecond-oom_en/",
+   "cn": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_zombie-system-tables-subsecond-oom_zh/"
+  }
+ },
+ {
+  "id": "w-v-capabilities",
+  "group": "perspective",
+  "kicker": {
+   "en": "PERSPECTIVE",
+   "cn": "视角"
+  },
+  "title": {
+   "en": "What I understand SRE to require",
+   "cn": "我所理解的 SRE 需要的能力"
+  },
+  "sub": {
+   "en": "Why the radar has nine axes — a capability model built on problem classes, not tool inventories, and where the moat actually is.",
+   "cn": "雷达为什么是九个轴：一个按问题类别而不是工具清单构建的能力模型，以及护城河到底在哪里。"
+  },
+  "url": {
+   "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_what-i-understand-sre-to-require_en/",
+   "cn": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_what-i-understand-sre-to-require_zh/"
+  }
+ },
+ {
+  "id": "w-v-mapping",
+  "group": "perspective",
+  "kicker": {
+   "en": "PERSPECTIVE",
+   "cn": "视角"
+  },
+  "title": {
+   "en": "An audit of my own radar",
+   "cn": "我当前做了什么，匹配什么能力"
+  },
+  "sub": {
+   "en": "How the nine scores were derived from evidence density, what each one means, and a behavioral record that independently cross-checks the shape.",
+   "cn": "九个分数如何从证据密度推导、每个分数意味着什么，以及一份独立交叉验证雷达形状的行为记录。"
+  },
+  "url": {
+   "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_an-audit-of-my-own-radar_en/",
+   "cn": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_an-audit-of-my-own-radar_zh/"
+  }
+ },
+ {
+  "id": "w-v-next",
+  "group": "perspective",
+  "kicker": {
+   "en": "PERSPECTIVE",
+   "cn": "视角"
+  },
+  "title": {
+   "en": "What I know I can't do yet",
+   "cn": "接下来应该做什么"
+  },
+  "sub": {
+   "en": "The radar's dashed target line is a commitment, not decoration — three prioritized gaps, each with a testable definition of closed.",
+   "cn": "雷达上的 target 虚线是承诺，不是装饰：三个按优先级排列的缺口，每个都带一条可检验的补齐定义。"
+  },
+  "url": {
+   "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_what-i-know-i-cant-do-yet_en/",
+   "cn": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_what-i-know-i-cant-do-yet_zh/"
+  }
+ },
+ {
+  "id": "w-v-agents",
+  "group": "perspective",
+  "kicker": {
+   "en": "PERSPECTIVE",
+   "cn": "视角"
+  },
+  "title": {
+   "en": "SRE in the Age of AI Agents",
+   "cn": "AI agent 时代的 SRE"
+  },
+  "sub": {
+   "en": "What changed, and what still needs an engineer",
+   "cn": "什么变了，什么还需要工程师"
+  },
+  "url": {
+   "en": "https://shaorui0.github.io/tech-en/2026/08/03/2026-08-03_sre-in-the-age-of-ai-agents_en/",
+   "cn": "https://shaorui0.github.io/tech/2026/08/03/2026-08-03_sre-in-the-age-of-ai-agents_zh/"
+  }
+ },
+ {
+  "id": "w-g-slo",
+  "group": "philosophy",
+  "kicker": {
+   "en": "EVOLUTION",
+   "cn": "我的进化"
+  },
+  "title": {
+   "en": "From Labeling CPU to Designing SLOs: Relearning What Monitoring Is",
+   "cn": "从标 CPU 到设计 SLO：一个 SRE 对监控的重新理解"
+  },
+  "sub": {
+   "en": "The junior version of me split metrics horizontally — system vs application — and thought monitoring was done once the CPU curve was on a dashboard. The turn was learning to design top-down: different stakeholders care about different things, each has a different SLO and a different dashboard, and a dashboard exists to answer a question.",
+   "cn": "junior 时期的我把指标横着切：system 与 application，以为把 CPU 标到 dashboard 上监控就做完了。真正的转折是学会从上往下设计：不同主体关心不同的指标，每个主体的 SLO 不同、dashboard 不同，而 dashboard 存在的意义是回答问题。"
+  },
+  "url": {
+   "en": "https://shaorui0.github.io/tech/2026/07/20/2026-07-20_slo-top-down-monitoring_zh/",
+   "cn": "https://shaorui0.github.io/tech/2026/07/20/2026-07-20_slo-top-down-monitoring_zh/"
+  }
+ },
+ {
+  "id": "w-g-infravalue",
+  "group": "philosophy",
+  "kicker": {
+   "en": "METHODOLOGY",
+   "cn": "方法论"
+  },
+  "title": {
+   "en": "The Value of an Infra Engineer: Large-Scale Cloud Management as a Philosophy of Deliberate Sacrifice",
+   "cn": "一个 infra engineer 的价值：大规模云管理，是一门「主动放弃」的哲学"
+  },
+  "sub": {
+   "en": "What a good infra engineer brings is not \"can type commands\" but judgment to make trade-offs under constraint. Reconcile, IaC, redundancy, degradation, rate-limiting — every methodology of modern large-scale cloud management answers the same question: to keep the whole alive, what are you willing to give up on purpose?",
+   "cn": "好的 infra engineer 带来的不是「会敲命令」，而是在约束下做取舍的判断力。reconcile、IaC、冗余、降级、限流，现代大规模云管理的每一条方法论，本质都在回答同一个问题：为了保住整体，你愿意主动放弃什么。"
+  },
+  "url": {
+   "en": "https://shaorui0.github.io/tech/2026/07/20/2026-07-20_infra-engineer-value-cloud-philosophy_zh/",
+   "cn": "https://shaorui0.github.io/tech/2026/07/20/2026-07-20_infra-engineer-value-cloud-philosophy_zh/"
+  }
+ }
+];
+/* GEN:WRITINGS END */
+WRITINGS = WRITINGS.concat(GEN_WRITINGS);
+
+var NOTES = [
+  { t:{en:"A SELECT 1 probe lies", cn:"SELECT 1 探针会撒谎"},
+    b:{en:"The frontend constant-folds it and never dispatches a backend — an empty compute pool answers 'healthy'. Readiness has layers: process up, registered alive, and a canary that touches real data. Probe the layer you actually depend on.",
+       cn:"前端把它常量折叠，从不派发任何后端：一个空的计算池也回答「健康」。就绪是分层的：进程起了、注册存活、以及一个真正触到数据的金丝雀。探测你实际依赖的那一层。"} },
+  { t:{en:"0.1 cores of silence", cn:"差 0.1 核的沉默"},
+    b:{en:"A pod requesting 8 CPUs on an 8-vCPU node never schedules: after system reservations, allocatable is ~7.9. The autoscaler doesn't error — it just never scales, silently. Requests must sit below the integer vCPU line, and 'silent' is the operative failure mode to design monitoring for.",
+       cn:"在 8 vCPU 节点上申请 8 核的 pod 永远调度不上：扣掉系统预留后 allocatable 只有约 7.9。autoscaler 不报错，它只是静默地永不扩容。requests 必须低于整数 vCPU 线，「静默」正是需要为之设计监控的故障模式。"} },
+  { t:{en:"Healthy systems can look red", cn:"健康的系统可以是红的"},
+    b:{en:"An elastic pool resting at zero replicas reads as unhealthy to the operator's aggregate status. Cost-optimal steady state shows a red gauge. Monitor per-pool availability, and treat aggregate health as a summary for humans, not a paging signal.",
+       cn:"一个停在 0 副本的弹性池，在 operator 的聚合健康里读作不健康。成本最优的稳态显示为红灯。按池监控可用性，把聚合健康当成给人看的摘要，不是寻呼信号。"} },
+  { t:{en:"Steady-state enough ≠ peak enough", cn:"稳态够用 ≠ 峰值够用"},
+    b:{en:"Systems sized for steady state die during recovery: write-ahead-log replay, delete-bitmap growth, compaction catch-up all peak far above cruise. Two incidents, same shape — a metadata service that crashed after 23 stable days, and a migration that livelocked at 1.7B rows. Size for the recovery path.",
+       cn:"按稳态定容的系统死在恢复路径上：WAL 重放、delete-bitmap 增长、compaction 追赶，全都远高于巡航值。两次事故，同一个形状：稳定运行 23 天后崩溃的元数据服务，和在 17 亿行处 livelock 的迁移。按恢复路径定容。"} },
+  { t:{en:"Integer tail latencies are human constants", cn:"整数尾延迟是人为常量"},
+    b:{en:"A P100 pinned at exactly 1.00 s is not physics — it is someone's default timeout. Round numbers in latency distributions are configuration, and the config audit will find them faster than the graphs will.",
+       cn:"钉在恰好 1.00 秒的 P100 不是物理规律，是某人的默认超时。延迟分布里的整数是配置，查配置比看图快。"} },
+  { t:{en:"Three chains, one verdict", cn:"三条链，一个裁决"},
+    b:{en:"One reasoning chain can be led astray by a plausible hypothesis. Three independent evidence chains — logs, metadata endpoints, the recycle bin — converging on the same object is a verdict. I now run forensics as parallel agents over independent surfaces by default.",
+       cn:"一条推理链会被似是而非的假设带偏。三条独立证据链（日志、元数据端点、回收站）收敛到同一个对象，才是裁决。我现在默认用并行 agent 在独立面上跑取证。"} },
+  { t:{en:"Compaction debt compounds", cn:"Compaction 债会累积放大"},
+    b:{en:"In shared-data mode, backlog builds up as segment counts but gets repaid in S3 round-trips, which is far more expensive. Keep auto-compaction always on; disabling it during bulk loads repays the same debt at the highest possible cost.",
+       cn:"存算分离模式下，积压以 segment 数累积，偿还时却按 S3 round-trip 计价，代价高得多。auto-compaction 保持常开；bulk load 期间关闭它，等于用最高成本偿还同一笔债。"} },
+  { t:{en:"Numbers that get uglier are converging", cn:"越测越难看的数字正在收敛"},
+    b:{en:"An accuracy figure went 42% → 36% → 45% across three honest re-measurements, each revision public. Distrust results that only ever improve; the ones that get less flattering under scrutiny are the ones converging on truth.",
+       cn:"一个准确率数字经过三次诚实重测：42% → 36% → 45%，每次修订公开。不要信只会变好的结果；在审视下变得不讨喜的那些，才是在逼近真相。"} }
+];
+
+var RESUME = {
+  exp: [
+    {
+      co:"DataVisor", tile:"DV",
+      role:{en:"Senior Site Reliability Engineer (Japan) · Site Reliability Engineer (China)", cn:"高级站点可靠性工程师（日本）· 站点可靠性工程师（中国）"},
+      when:"2025.03 — now",
+      intro:{en:"Fraud detection sold as a service, mostly to banks and payment providers. I started on the China team and moved to Japan as the company opened up the Japanese market and data-residency rules made local infrastructure a requirement. A four-person SRE team owns the whole company's infrastructure layer; I am primary on-call for it, and my share is cluster lifecycle, observability, and the analytics data platform.",
+             cn:"公司做的是以 SaaS 形式交付的欺诈检测，客户主要是银行和支付机构。我从中国团队起步，随着公司开拓日本市场、数据合规要求基础设施必须本地化而转到日本。四人 SRE 团队负责全公司的基础设施层；我是它的 primary on-call，分工是 cluster lifecycle、可观测性、分析数据平台三块。"},
+      sections:[
+        { t:{en:"Data & State", cn:"数据与状态"}, d:"data",
+          m:{en:"~5.2B rows · up to 3,727 cols · Doris compute-storage separation", cn:"~52 亿行 · 最宽 3,727 列 · Doris 存算分离"},
+          items:[
+            {tag:{en:"Migration", cn:"迁移"},
+             en:"Led the fraud event layer's migration off <b>ClickHouse</b> onto <b>Apache Doris compute-storage separation</b>; certified <b>99.945%</b> row-complete, point lookups <b>8 s → 20 ms</b>. <a href='#W#'>Why we left ClickHouse →</a> <a href='#W#'>Data scale →</a>",
+             cn:"主导反欺诈事件层从 <b>ClickHouse</b> 迁到 <b>Apache Doris 存算分离</b>；<b>99.945%</b> 行级对账，点查 <b>8 秒 → 20 毫秒</b>。<a href='#W#'>为什么离开 ClickHouse →</a> <a href='#W#'>数据规模 →</a>"},
+            {tag:{en:"Elastic compute", cn:"弹性算力"},
+             en:"Designed the <b>elastic compute tier</b> — the core architecture, and a closed loop of four parts rather than an autoscaler: <b>evaluate</b> (a new SQL statement exposing the per-operator estimates the cost-based optimizer computes and then discards), <b>route</b> (those numbers become a heavy/light verdict at plan time, so routing is admission control rather than performance tuning), <b>separate</b> (the heavy tail gets a physically isolated compute group, not a priority label — a pool is a metadata construct once tablets live in S3, so scaling 2→4 backends moved zero data), and <b>provision</b> (a verdict of heavy launches capacity: discrete increments from a floor of zero, sized by bottleneck rather than by data volume, driven by a controller collapsed to one patched CR field). This layer makes no query faster — it decides where each query lands, and makes that place exist on demand. Its safety never depends on the classifier being right: a misrouted heavy query is killed by a runtime memory limit and escalated. <a href='#L:w-p-routing#'>Evaluate &amp; route →</a> <a href='#L:w-p-elastic#'>Elastic tier →</a>",
+             cn:"设计<b>弹性计算层</b> —— 这是核心架构层，而且它不是一个 autoscaler，是四件事的闭环：<b>评估</b>（新增一条 SQL 语句，把成本优化器算完就丢掉的 per-operator 估算暴露出来）、<b>路由</b>（这些数字在 plan 期变成 heavy/light 判定，于是路由是准入控制而不是性能调优）、<b>轻重分离</b>（重尾拿到的是物理隔离的 compute group 而不是一个优先级标签 —— tablet 在 S3 之后一个池就是元数据构造，在线 2→4 个 BE 零数据移动）、<b>主动供给</b>（判定为 heavy 就拉起算力：从零地板开始的离散增量，按瓶颈类型而不是按数据量定容，驱动它的 controller 被收敛成对一个 CR 字段的 patch）。这一层不让任何查询变快 —— 它决定每条查询落在哪里，并让那个地方按需存在。它的安全性从不依赖判定正确：误判的重查询会被运行时内存硬限杀掉并升级。<a href='#L:w-p-routing#'>评估与路由 →</a> <a href='#L:w-p-elastic#'>弹性层 →</a>"},
+            {tag:{en:"Targeted optimization", cn:"定向优化"},
+             en:"Then the optimization layer, and it is deliberately <b>targeted rather than general</b>: query text, workload and query shape are all inputs we do not control — a growing share is generated by AI agents — so the only remaining lever is to make the shapes a caller might write structurally cheaper. The selection rule is that a query is worth attacking when its cost is mostly <b>avoidable fan-out</b>, which measurement had already proved is the real currency (bloom filters cut rows scanned 73% and moved wall-clock zero: one user's rows lived in 2,044 files). Two shapes qualified. A point lookup on a non-bucketed column opens every tablet, so a cross-tablet point-query index is probed before any tablet is opened — 566 tablets down to ~1. A wide read genuinely needs its column files but does not need them serially, so the column meta-pages whose byte offsets are already footer-resident are warmed concurrently ahead of the read loop, which stays byte-for-byte unchanged. Both are fail-open: a broken index can only make a query slower, never wrong. <a href='#L:w-p-fanout#'>Deep dive →</a> <a href='#L:w-p-routing#'>Cost-model blind spots →</a>",
+             cn:"然后是优化层，而且它刻意是<b>定向的而不是通用的</b>：SQL 文本、负载、查询形态都是我们控制不了的输入 —— 其中越来越大的一部分由 AI agent 生成 —— 所以剩下的唯一杠杆，是让调用方可能写出的那些形态本身在结构上变便宜。选择判据是：一条查询值得下手，是因为它的成本里大部分是<b>可避免的扇出</b>，而测量早就证明扇出才是真正的货币（bloom filter 砍掉 73% 扫描行数而墙钟纹丝不动：一个用户的行散在 2,044 个文件里）。两种形态符合判据。非分桶列上的点查会打开每一个 tablet，于是加一个跨 tablet 点查索引，在打开任何 tablet 之前就探测 —— 566 个 tablet 收到约 1 个。宽读确实需要它那些列文件，但不需要串行地要，于是把字节偏移本来就在 segment footer 里的列 meta page 在读循环之前并发烘热，而读循环本身一个字节都不改。两者都 fail-open：坏索引只能让查询变慢，不能让它出错。<a href='#L:w-p-fanout#'>深挖 →</a> <a href='#L:w-p-routing#'>成本模型盲区 →</a>"}
+          ]},
+        { t:{en:"Observability", cn:"可观测性"}, d:"obs",
+          m:{en:"~1.2M active series · ~80K samples/s · 50 clusters", cn:"~120 万活跃序列 · ~8 万 samples/s · 50 集群"},
+          items:[
+            {tag:{en:"Platform", cn:"平台"},
+             en:"Rebuilt the monitoring platform after Prometheus Federation stopped scaling at 50 clusters (weekly OOM, 45 s lag); now one platform serves the whole fleet with data lag <b>under 5 s</b>. <a href='#L:w-p-vm#'>Deep dive →</a>",
+             cn:"因为 Prometheus Federation 在 50 集群规模下扛不住（每周 OOM、45 秒延迟），重建了监控平台；现在一个平台服务整个 fleet，数据延迟 <b>5 秒以内</b>。<a href='#L:w-p-vm#'>深挖 →</a>"},
+            {tag:{en:"Alerting", cn:"告警"},
+             en:"Designed per-tenant SLI/SLO alerting and led alert governance: took the pager from <b>~960 alerts/day</b> (85% default-P3 noise) toward a <b>&lt;200/day</b> target via an admission gate that only lets P1/P2 page — cutting on-call toil while preserving sensitivity to high-priority alerts. <a href='#L:w-p-alertgov#'>Alert governance →</a>",
+             cn:"设计分租户 SLI/SLO 告警，并主导告警治理：用只放行 P1/P2 进 pager 的准入门槛，把 pager 从每天 <b>约 960 条</b>（85% 是默认 P3 噪音）收敛到 <b>&lt;200 条/天</b>的目标，减轻 oncall 负担，同时保住高优先级告警的敏感度。<a href='#L:w-p-alertgov#'>告警治理 →</a>"}
+          ]},
+        { t:{en:"Infrastructure as Code", cn:"基础设施即代码"}, d:"infra",
+          m:{en:"Packer + Ansible + kubeadm · AWS and on-site", cn:"Packer + Ansible + kubeadm · AWS 与 onsite 双形态"},
+          items:[
+            {tag:{en:"Cluster build", cn:"集群构建"},
+             en:"Operate and extend a four-layer cluster build path — baked images, AWS resources, kubeadm control planes, in-cluster components — with worker changes shipped as <b>immutable replacement</b> (AMI → launch template → 20% instance refresh), so the rollback path is the same path used in daily on-call. The Ansible role library predates me; the upgrade orchestration on top of it is mine.",
+             cn:"运维并扩展四层集群构建路径——镜像烘焙、AWS 资源、kubeadm 控制面、集群内组件——worker 变更走<b>不可变替换</b>（AMI → launch template → 20% instance refresh），于是回滚路径就是日常 oncall 走的那条路径。Ansible role 库是团队既有资产，其上的升级编排是我做的。"}
+          ]},
+        { t:{en:"Release & Change", cn:"发布与变更"}, d:"release",
+          m:{en:"AWS 6 regions · 50 clusters · 600+ nodes", cn:"AWS 6 region · 50 集群 · 600+ 节点"},
+          items:[
+            {tag:{en:"Upgrade", cn:"升级"},
+             en:"Led production <b>Kubernetes upgrades (1.24 → 1.29)</b> across 50 clusters; per-cluster time <b>18–21 h with two people → 6–8 h with one operator plus the system</b>, <b>zero incidents</b>. <a href='#L:w-p-upgrade#'>Deep dive →</a>",
+             cn:"主导生产 <b>Kubernetes 升级（1.24 → 1.29）</b>，覆盖 50 集群；单集群耗时 <b>18–21 小时两人 → 6–8 小时单人加系统</b>，<b>零事故</b>。<a href='#L:w-p-upgrade#'>深挖 →</a>"},
+            {tag:{en:"CI/CD", cn:"CI/CD"},
+             en:"Stabilized CI/CD through a <b>Jenkins-on-Kubernetes migration</b> and authored a cron-driven nightly production-image pipeline. <a href='#L:w-p-jenkins#'>Deep dive →</a>",
+             cn:"主导 <b>Jenkins-on-Kubernetes 迁移</b>后的 CI/CD 稳定化，并编写 cron 驱动的 nightly 生产镜像流水线。<a href='#L:w-p-jenkins#'>深挖 →</a>"}
+          ]},
+        { t:{en:"Incident & Reliability", cn:"事件响应与可靠性"}, d:"incident",
+          m:null,
+          items:[
+            {tag:{en:"On-call", cn:"oncall"},
+             en:"Primary on-call for 50 production clusters; <b>20+ P1/P2</b> resolved, MTTR <b>~30 min</b>; distilled into a 21-investigation incident library. <a href='#D:incident#'>Track record →</a>",
+             cn:"50 个生产集群 primary oncall；处置 <b>20+ P1/P2</b>，MTTR <b>约 30 分钟</b>；沉淀为 21 份调查记录的事故库。<a href='#D:incident#'>战绩 →</a>"}
+          ]},
+        { t:{en:"Platform & Automation", cn:"平台与自动化"}, d:"platform",
+          m:{en:"AI-agent-for-ops · four control primitives", cn:"AI-agent-for-ops · 四控制原语"},
+          items:[
+            {tag:{en:"AI Agent", cn:"AI Agent"},
+             en:"Built an <b>on-call triage agent</b> from scratch — a full autonomous-investigation harness: the agent runs the investigation end to end, the human keeps sovereignty over every irreversible action. <a href='#L:w-p-agentops#'>Deep dive →</a>",
+             cn:"从 0→1 做了一整套<b>on-call triage agent</b>：一个完整的自主调查 harness，agent 端到端跑完调查，人保留对每个不可逆操作的最终主权。<a href='#L:w-p-agentops#'>深挖 →</a>"}
+          ]}
+      ]
+    },
+    {
+      co:"Intel", tile:"in",
+      role:{en:"Cloud Software Development Engineer · 5G vRAN cloud-ification", cn:"云软件开发工程师 · 5G vRAN 云化"},
+      when:"2022.06 — 2025.02",
+      sections:[
+        { t:{en:"Infra & Capacity", cn:"基础设施与容量"}, d:"infra",
+          m:{en:"~30 nodes · multi-cluster · systemd-level", cn:"~30 节点 · 多集群 · systemd 层"},
+          items:[
+            {tag:{en:"IaC", cn:"IaC"},
+             en:"Built an <b>internal infrastructure-as-code reconcile daemon</b> that held <b>kernel-level machine configuration</b> — Intel's validated 5G vRAN configuration, from boot parameters to NIC driver profile — to a git-declared spec, continuously enforced on bare-metal nodes carrying real-time traffic. Kubernetes reconcile, pushed down to the hardware layer. <a href='#L:w-p-bkc#'>Deep dive →</a>",
+             cn:"编写<b>内部使用的基础设施即代码 reconcile daemon</b>，把<b>内核级机器配置</b>——Intel 验证过的 5G vRAN 配置，从内核启动参数到网卡驱动 profile——收敛到 git 声明的 spec 上，在承载实时流量的裸机节点上持续 enforce。把 Kubernetes reconcile 下沉到硬件层。<a href='#L:w-p-bkc#'>深挖 →</a>"}
+          ]},
+        { t:{en:"Observability", cn:"可观测性"}, d:"obs",
+          m:null,
+          items:[
+            {tag:{en:"Observability", cn:"可观测性"},
+             en:"Built foundational monitoring and end-to-end observability infrastructure — <b>Prometheus, Loki, Jaeger, OpenTelemetry</b> — metrics, logs, and traces from the ground up.",
+             cn:"从零搭建监控基础设施与端到端可观测性体系：<b>Prometheus、Loki、Jaeger、OpenTelemetry</b>，打通 metrics、logs、traces 三支柱。"}
+          ]}
+      ]
+    },
+    {
+      co:{en:"Tencent", cn:"腾讯"}, tile:{en:"Tencent", cn:"腾讯"},
+      role:{en:"Software Development Engineer Intern · QQ live-streaming", cn:"后端开发实习 · QQ 直播平台"},
+      when:"2021.05 — 2021.09",
+      sections:[
+        { t:null, m:null,
+          items:[
+            {tag:{en:"Consumer scale", cn:"C 端规模"},
+             en:"Feature development on a high-traffic live-streaming platform, in <b>Go</b> and <b>tRPC</b> (Tencent's in-house RPC framework). My first complete consumer-facing lifecycle — develop → test → deploy → release — and my first real microservice architecture: service discovery, config center, <b>Kafka</b> for asynchronous traffic, centralized log platform, monitoring and alerting, and managed <b>MySQL</b> / <b>Redis</b>. Changes shipped through a CI/CD pipeline as staged rollouts: canary, then batch by batch, with a rollback path.",
+             cn:"在高流量直播平台上做业务 feature 开发，<b>Go</b> + <b>tRPC</b>（腾讯自研 RPC 框架）。第一次走完 C 端服务的完整生命周期——开发 → 测试 → 部署 → 上线，也是第一次真正用上微服务那一套：服务发现、配置中心、承载异步流量的 <b>Kafka</b>、集中式日志平台、监控告警，以及托管 <b>MySQL</b> / <b>Redis</b>。变更走 CI/CD 流水线分阶段发布：先灰度，再分批推，留回滚路径。"}
+          ]}
+      ]
+    },
+    {
+      co:{en:"ByteDance", cn:"字节跳动"}, tile:{en:"ByteDance", cn:"字节"},
+      role:{en:"Software Development Engineer Intern · data platform", cn:"后端开发实习 · 数据中台"},
+      when:"2021.03 — 2021.05",
+      sections:[
+        { t:null, m:null,
+          items:[
+            {tag:{en:"Backend", cn:"后端"},
+             en:"RESTful services for the data platform, in <b>Go</b> (gin) over <b>MySQL</b> and <b>Redis</b>.",
+             cn:"给数据中台写 RESTful 服务，<b>Go</b>（gin）+ <b>MySQL</b> + <b>Redis</b>。"}
+          ]}
+      ]
+    },
+    {
+      co:"App Annie", tile:"App Annie",
+      role:{en:"Web Backend Engineer Intern", cn:"Web 后端开发实习"},
+      when:"2020.11 — 2021.02",
+      sections:[
+        { t:null, m:null,
+          items:[
+            {tag:{en:"Crawlers", cn:"爬虫"},
+             en:"Python crawler services, built with <b>test-driven development</b>.",
+             cn:"Python 爬虫服务，<b>测试驱动开发（TDD）</b>。"}
+          ]}
+      ]
+    },
+    {
+      co:{en:"Baidu", cn:"百度"}, tile:{en:"Baidu", cn:"百度"},
+      role:{en:"Data Engineer Intern · risk control", cn:"数据开发实习 · 风控业务组"},
+      when:"2020.01 — 2020.10",
+      sections:[
+        { t:null, m:null,
+          items:[
+            {tag:{en:"Data", cn:"数据"},
+             en:"Data development in the risk-control group on <b>Hadoop</b>, <b>MapReduce</b>, <b>Hive</b>, <b>MySQL</b>, <b>Elasticsearch</b> and <b>Airflow</b>. Requests came in from product teams across the company — the ad platform among them, compliance-driven ones included — and left as jobs that had to keep running. Where a data platform stopped being a diagram: what the workflow actually is, and where the business logic lives, learned by running it.",
+             cn:"风控业务组的数据开发，栈是 <b>Hadoop</b>、<b>MapReduce</b>、<b>Hive</b>、<b>MySQL</b>、<b>Elasticsearch</b>、<b>Airflow</b>。需求来自公司各项目组（含广告平台，也包括合规类需求），出去时变成必须持续跑住的任务。数据平台从此不再是一张架构图：工作流到底长什么样、业务逻辑落在哪里，是跑出来的。"}
+          ]}
+      ]
+    }
+  ],
+  skills:[
+    {k:{en:"Languages", cn:"语言"}, v:"Python, Golang, Shell, Java (engine-level)"},
+    {k:{en:"Infrastructure & Data", cn:"基础设施与数据"}, v:"AWS, Kubernetes, Helm, Docker, ClickHouse, Apache Doris, Iceberg, Kafka, MySQL, Redis"},
+    {k:{en:"Observability & Platform", cn:"可观测性与平台"}, v:"VictoriaMetrics, Prometheus, Grafana, Loki, AlertManager, Ansible, Jenkins"}
+  ],
+  edu:[
+    {d:{en:"University of Science &amp; Technology Beijing", cn:"北京科技大学"}, tile:{en:"USTB", cn:"北科大"},
+     m:{en:"M.Sc., Computer Science and Technology · Beijing", cn:"硕士 · 计算机科学与技术 · 北京"}, when:"2019.09 — 2022.06"},
+    {d:{en:"Wenhua College", cn:"文华学院"}, tile:{en:"WHC", cn:"文华"},
+     m:{en:"B.Eng., Electronic Information Engineering · Wuhan", cn:"本科 · 电子信息工程 · 武汉"}, when:"2014.09 — 2018.06"}
+  ]
+};
+
+/* ---------- helpers ---------- */
+function toneColor(g){ return GROUPS[g].tone === "cool" ? "var(--petrol)" : "var(--amber)"; }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function domainById(id){ for (var i=0;i<DOMAINS.length;i++) if (DOMAINS[i].id===id) return DOMAINS[i]; return null; }
+function writingById(id){ for (var i=0;i<WRITINGS.length;i++) if (WRITINGS[i].id===id) return WRITINGS[i]; return null; }
+function domainsCiting(wid){
+  var out=[];
+  DOMAINS.forEach(function(d){ d.evidence.forEach(function(e){ if(e.w===wid && out.indexOf(d)<0) out.push(d); }); });
+  return out;
+}
+function P(rest){ return "#/"+LANG+(rest||""); }
+/* Articles live on the blog. W() returns the outbound URL for an id. */
+function W(id){ var w=writingById(id); return (w && w.url && (w.url[LANG]||w.url.en)) || ""; }
+function isExt(u){ return /^https?:/.test(u||""); }
+/* timeline monogram: shrink the type when the label is an acronym rather than 1-2 letters */
+function tile(t){
+  t = T(t) || "·";
+  var n = String(t).length;
+  // camel-case wordmarks get a soft wrap point so they break as Byte|Dance, not Bytedanc|e
+  return '<div class="tl-tile'+(n>4 ? " word" : (n>2 ? " sm" : ""))+'">'+esc(t).replace(/([a-z])([A-Z])/g,"$1<wbr>$2")+'</div>';
+}
+
+/* ---------- radar svg ---------- */
+function radarSVG(){
+  var cx=225, cy=195, R=138, n=DOMAINS.length;
+  function pt(i, r){
+    var a = -Math.PI/2 + i*2*Math.PI/n;
+    return [cx + r*Math.cos(a), cy + r*Math.sin(a)];
+  }
+  function ring(frac){
+    var p=[]; for(var i=0;i<n;i++){ p.push(pt(i,R*frac).map(function(v){return v.toFixed(1);}).join(",")); }
+    return '<polygon points="'+p.join(" ")+'" fill="none" stroke="var(--line-soft)" stroke-width="1"/>';
+  }
+  var s='<svg viewBox="0 0 450 400" role="img" aria-label="Competency radar" style="width:100%;height:auto;display:block">';
+  s+=ring(.25)+ring(.5)+ring(.75)+ring(1);
+  for(var i=0;i<n;i++){ var e=pt(i,R); s+='<line x1="'+cx+'" y1="'+cy+'" x2="'+e[0].toFixed(1)+'" y2="'+e[1].toFixed(1)+'" stroke="var(--line-soft)" stroke-width="1"/>'; }
+  var dp=[], tp=[];
+  for(var j=0;j<n;j++){
+    dp.push(pt(j, R*DOMAINS[j].depth/100).map(function(v){return v.toFixed(1);}).join(","));
+    tp.push(pt(j, R*DOMAINS[j].target/100).map(function(v){return v.toFixed(1);}).join(","));
+  }
+  s+='<polygon points="'+tp.join(" ")+'" fill="none" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="4 4"/>';
+  s+='<polygon points="'+dp.join(" ")+'" fill="var(--amber-soft)" stroke="var(--amber)" stroke-width="2"/>';
+  for(var k=0;k<n;k++){
+    var d=DOMAINS[k], v=pt(k, R*d.depth/100);
+    s+='<circle cx="'+v[0].toFixed(1)+'" cy="'+v[1].toFixed(1)+'" r="3" fill="'+(GROUPS[d.group].tone==="cool"?"var(--petrol)":"var(--amber)")+'"/>';
+    var L=pt(k, R+26), anchor = Math.abs(L[0]-cx)<12 ? "middle" : (L[0]>cx ? "start":"end");
+    var lines=T(d.axis), ly=L[1]-(lines.length-1)*6.5;
+    s+='<g class="axisLabel" data-d="'+d.id+'" role="link" tabindex="0" aria-label="'+esc(T(d.name))+'">';
+    for(var m=0;m<lines.length;m++){
+      s+='<text x="'+L[0].toFixed(1)+'" y="'+(ly+m*13).toFixed(1)+'" text-anchor="'+anchor+'">'+esc(lines[m])+'</text>';
+    }
+    s+='<text class="val mono" x="'+L[0].toFixed(1)+'" y="'+(ly+lines.length*13+1).toFixed(1)+'" text-anchor="'+anchor+'">'+d.depth+'</text>';
+    s+='</g>';
+  }
+  s+='</svg>';
+  return s;
+}
+
+/* ---------- views ---------- */
+function langSwitch(rest){
+  var en='#/en'+(rest||""), cn='#/cn'+(rest||"");
+  return '<span class="lang-switch mono"><a href="'+en+'" class="'+(LANG==="en"?"on":"")+'">EN</a>·<a href="'+cn+'" class="'+(LANG==="cn"?"on":"")+'">中文</a></span>';
+}
+
+function viewHome(){
+  var h='';
+  h+='<header class="site">';
+  h+='<div class="id-row mono eyebrow"><span>'+esc(T(UI.role))+'</span><span aria-hidden="true" style="color:var(--line)">│</span><span>'+esc(T(UI.loc))+'</span><span aria-hidden="true" style="color:var(--line)">│</span><span>DataVisor</span>'+langSwitch("")+'</div>';
+  h+='<h1 class="name">Rui Shao<span class="dot">.</span></h1>';
+  h+='<p class="thesis">'+esc(T(UI.thesis))+'</p>';
+  h+='<p class="subthesis">'+esc(T(UI.subthesis))+'</p>';
+  /* perspective chips removed 2026-08-04: the landing page owns the article index */
+h+='<div class="contact mono"><a href="index.html#/'+LANG+'">'+(LANG==="cn"?"← 首页":"← Home")+'</a><a href="https://github.com/shaorui0">github.com/shaorui0</a><a href="mailto:sr1054461216@gmail.com">sr1054461216@gmail.com</a></div>';
+  h+='</header>';
+
+  /* ---- resume block (L0) ---- */
+  h+='<section class="block"><div class="block-head"><h2>'+esc(T(UI.expHead))+'</h2></div>';
+  RESUME.exp.forEach(function(x){
+    h+='<div class="xp"><div class="tl-when">'+x.when+'</div>'+tile(x.tile)+'<div>';
+    h+='<div class="xp-head"><span class="co">'+esc(T(x.co))+'</span><span class="role">'+esc(T(x.role))+'</span></div>';
+    if(x.intro){ h+='<p class="xp-intro">'+esc(T(x.intro))+'</p>'; }
+    x.sections.forEach(function(s){
+      if(s.t){
+        var stitle = s.d ? ('<a class="xs-t" href="'+P("/d/"+s.d)+'" style="text-decoration:none">'+esc(T(s.t))+' <span style="color:var(--amber)">↗</span></a>')
+                         : ('<span class="xs-t">'+esc(T(s.t))+'</span>');
+        h+='<div class="xs">'+stitle+(s.m?('<span class="xs-m mono">'+esc(T(s.m))+'</span>'):'')+'</div>';
+      }
+      if(s.items && s.items.length){
+        h+='<ul>';
+        s.items.forEach(function(it){
+          var ih=T(it).replace(/#W#/g, W("w-cs-doris") || P(""))
+                      .replace(/#L:([\w-]+)#/g, function(_,id){return W(id) || P("");})
+                      .replace(/#D:([\w-]+)#/g, function(_,id){return P("/d/"+id);});
+          var tg = it.tag ? '<span class="btag">'+esc(T(it.tag))+'</span> ' : '';
+          h+='<li>'+tg+ih+'</li>';
+        });
+        h+='</ul>';
+      }
+    });
+    h+='</div></div>';
+  });
+  h+='</section>';
+
+  h+='<section class="block"><div class="block-head"><h2>'+esc(T(UI.skillsBlock))+'</h2></div>';
+  RESUME.skills.forEach(function(s){ h+='<p class="skills-line"><b>'+esc(T(s.k))+':</b> '+esc(s.v)+'</p>'; });
+  h+='</section>';
+
+  h+='<section class="block"><div class="block-head"><h2>'+esc(T(UI.eduHead))+'</h2></div>';
+  RESUME.edu.forEach(function(e){
+    h+='<div class="xp"><div class="tl-when">'+e.when+'</div>'+tile(e.tile);
+    h+='<div><div class="xp-head"><span class="co" style="font-size:16px">'+T(e.d)+'</span>'+(e.m?('<span class="role">'+esc(T(e.m))+'</span>'):'')+'</div></div></div>';
+  });
+  h+='</section>';
+
+  h+='<div class="zoom-divider"><span class="zl"></span><span class="zt">'+esc(T(UI.zoomLabel))+'</span><span class="zl"></span></div>';
+
+  h+='<div class="eyebrow" style="margin-bottom:6px">'+esc(T(UI.radarEyebrow))+'</div>';
+  h+='<section class="radar-grid"><div>'+radarSVG()+'</div><div>';
+  var ld=T(UI.legendDepth), lt=T(UI.legendTarget);
+  h+='<div class="legend-row"><svg width="26" height="10"><line x1="0" y1="5" x2="26" y2="5" stroke="var(--amber)" stroke-width="2.5"/></svg><span><b>'+esc(ld[0])+'</b> <span class="t">'+esc(ld[1])+'</span></span></div>';
+  h+='<div class="legend-row"><svg width="26" height="10"><line x1="0" y1="5" x2="26" y2="5" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 3"/></svg><span><b>'+esc(lt[0])+'</b> <span class="t">'+esc(lt[1])+'</span></span></div>';
+  h+='<hr class="rule" style="margin:16px 0">';
+  Object.keys(GROUPS).forEach(function(k){
+    h+='<div class="group-row"><span class="swatch" style="background:'+toneColor(k)+'"></span><span>'+esc(T(GROUPS[k].label))+'</span></div>';
+  });
+  h+='<p class="radar-note">'+esc(T(UI.radarNote))+'</p>';
+  h+='</div></section>';
+
+  h+='<div class="eyebrow" style="margin-bottom:12px">'+esc(T(UI.axesHead))+'</div><section class="cards">';
+  DOMAINS.forEach(function(d){
+    var col=toneColor(d.group), cool=GROUPS[d.group].tone==="cool";
+    h+='<a class="card'+(cool?' cool':'')+'" href="'+P("/d/"+d.id)+'" style="text-decoration:none">';
+    h+='<div class="top"><span class="nm">'+esc(T(d.name))+'</span><span class="dv mono" style="color:'+col+'">'+d.depth+'</span></div>';
+    h+='<div class="bar"><div class="tgt" style="width:'+d.target+'%"></div><div class="dep" style="width:'+d.depth+'%;background:'+col+'"></div></div>';
+    h+='<p>'+esc(T(d.tagline))+'</p></a>';
+  });
+  h+='</section>';
+
+    /* writing list removed 2026-08-04: it lived here and on the landing page; the landing page wins */
+  h+='<section class="block"><div class="block-head"><h2>'+esc(T(UI.notesHead))+'</h2><span class="hint">'+esc(T(UI.notesHint))+'</span></div>';
+  NOTES.forEach(function(nt,i){
+    h+='<details class="note"><summary><span class="idx mono">N'+(i+1)+'</span>'+esc(T(nt.t))+'</summary><p>'+esc(T(nt.b))+'</p></details>';
+  });
+  h+='</section>';
+
+  h+='<footer class="site"><span class="mono">'+esc(T(UI.footerL))+'</span><span class="mono">'+esc(T(UI.footerR))+'</span></footer>';
+  return h;
+}
+
+function viewDomain(id){
+  var d=domainById(id); if(!d) return viewHome();
+  var col=toneColor(d.group), cool=GROUPS[d.group].tone==="cool";
+  var h='<div class="dpage">';
+  h+='<nav class="crumb mono" style="display:flex;gap:12px;align-items:baseline"><a href="'+P("")+'">'+esc(T(UI.crumbMap))+'</a>'+langSwitch("/d/"+id)+'</nav>';
+  h+='<div class="eyebrow" style="color:'+col+'">'+esc(T(GROUPS[d.group].label))+'</div>';
+  h+='<h1>'+esc(T(d.name))+'</h1>';
+  h+='<div class="dmeta mono">'+esc(T(UI.depth))+' '+d.depth+' · '+esc(T(UI.target))+' '+d.target+'</div>';
+  h+='<p class="dtag">'+esc(T(d.tagline))+'</p>';
+  h+='<div class="thinkbox'+(cool?' cool':'')+'"><div class="lb eyebrow" style="color:'+col+'">'+esc(T(UI.think))+'</div><h3>'+esc(T(d.thinking.title))+'</h3><p>'+esc(T(d.thinking.body))+'</p></div>';
+  h+='<div class="sec-label">'+esc(T(UI.skillsHead))+'</div><div class="chips">';
+  T(d.skills).forEach(function(s){ h+='<span class="chip">'+esc(s)+'</span>'; });
+  h+='</div>';
+  if(d.track){
+    h+='<div class="sec-label">'+esc(T(UI.trackHead))+'</div>';
+    h+='<p class="track-line">'+esc(T(d.track))+'</p>';
+    h+='<p class="track-note">'+esc(T(UI.trackNote))+'</p>';
+    var dcases=CASES.filter(function(c){return c.domains && c.domains.indexOf(d.id)>=0;});
+    if(dcases.length){
+      var LB = LANG==="cn" ? {s:"症状",l:"定位",f:"修复",e:"教训",r:"完整长文 →"} : {s:"Symptom",l:"Localization",f:"Fix",e:"Lesson",r:"Full write-up →"};
+      dcases.forEach(function(c,i){
+        h+='<details class="cse"><summary><span class="idx mono" style="font-size:10.5px;color:var(--amber)">C'+(i+1)+'</span>'+esc(T(c.title))+'</summary><div class="cse-body">';
+        h+='<p><b>'+LB.s+'</b> · '+esc(T(c.symptom))+'</p>';
+        h+='<p><b>'+LB.l+'</b> · '+esc(T(c.localization))+'</p>';
+        h+='<p><b>'+LB.f+'</b> · '+esc(T(c.fix))+'</p>';
+        h+='<p><b>'+LB.e+'</b> · '+esc(T(c.lesson))+'</p>';
+        if(c.link){ h+='<p class="cse-link mono"><a href="'+W(c.link)+'" target="_blank" rel="noopener">'+LB.r+'</a></p>'; }
+        h+='</div></details>';
+      });
+    }
+  }
+  if(d.itable){
+    h+='<details class="deep"><summary>'+esc(T(d.itable.title))+'</summary><div class="inner itable-wrap"><table class="itable"><thead><tr>';
+    T(d.itable.head).forEach(function(th){ h+='<th>'+esc(th)+'</th>'; });
+    h+='</tr></thead><tbody>';
+    T(d.itable.rows).forEach(function(row){
+      h+='<tr>';
+      row.forEach(function(td,i){ h+='<td'+(i===2?' class="n"':'')+'>'+esc(td)+'</td>'; });
+      h+='</tr>';
+    });
+    h+='</tbody></table></div></details>';
+  }
+  h+='<div class="sec-label">'+esc(T(UI.workHead))+'</div>';
+  d.evidence.forEach(function(e){
+    h+='<div class="ev"><div class="en">'+(e.w?('<a href="'+W(e.w)+'" target="_blank" rel="noopener">'+esc(T(e.name))+' ↗</a>'):esc(T(e.name)))+'</div><p>'+esc(T(e.note))+'</p></div>';
+  });
+  h+='<p class="backline mono"><a href="'+P("")+'">'+esc(T(UI.backMap))+'</a></p></div>';
+  return h;
+}
+
+function viewWriting(id){
+  var w=writingById(id), tpl=document.getElementById(id+"-"+LANG) || document.getElementById(id+"-en");
+  if(!w||!tpl) return viewHome();
+  var h='<nav class="crumb mono" style="display:flex;gap:12px;align-items:baseline"><a href="'+P("")+'">'+esc(T(UI.crumbMap))+'</a>'+langSwitch("/w/"+id)+'</nav>';
+  h+=tpl.innerHTML;
+  var cites=domainsCiting(id);
+  if(cites.length){
+    h+='<div class="sec-label" style="max-width:70ch">'+esc(T(UI.citedBy))+'</div><div class="chips" style="max-width:70ch">';
+    cites.forEach(function(d){ h+='<a class="chip" href="'+P("/d/"+d.id)+'" style="text-decoration:none">'+esc(T(d.name))+' · '+d.depth+'</a>'; });
+    h+='</div>';
+  }
+  h+='<p class="backline mono"><a href="'+P("")+'">'+esc(T(UI.backMap))+'</a></p>';
+  return h;
+}
+
+/* ---------- router ---------- */
+function detectLang(){
+  try{
+    var saved = localStorage.getItem("resume-lang");
+    if(saved==="en"||saved==="cn") return saved;
+  }catch(e){}
+  return (navigator.language||"").toLowerCase().indexOf("zh")===0 ? "cn" : "en";
+}
+
+function render(){
+  var app=document.getElementById("app");
+  var hash=location.hash||"";
+  var m=hash.match(/^#\/(en|cn)(?:\/(d|w)\/([\w-]+))?/);
+  if(!m){ location.replace("#/"+detectLang()); return; }
+  LANG=m[1];
+  try{ localStorage.setItem("resume-lang", LANG); }catch(e){}
+  document.documentElement.lang = (LANG==="cn"?"zh-CN":"en");
+  document.title = T(UI.title);
+  if(m[2]==="d") app.innerHTML=viewDomain(m[3]);
+  else if(m[2]==="w"){ var u=W(m[3]); if(u){ location.replace(u); return; } app.innerHTML=viewHome(); }
+  else app.innerHTML=viewHome();
+  window.scrollTo(0,0);
+  app.querySelectorAll(".axisLabel").forEach(function(g){
+    function go(){ location.hash=P("/d/"+g.getAttribute("data-d")); }
+    g.addEventListener("click",go);
+    g.addEventListener("keydown",function(ev){ if(ev.key==="Enter"||ev.key===" "){ ev.preventDefault(); go(); } });
+  });
+}
+window.addEventListener("hashchange",render);
+render();
+/* mermaid removed 2026-08-03: article bodies (and their diagrams) live on the blog now */
+</script>
+</body>
+</html>

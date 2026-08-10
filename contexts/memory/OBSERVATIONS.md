@@ -87,3 +87,21 @@ Date: 2026-05-20
 🔴 High: [Locality as first-principles constraint] Locality is a structural constraint (not an engineer-chosen tradeoff) across CPU/DB/agent-memory layers; changing architectures (attention/SSM/RAG/external memory) only changes the manifestation, so durable value comes from policy/eviction/observability strategies (`rules/axioms/x07_locality_is_constraint_not_tradeoff.md`, `contexts/daily_records/2026-05-19_2109_locality-as-cs-unifying-principle.md`).
 🟡 Medium: [Agent reliability framing] Treat SLO/error-budget as a viable ops framing for probabilistic agent systems, but only with explicit countermeasures for compound error, silent failure, Goodhart, and evaluation-awareness; HITL is a budget spending mechanism gated by reversibility and blast radius tiers (`contexts/survey_sessions/agent_slo_error_budget_survey_20260519.md`).
 🟢 Low: [Daily record + scan results] New daily record file detected (`contexts/daily_records/2026-05-19_2109_locality-as-cs-unifying-principle.md`); `find <dir> -type f -mtime -1` showed no other changes under `contexts/thought_review/`, `contexts/memory/`, `periodic_jobs/`, `adhoc_jobs/`, `tools/`; requested directories `contexts/agent_failure_cases/`, `contexts/life_record/`, `contexts/blog/` were not present in this workspace.
+
+Date: 2026-05-25
+
+🔴 High: [Prompting mental model] Treat the system prompt as labeling instructions (explicit constraints + few-shot examples) to improve output predictability (`contexts/survey_sessions/karpathy_llm_videos_20260525/synthesis.md`).
+🟡 Medium: [Cross-border brokerage crackdown] Captured a 2026-05 policy timeline and action checklist; core impact is a 2-year sell-only + fund-out window for in-mainland access, while accounts/assets are not forcibly closed (`contexts/survey_sessions/cross_border_brokerage_crackdown_survey_20260525.md`).
+🟢 Low: New raw transcript artifacts and local SQLite state files detected via `find <dir> -type f -mtime -1` (`contexts/survey_sessions/karpathy_llm_videos_20260525/raw/7xTGNNLPyMI.en.txt`, `contexts/survey_sessions/karpathy_llm_videos_20260525/raw/EWvNQjAaOHw.en.vtt`, `adhoc_jobs/agent_control_plane/acp.db`).
+
+Date: 2026-05-26
+
+🔴 High: (none observed in last 24h scan; no new high-signal artifacts)
+🟡 Medium: (none observed in last 24h scan; `find <dir> -type f -mtime -1` empty across `contexts/thought_review/`, `contexts/survey_sessions/`, `rules/`, `periodic_jobs/`, `tools/`; `contexts/daily_records/` had no new files)
+🟢 Low: Local SQLite state files updated under `adhoc_jobs/agent_control_plane/` (`adhoc_jobs/agent_control_plane/acp.db`, `adhoc_jobs/agent_control_plane/acp.db-wal`, `adhoc_jobs/agent_control_plane/acp.db-shm`); `contexts/memory/OBSERVATIONS.md` also shows up in the 24h mtime slice; requested directories `contexts/agent_failure_cases/`, `contexts/life_record/`, `contexts/blog/` were not present in this workspace.
+
+Date: 2026-05-27
+
+🔴 High: (none observed in last 24h scan; no new high-signal artifacts)
+🟡 Medium: [Market/AI infra survey] Added deep-research on the semiconductor/AI cycle (1995-96 vs 2000 framing), with the key risk monitor being hyperscaler capex deceleration; corrected Micron rally timeline and summarized the main drivers/risks (`contexts/survey_sessions/semiconductor_ai_cycle_micron_survey_20260527.md`).
+🟢 Low: Routine workspace churn in the 24h mtime slice: local SQLite state updated under `adhoc_jobs/agent_control_plane/` (`adhoc_jobs/agent_control_plane/acp.db`, `adhoc_jobs/agent_control_plane/acp.db-wal`, `adhoc_jobs/agent_control_plane/acp.db-shm`); `contexts/memory/OBSERVATIONS.md` and `rules/skills/INDEX.md` also show up as touched.
